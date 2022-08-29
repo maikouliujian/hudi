@@ -59,6 +59,7 @@ public abstract class HoodieFlinkTable<T extends HoodieRecordPayload>
     return HoodieFlinkTable.create(config, context, metaClient);
   }
 
+  //todo hudi flink表
   public static <T extends HoodieRecordPayload> HoodieFlinkTable<T> create(HoodieWriteConfig config,
                                                                            HoodieFlinkEngineContext context,
                                                                            HoodieTableMetaClient metaClient) {

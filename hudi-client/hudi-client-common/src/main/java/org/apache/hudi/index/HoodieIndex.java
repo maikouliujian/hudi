@@ -41,6 +41,7 @@ import java.io.Serializable;
  * @param <I> Type of inputs for deprecated APIs
  * @param <O> Type of outputs for deprecated APIs
  */
+
 @PublicAPIClass(maturity = ApiMaturityLevel.EVOLVING)
 public abstract class HoodieIndex<I, O> implements Serializable {
 
@@ -139,7 +140,7 @@ public abstract class HoodieIndex<I, O> implements Serializable {
    */
   public void close() {
   }
-
+  //todo index type有很多种
   public enum IndexType {
     HBASE, INMEMORY, BLOOM, GLOBAL_BLOOM, SIMPLE, GLOBAL_SIMPLE, BUCKET, FLINK_STATE
   }

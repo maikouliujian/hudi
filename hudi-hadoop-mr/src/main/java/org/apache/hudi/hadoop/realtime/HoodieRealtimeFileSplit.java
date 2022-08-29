@@ -44,10 +44,12 @@ public class HoodieRealtimeFileSplit extends FileSplit implements RealtimeSplit 
   /**
    * List of delta log-files holding updated records for this base-file
    */
+  //todo 增量log file
   private List<HoodieLogFile> deltaLogFiles = new ArrayList<>();
   /**
    * Base path of the table this path belongs to
    */
+  //todo base file
   private String basePath;
   /**
    * Latest commit instant available at the time of the query in which all of the files

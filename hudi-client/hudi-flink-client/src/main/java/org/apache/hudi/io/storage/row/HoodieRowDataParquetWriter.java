@@ -59,6 +59,7 @@ public class HoodieRowDataParquetWriter extends ParquetWriter<RowData>
     return fs.getBytesWritten(file) < maxFileSize;
   }
 
+  //todo 以parquet格式写出
   @Override
   public void writeRow(String key, RowData row) throws IOException {
     super.write(row);

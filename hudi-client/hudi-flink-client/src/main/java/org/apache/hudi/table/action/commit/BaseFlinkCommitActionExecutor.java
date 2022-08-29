@@ -191,8 +191,10 @@ public abstract class BaseFlinkCommitActionExecutor<T extends HoodieRecordPayloa
       } else {
         switch (bucketType) {
           case INSERT:
+
             return handleInsert(fileIdHint, recordItr);
           case UPDATE:
+
             return handleUpdate(partitionPath, fileIdHint, recordItr);
           default:
             throw new AssertionError();
@@ -219,6 +221,7 @@ public abstract class BaseFlinkCommitActionExecutor<T extends HoodieRecordPayloa
     return handleUpdateInternal(upsertHandle, fileId);
   }
 
+  //todo 处理update
   protected Iterator<List<WriteStatus>> handleUpdateInternal(HoodieMergeHandle<?, ?, ?, ?> upsertHandle, String fileId)
       throws IOException {
     if (upsertHandle.getOldFilePath() == null) {

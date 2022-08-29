@@ -37,6 +37,7 @@ import java.util.Objects;
  * <li> combineAndGetUpdateValue/getInsertValue - Simply overwrites storage with latest delta record
  * </ol>
  */
+
 public class OverwriteWithLatestAvroPayload extends BaseAvroPayload
     implements HoodieRecordPayload<OverwriteWithLatestAvroPayload> {
 
@@ -54,6 +55,7 @@ public class OverwriteWithLatestAvroPayload extends BaseAvroPayload
       // use natural order for delete record
       return this;
     }
+    //todo 取大的
     if (oldValue.orderingVal.compareTo(orderingVal) > 0) {
       // pick the payload with greatest ordering value
       return oldValue;

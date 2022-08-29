@@ -63,6 +63,7 @@ public class HMSDDLExecutor implements DDLExecutor {
   private final HiveSyncConfig syncConfig;
   private final PartitionValueExtractor partitionValueExtractor;
   private final FileSystem fs;
+  //todo hive metastore client
   private final IMetaStoreClient client;
 
   public HMSDDLExecutor(HiveConf conf, HiveSyncConfig syncConfig, FileSystem fs) throws HiveException, MetaException {

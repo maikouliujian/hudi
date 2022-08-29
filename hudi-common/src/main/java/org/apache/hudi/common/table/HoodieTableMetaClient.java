@@ -77,6 +77,7 @@ import java.util.stream.Stream;
  * @see HoodieTimeline
  * @since 0.3.0
  */
+
 public class HoodieTableMetaClient implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -631,6 +632,7 @@ public class HoodieTableMetaClient implements Serializable {
     initializeBootstrapDirsIfNotExists(getHadoopConf(), basePath.toString(), getFs());
   }
 
+  //todo 创建MetaClient
   private static HoodieTableMetaClient newMetaClient(Configuration conf, String basePath, boolean loadActiveTimelineOnLoad,
       ConsistencyGuardConfig consistencyGuardConfig, Option<TimelineLayoutVersion> layoutVersion,
       String payloadClassName, FileSystemRetryConfig fileSystemRetryConfig, Properties props) {

@@ -35,6 +35,7 @@ import java.util.List;
 /**
  * Hoodie log format reader.
  */
+
 public class HoodieLogFormatReader implements HoodieLogFormat.Reader {
 
   private final List<HoodieLogFile> logFiles;

@@ -264,6 +264,7 @@ public class AvroInternalSchemaConverter {
    * @param recordName the record name
    * @return a Avro schema match this type
    */
+  //todo 解析schema
   private static Schema visitInternalSchemaToBuildAvroSchema(Type type, Map<Type, Schema> cache, String recordName) {
     switch (type.typeId()) {
       case RECORD:

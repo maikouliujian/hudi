@@ -111,11 +111,16 @@ public class BulkInsertWriteFunction<I>
 
   @Override
   public void open(Configuration parameters) throws IOException {
+    //todo 获取批量插入数据作业的taskID
     this.taskID = getRuntimeContext().getIndexOfThisSubtask();
+    //todo 创建writeClient，它负责创建index，提交数据和回滚，以及数据增删改查操作
     this.writeClient = StreamerUtil.createWriteClient(this.config, getRuntimeContext());
     this.ckpMetadata = CkpMetadata.getInstance(config);
+    //todo 获取上一个进行中的instant时间戳
     this.initInstant = lastPendingInstant();
+    //todo 发送一个WriteMetadataEvent到coordinator，结束上一批数据写入过程
     sendBootstrapEvent();
+    //todo 初始化writerHelper，用于辅助进行数据批量插入
     initWriterHelper();
   }
 
@@ -137,7 +142,7 @@ public class BulkInsertWriteFunction<I>
    */
   public void endInput() {
     final List<WriteStatus> writeStatus = this.writerHelper.getWriteStatuses(this.taskID);
-
+    //todo发送本批数据已完全写入的event给coordinator
     final WriteMetadataEvent event = WriteMetadataEvent.builder()
         .taskID(taskID)
         .instantTime(this.writerHelper.getInstantTime())

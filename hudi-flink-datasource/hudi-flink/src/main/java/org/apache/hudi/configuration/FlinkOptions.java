@@ -454,6 +454,7 @@ public class FlinkOptions extends HoodieConfig {
       .defaultValue(100) // default 100 MB
       .withDescription("Max memory in MB for merge, default 100MB");
 
+
   // this is only for internal use
   public static final ConfigOption<Long> WRITE_COMMIT_ACK_TIMEOUT = ConfigOptions
       .key("write.commit.ack.timeout")

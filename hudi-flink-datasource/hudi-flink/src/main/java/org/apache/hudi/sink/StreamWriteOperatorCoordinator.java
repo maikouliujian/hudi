@@ -75,6 +75,7 @@ import static org.apache.hudi.util.StreamerUtil.initTableIfNotExists;
  *
  * @see StreamWriteFunction for the work flow and semantics
  */
+
 public class StreamWriteOperatorCoordinator
     implements OperatorCoordinator {
   private static final Logger LOG = LoggerFactory.getLogger(StreamWriteOperatorCoordinator.class);
@@ -282,6 +283,7 @@ public class StreamWriteOperatorCoordinator
     ValidationUtils.checkState(operatorEvent instanceof WriteMetadataEvent,
         "The coordinator can only handle WriteMetaEvent");
     WriteMetadataEvent event = (WriteMetadataEvent) operatorEvent;
+
 
     if (event.isEndInput()) {
       // handle end input event synchronously

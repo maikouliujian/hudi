@@ -297,7 +297,7 @@ public class ExternalSpillableMap<T extends Serializable, R extends Serializable
    * from memory in the {@link ExternalSpillableMap}.
    */
   public enum DiskMapType {
-    BITCASK,
+    BITCASK,//todo Bitcask 是一个日志型、基于hash表结构的key-value存储模型
     ROCKS_DB,
     UNKNOWN
   }

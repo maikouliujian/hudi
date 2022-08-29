@@ -58,20 +58,25 @@ public class HoodieTableSink implements DynamicTableSink, SupportsPartitioning, 
     this.schema = schema;
     this.overwrite = overwrite;
   }
-
+  //todo 核心逻辑：dataStream--->dataStreamSink
   @Override
   public SinkRuntimeProvider getSinkRuntimeProvider(Context context) {
     return (DataStreamSinkProvider) dataStream -> {
 
       // setup configuration
+      //todo // setup configuration
+      //     // 获取checkpoint超时配置
       long ckpTimeout = dataStream.getExecutionEnvironment()
           .getCheckpointConfig().getCheckpointTimeout();
       conf.setLong(FlinkOptions.WRITE_COMMIT_ACK_TIMEOUT, ckpTimeout);
-
+      //todo 获取schema对应每列数据类型
       RowType rowType = (RowType) schema.toSourceRowDataType().notNull().getLogicalType();
 
       // bulk_insert mode
+      //todo // bulk_insert mode
+      //     // 获取写入操作类型，默认是upsert
       final String writeOperation = this.conf.get(FlinkOptions.OPERATION);
+      //todo // 如果写入操作类型配置的为bulk_insert，进入这个if分支
       if (WriteOperationType.fromValue(writeOperation) == WriteOperationType.BULK_INSERT) {
         return Pipelines.bulkInsert(conf, rowType, dataStream);
       }
@@ -90,6 +95,7 @@ public class HoodieTableSink implements DynamicTableSink, SupportsPartitioning, 
       // write pipeline
       pipeline = Pipelines.hoodieStreamWrite(conf, parallelism, hoodieRecordDataStream);
       // compaction
+      //todo // 如果需要压缩（表类型为MERGE_ON_READ，并且启用了异步压缩）
       if (StreamerUtil.needsAsyncCompaction(conf)) {
         return Pipelines.compact(conf, pipeline);
       } else {

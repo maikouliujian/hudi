@@ -130,6 +130,7 @@ public class HoodieLogFormatWriter implements HoodieLogFormat.Writer {
     return output;
   }
 
+
   @Override
   public AppendResult appendBlock(HoodieLogBlock block) throws IOException, InterruptedException {
     return appendBlocks(Collections.singletonList(block));

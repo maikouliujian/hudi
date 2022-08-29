@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 /**
  * Hoodie file format.
  */
+//todo HOODIE_LOG是log文件
 public enum HoodieFileFormat {
   PARQUET(".parquet"),
   HOODIE_LOG(".log"),

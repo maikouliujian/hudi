@@ -65,7 +65,7 @@ public class SortOperator extends TableStreamOperator<RowData>
   public void open() throws Exception {
     super.open();
     LOG.info("Opening SortOperator");
-
+    //todo 获取用户代码classloader
     ClassLoader cl = getContainingTask().getUserCodeClassLoader();
 
     AbstractRowDataSerializer inputSerializer =

@@ -597,6 +597,7 @@ object HoodieSparkSqlWriter {
     }
   }
 
+  //todo hudi hivemeta sync
   private def metaSync(spark: SparkSession, hoodieConfig: HoodieConfig, basePath: Path,
                        schema: StructType): Boolean = {
     val hiveSyncEnabled = hoodieConfig.getStringOrDefault(HiveSyncConfig.HIVE_SYNC_ENABLED).toBoolean

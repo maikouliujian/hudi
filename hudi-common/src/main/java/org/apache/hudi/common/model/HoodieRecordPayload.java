@@ -31,6 +31,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Properties;
 
+
 /**
  * Every Hoodie table has an implementation of the <code>HoodieRecordPayload</code> This abstracts out callbacks which depend on record specific logic.
  */

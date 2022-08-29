@@ -45,6 +45,7 @@ import java.io.IOException;
 /**
  * Read json kafka data.
  */
+
 public class JsonKafkaSource extends JsonSource {
 
   private static final Logger LOG = LogManager.getLogger(JsonKafkaSource.class);
@@ -79,6 +80,7 @@ public class JsonKafkaSource extends JsonSource {
   }
 
   private JavaRDD<String> toRDD(OffsetRange[] offsetRanges) {
+    //todo sparkstreaming
     JavaRDD<String> jsonStringRDD = KafkaUtils.createRDD(sparkContext,
             offsetGen.getKafkaParams(),
             offsetRanges,

@@ -36,6 +36,7 @@ public class BulkInsertWriteOperator<I>
     implements BoundedOneInput {
 
   public BulkInsertWriteOperator(Configuration conf, RowType rowType) {
+    //todo 实际处理的function
     super(new BulkInsertWriteFunction<>(conf, rowType));
   }
 

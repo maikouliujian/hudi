@@ -91,6 +91,7 @@ import java.util.concurrent.Executors;
  * write-to-sink (c) Schedule Compactions if needed (d) Conditionally Sync to Hive each cycle. For MOR table with
  * continuous mode enabled, a separate compactor thread is allocated to execute compactions
  */
+
 public class HoodieDeltaStreamer implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -617,6 +618,7 @@ public class HoodieDeltaStreamer implements Serializable {
                             Option<TypedProperties> properties) throws IOException {
       this.cfg = cfg;
       this.jssc = jssc;
+
       this.sparkSession = SparkSession.builder().config(jssc.getConf()).getOrCreate();
       this.asyncCompactService = Option.empty();
       this.asyncClusteringService = Option.empty();

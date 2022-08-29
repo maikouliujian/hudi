@@ -380,6 +380,7 @@ public class StreamerUtil {
    * <p>This expects to be used by client, set flag {@code loadFsViewStorageConfig} to use
    * remote filesystem view storage config, or an in-memory filesystem view storage is used.
    */
+
   @SuppressWarnings("rawtypes")
   public static HoodieFlinkWriteClient createWriteClient(Configuration conf, RuntimeContext runtimeContext, boolean loadFsViewStorageConfig) {
     HoodieFlinkEngineContext context =

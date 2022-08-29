@@ -92,17 +92,21 @@ public class Pipelines {
    * @return the bulk insert data stream sink
    */
   public static DataStreamSink<Object> bulkInsert(Configuration conf, RowType rowType, DataStream<RowData> dataStream) {
+    //todo // 创建出批量插入operator工厂类
     WriteOperatorFactory<RowData> operatorFactory = BulkInsertWriteOperator.getFactory(conf, rowType);
     if (OptionsResolver.isBucketIndexType(conf)) {
       String indexKeys = conf.getString(FlinkOptions.INDEX_KEY_FIELD);
       int numBuckets = conf.getInteger(FlinkOptions.BUCKET_INDEX_NUM_BUCKETS);
 
       BucketIndexPartitioner<HoodieKey> partitioner = new BucketIndexPartitioner<>(numBuckets, indexKeys);
+      //todo  创建出key生成器，用于指定数据分组，keyBy算子使用
       RowDataKeyGen keyGen = RowDataKeyGen.instance(conf, rowType);
       RowType rowTypeWithFileId = BucketBulkInsertWriterHelper.rowTypeWithFileId(rowType);
       InternalTypeInfo<RowData> typeInfo = InternalTypeInfo.of(rowTypeWithFileId);
 
       Map<String, String> bucketIdToFileId = new HashMap<>();
+      //todo shuffle by partition keys
+      //  // 数据流按照分区字段值进行keyBy操作
       dataStream = dataStream.partitionCustom(partitioner, keyGen::getHoodieKey)
           .map(record -> BucketBulkInsertWriterHelper.rowWithFileId(bucketIdToFileId, keyGen, record, indexKeys, numBuckets), typeInfo)
           .setParallelism(conf.getInteger(FlinkOptions.WRITE_TASKS)); // same parallelism as write task to avoid shuffle
@@ -133,9 +137,13 @@ public class Pipelines {
             KeyGroupRangeAssignment.assignKeyToParallelOperator(key, StreamGraphGenerator.DEFAULT_LOWER_BOUND_MAX_PARALLELISM, channels);
         dataStream = dataStream.partitionCustom(partitioner, rowDataKeyGen::getPartitionPath);
       }
+      //todo // 如果需要按照分区排序
       if (conf.getBoolean(FlinkOptions.WRITE_BULK_INSERT_SORT_INPUT)) {
+        //todo // 创建一个排序operator
         SortOperatorGen sortOperatorGen = new SortOperatorGen(rowType, partitionFields);
         // sort by partition keys
+        //todo// sort by partition keys
+        // 为datastream增加一个排序操作符
         dataStream = dataStream
             .transform("partition_key_sorter",
                 TypeInformation.of(RowData.class),
@@ -145,6 +153,7 @@ public class Pipelines {
             conf.getInteger(FlinkOptions.WRITE_SORT_MEMORY) * 1024L * 1024L);
       }
     }
+    //todo 为dataStream加入批量写入operator并返回
     return dataStream
         .transform("hoodie_bulk_insert_write",
             TypeInformation.of(Object.class),
@@ -246,8 +255,9 @@ public class Pipelines {
       DataStream<RowData> dataStream,
       boolean bounded) {
     DataStream<HoodieRecord> dataStream1 = rowDataToHoodieRecord(conf, rowType, dataStream);
-
+    //todo 是否启动时加载索引
     if (conf.getBoolean(FlinkOptions.INDEX_BOOTSTRAP_ENABLED) || bounded) {
+      //todo 如果启用，会在启动时自动加载索引，包装为IndexRecord发往下游
       dataStream1 = dataStream1
           .transform(
               "index_bootstrap",

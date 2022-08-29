@@ -44,6 +44,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+
 class RealtimeCompactedRecordReader extends AbstractRealtimeRecordReader
     implements RecordReader<NullWritable, ArrayWritable> {
 
@@ -73,6 +74,7 @@ class RealtimeCompactedRecordReader extends AbstractRealtimeRecordReader
    * Goes through the log files and populates a map with latest version of each key logged, since the base split was
    * written.
    */
+  //todo 获取logflie scanner
   private HoodieMergedLogRecordScanner getMergedLogRecordScanner() throws IOException {
     // NOTE: HoodieCompactedLogRecordScanner will not return records for an in-flight commit
     // but can return records for completed commits > the commit we are trying to read (if using

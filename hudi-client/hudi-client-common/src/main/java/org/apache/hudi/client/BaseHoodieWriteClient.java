@@ -718,6 +718,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
     SavepointHelpers.validateSavepointRestore(table, savepointTime);
   }
 
+
   @Deprecated
   public boolean rollback(final String commitInstantTime) throws HoodieRollbackException {
     HoodieTable<T, I, K, O> table = initTable(WriteOperationType.UNKNOWN, Option.empty());

@@ -34,6 +34,7 @@ import java.util.Objects;
  * <p>
  * Also contains logic to roll-over the log file
  */
+
 public class HoodieLogFile implements Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -121,6 +122,7 @@ public class HoodieLogFile implements Serializable {
     this.fileStatus = fileStatus;
   }
 
+  //todo 创建一个新的HoodieLogFile
   public HoodieLogFile rollOver(FileSystem fs, String logWriteToken) throws IOException {
     String fileId = getFileId();
     String baseCommitTime = getBaseCommitTime();

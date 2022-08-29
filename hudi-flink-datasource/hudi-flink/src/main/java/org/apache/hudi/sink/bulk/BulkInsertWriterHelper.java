@@ -97,6 +97,7 @@ public class BulkInsertWriterHelper {
         handle = getRowCreateHandle(partitionPath);
         lastKnownPartitionPath = partitionPath;
       }
+      //todo 实际写数据
       handle.write(recordKey, partitionPath, record);
     } catch (Throwable t) {
       LOG.error("Global error thrown while trying to write records in HoodieRowCreateHandle ", t);

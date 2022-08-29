@@ -215,6 +215,7 @@ public abstract class AbstractHoodieLogRecordReader {
 
       // Iterate over the paths
       boolean enableRecordLookups = !forceFullScan;
+      //todo logFormatReaderWrapper
       logFormatReaderWrapper = new HoodieLogFormatReader(fs,
           logFilePaths.stream().map(logFile -> new HoodieLogFile(new Path(logFile))).collect(Collectors.toList()),
           readerSchema, readBlocksLazily, reverseReader, bufferSize, enableRecordLookups, keyField, internalSchema);
@@ -255,6 +256,7 @@ public abstract class AbstractHoodieLogRecordReader {
             if (isNewInstantBlock(logBlock) && !readBlocksLazily) {
               // If this is an avro data block belonging to a different commit/instant,
               // then merge the last blocks and records into the main result
+              //todo merge avro
               processQueuedBlocksForInstant(currentInstantLogBlocks, scannedLogFiles.size(), keySpecOpt);
             }
             // store the current block
@@ -401,6 +403,7 @@ public abstract class AbstractHoodieLogRecordReader {
     Option<Schema> result = Option.empty();
     if (!internalSchema.isEmptySchema()) {
       Long currentInstantTime = Long.parseLong(dataBlock.getLogBlockHeader().get(INSTANT_TIME));
+
       InternalSchema fileSchema = InternalSchemaCache
           .searchSchemaAndCache(currentInstantTime, hoodieTableMetaClient, false);
       Schema mergeSchema = AvroInternalSchemaConverter

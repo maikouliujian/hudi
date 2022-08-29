@@ -108,6 +108,7 @@ public class HoodieInputFormatUtils {
     }
   }
 
+  //todo inputformat
   public static String getInputFormatClassName(HoodieFileFormat baseFileFormat, boolean realtime) {
     switch (baseFileFormat) {
       case PARQUET:

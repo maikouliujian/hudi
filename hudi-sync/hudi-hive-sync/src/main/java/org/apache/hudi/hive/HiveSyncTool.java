@@ -56,12 +56,14 @@ import java.util.stream.Collectors;
  * This utility will get the schema from the latest commit and will sync hive table schema Also this will sync the
  * partitions incrementally (all the partitions modified since the last commit)
  */
+
 @SuppressWarnings("WeakerAccess")
 public class HiveSyncTool extends AbstractSyncTool implements AutoCloseable {
 
   private static final Logger LOG = LogManager.getLogger(HiveSyncTool.class);
-  public static final String SUFFIX_SNAPSHOT_TABLE = "_rt";
-  public static final String SUFFIX_READ_OPTIMIZED_TABLE = "_ro";
+  //todo rt 表数据是全的，ro表数据是只读parqut文件
+  public static final String SUFFIX_SNAPSHOT_TABLE = "_rt"; //todo 快照读取全量数据
+  public static final String SUFFIX_READ_OPTIMIZED_TABLE = "_ro"; //todo READ_OPTIMIZED，只能读取parquet中的内容
 
   protected HiveSyncConfig hiveSyncConfig;
   protected AbstractHiveSyncHoodieClient hoodieHiveClient;

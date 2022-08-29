@@ -32,6 +32,7 @@ import java.util.stream.IntStream;
 /**
  * A Single Record managed by Hoodie.
  */
+
 public abstract class HoodieRecord<T> implements Serializable {
 
   public static final String COMMIT_TIME_METADATA_FIELD = "_hoodie_commit_time";

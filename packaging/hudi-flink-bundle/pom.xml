@@ -668,6 +668,7 @@
     </dependency>
   </dependencies>
 
+  <!--打包编译时，可指定-Pflink-bundle-shade-hiveX 来选择编译hive的不同版本,-P后面跟的是profile的id-->
   <profiles>
     <profile>
       <id>flink-bundle-shade-hive1</id>

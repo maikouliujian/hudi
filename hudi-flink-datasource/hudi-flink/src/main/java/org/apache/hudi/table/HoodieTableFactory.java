@@ -84,11 +84,16 @@ public class HoodieTableFactory implements DynamicTableSourceFactory, DynamicTab
 
   @Override
   public DynamicTableSink createDynamicTableSink(Context context) {
+    //todo 获取create table是否with子句附带的参数
     Configuration conf = FlinkOptions.fromMap(context.getCatalogTable().getOptions());
     checkArgument(!StringUtils.isNullOrEmpty(conf.getString(FlinkOptions.PATH)),
         "Option [path] should not be empty.");
+    //todo 获取表的物理Schema，意思是不包含计算字段和元数据字段
     ResolvedSchema schema = context.getCatalogTable().getResolvedSchema();
+    // todo 检查参数合理性
+    // 检查hoodie.datasource.write.recordkey.field和write.precombine.field配置项是否包含在表字段中，如果不包含则抛出异常
     sanityCheck(conf, schema);
+    //todo 根据table定义和主键等配置，Hudi自动附加一些属性配置
     setupConfOptions(conf, context.getObjectIdentifier().getObjectName(), context.getCatalogTable(), schema);
     return new HoodieTableSink(conf, schema);
   }
