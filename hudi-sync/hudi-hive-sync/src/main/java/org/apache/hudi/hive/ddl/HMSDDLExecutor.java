@@ -176,7 +176,7 @@ public class HMSDDLExecutor implements DDLExecutor {
       throw new HoodieHiveSyncException("Failed to get table schema for : " + tableName, e);
     }
   }
-
+//todo 添加新的分区
   @Override
   public void addPartitionsToTable(String tableName, List<String> partitionsToAdd) {
     if (partitionsToAdd.isEmpty()) {

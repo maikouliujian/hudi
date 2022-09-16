@@ -138,6 +138,8 @@ public class HiveSyncTool extends AbstractSyncTool implements AutoCloseable {
     }
   }
 
+  //todo 1、如果hudi表中新增了字段，会自动同步给hive表；
+  //todo 2、会将新增的目录挂载到hive表
   protected void doSync() {
     switch (hoodieHiveClient.getTableType()) {
       case COPY_ON_WRITE:
@@ -174,6 +176,7 @@ public class HiveSyncTool extends AbstractSyncTool implements AutoCloseable {
     // check if the database exists else create it
     if (hiveSyncConfig.autoCreateDatabase) {
       try {
+        //todo 库不存在会自动创建库
         if (!hoodieHiveClient.databaseExists(hiveSyncConfig.databaseName)) {
           hoodieHiveClient.createDatabase(hiveSyncConfig.databaseName);
         }
@@ -208,6 +211,7 @@ public class HiveSyncTool extends AbstractSyncTool implements AutoCloseable {
     }
 
     // Sync schema if needed
+    //todo 所以如果flink创建的hudi表新增了字段，会自动同步到hive表中！！！
     boolean schemaChanged = syncSchema(tableName, tableExists, useRealtimeInputFormat, readAsOptimized, schema);
 
     LOG.info("Schema sync complete. Syncing partitions for " + tableName);
@@ -221,6 +225,7 @@ public class HiveSyncTool extends AbstractSyncTool implements AutoCloseable {
     LOG.info("Storage partitions scan complete. Found " + writtenPartitionsSince.size());
 
     // Sync the partitions if needed
+    //todo 同步分区===>挂载新的目录
     boolean partitionsChanged = syncPartitions(tableName, writtenPartitionsSince, isDropPartition);
     boolean meetSyncConditions = schemaChanged || partitionsChanged;
     if (!hiveSyncConfig.isConditionalSync || meetSyncConditions) {

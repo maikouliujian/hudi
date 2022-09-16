@@ -240,10 +240,13 @@ public class Pipelines {
       boolean overwrite) {
     final boolean globalIndex = conf.getBoolean(FlinkOptions.INDEX_GLOBAL_ENABLED);
     if (overwrite || OptionsResolver.isBucketIndexType(conf)) {
+      //todo bucket insert
       return rowDataToHoodieRecord(conf, rowType, dataStream);
     } else if (bounded && !globalIndex && OptionsResolver.isPartitionedTable(conf)) {
+      //todo 有界的写入，如批写
       return boundedBootstrap(conf, rowType, defaultParallelism, dataStream);
     } else {
+      //todo 流式写入
       return streamBootstrap(conf, rowType, defaultParallelism, dataStream, bounded);
     }
   }
@@ -254,6 +257,7 @@ public class Pipelines {
       int defaultParallelism,
       DataStream<RowData> dataStream,
       boolean bounded) {
+    //todo 将DataStream<RowData>转化为DataStream<HoodieRecord>
     DataStream<HoodieRecord> dataStream1 = rowDataToHoodieRecord(conf, rowType, dataStream);
     //todo 是否启动时加载索引
     if (conf.getBoolean(FlinkOptions.INDEX_BOOTSTRAP_ENABLED) || bounded) {
@@ -339,6 +343,7 @@ public class Pipelines {
       WriteOperatorFactory<HoodieRecord> operatorFactory = StreamWriteOperator.getFactory(conf);
       return dataStream
           // Key-by record key, to avoid multiple subtasks write to a bucket at the same time
+              // todo 根据record key进行keyby
           .keyBy(HoodieRecord::getRecordKey)
           .transform(
               "bucket_assigner",
@@ -347,6 +352,7 @@ public class Pipelines {
           .uid("uid_bucket_assigner_" + conf.getString(FlinkOptions.TABLE_NAME))
           .setParallelism(conf.getOptional(FlinkOptions.BUCKET_ASSIGN_TASKS).orElse(defaultParallelism))
           // shuffle by fileId(bucket id)
+              //todo 再根据bucketid进行keyby
           .keyBy(record -> record.getCurrentLocation().getFileId())
           .transform("stream_write", TypeInformation.of(Object.class), operatorFactory)
           .uid("uid_stream_write" + conf.getString(FlinkOptions.TABLE_NAME))

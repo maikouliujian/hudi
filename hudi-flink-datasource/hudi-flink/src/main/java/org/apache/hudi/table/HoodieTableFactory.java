@@ -60,6 +60,8 @@ import static org.apache.hudi.common.util.ValidationUtils.checkArgument;
 /**
  * Hoodie data source/sink factory.
  */
+
+//todo 支持source 和 sink
 public class HoodieTableFactory implements DynamicTableSourceFactory, DynamicTableSinkFactory {
   private static final Logger LOG = LoggerFactory.getLogger(HoodieTableFactory.class);
 
@@ -91,7 +93,7 @@ public class HoodieTableFactory implements DynamicTableSourceFactory, DynamicTab
     //todo 获取表的物理Schema，意思是不包含计算字段和元数据字段
     ResolvedSchema schema = context.getCatalogTable().getResolvedSchema();
     // todo 检查参数合理性
-    // 检查hoodie.datasource.write.recordkey.field和write.precombine.field配置项是否包含在表字段中，如果不包含则抛出异常
+    // todo 检查hoodie.datasource.write.recordkey.field和write.precombine.field配置项是否包含在表字段中，如果不包含则抛出异常
     sanityCheck(conf, schema);
     //todo 根据table定义和主键等配置，Hudi自动附加一些属性配置
     setupConfOptions(conf, context.getObjectIdentifier().getObjectName(), context.getCatalogTable(), schema);

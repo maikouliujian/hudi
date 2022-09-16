@@ -84,6 +84,7 @@ public class CompactFunction extends ProcessFunction<CompactionPlanEvent, Compac
     }
   }
 
+
   @Override
   public void processElement(CompactionPlanEvent event, Context context, Collector<CompactionCommitEvent> collector) throws Exception {
     final String instantTime = event.getCompactionInstantTime();

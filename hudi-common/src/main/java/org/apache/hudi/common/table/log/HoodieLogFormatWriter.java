@@ -146,6 +146,7 @@ public class HoodieLogFormatWriter implements HoodieLogFormat.Writer {
     long startPos = originalOutputStream.getPos();
     long sizeWritten = 0;
     // HUDI-2655. here we wrap originalOutputStream to ensure huge blocks can be correctly written
+    //todo 构建FSDataOutputStream
     FSDataOutputStream outputStream = new FSDataOutputStream(originalOutputStream, new FileSystem.Statistics(fs.getScheme()), startPos);
     for (HoodieLogBlock block: blocks) {
       long startSize = outputStream.size();

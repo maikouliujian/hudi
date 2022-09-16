@@ -50,6 +50,7 @@ public final class RocksDbDiskMap<T extends Serializable, R extends Serializable
 
   private static final Logger LOG = LogManager.getLogger(RocksDbDiskMap.class);
   // Stores the key and corresponding value's latest metadata spilled to disk
+  //todo 只存放key
   private final Set<T> keySet;
   private RocksDBDAO rocksDb;
 

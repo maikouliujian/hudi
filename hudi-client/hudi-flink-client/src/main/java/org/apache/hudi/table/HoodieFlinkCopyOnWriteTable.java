@@ -359,6 +359,7 @@ public class HoodieFlinkCopyOnWriteTable<T extends HoodieRecordPayload>
     throw new HoodieNotSupportedException("Savepoint and restore is not supported yet");
   }
 
+
   // -------------------------------------------------------------------------
   //  Used for compaction
   // -------------------------------------------------------------------------

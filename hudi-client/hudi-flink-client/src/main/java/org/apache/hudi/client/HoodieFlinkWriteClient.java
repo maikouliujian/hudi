@@ -137,6 +137,7 @@ public class HoodieFlinkWriteClient<T extends HoodieRecordPayload> extends
     throw new HoodieNotSupportedException("Bootstrap operation is not supported yet");
   }
 
+  //todo 写入数据
   @Override
   public List<WriteStatus> upsert(List<HoodieRecord<T>> records, String instantTime) {
     HoodieTable<T, List<HoodieRecord<T>>, List<HoodieKey>, List<WriteStatus>> table =
@@ -145,6 +146,7 @@ public class HoodieFlinkWriteClient<T extends HoodieRecordPayload> extends
     preWrite(instantTime, WriteOperationType.UPSERT, table.getMetaClient());
     final HoodieWriteHandle<?, ?, ?, ?> writeHandle = getOrCreateWriteHandle(records.get(0), getConfig(),
         instantTime, table, records.listIterator());
+    //todo 触发写入的逻辑
     HoodieWriteMetadata<List<WriteStatus>> result = ((HoodieFlinkTable<T>) table).upsert(context, writeHandle, instantTime, records);
     if (result.getIndexLookupDuration().isPresent()) {
       metrics.updateIndexMetrics(LOOKUP_STR, result.getIndexLookupDuration().get().toMillis());

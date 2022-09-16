@@ -248,7 +248,7 @@ public class StreamWriteOperatorCoordinator
           // the stream write task snapshot and flush the data buffer synchronously in sequence,
           // so a successful checkpoint subsumes the old one(follows the checkpoint subsuming contract)
           final boolean committed = commitInstant(this.instant, checkpointId);
-
+          //todo checkpoint完成后，异步执行scheduleCompaction
           if (tableState.scheduleCompaction) {
             // if async compaction is on, schedule the compaction
             CompactionUtil.scheduleCompaction(metaClient, writeClient, tableState.isDeltaTimeCompaction, committed);
@@ -258,6 +258,7 @@ public class StreamWriteOperatorCoordinator
             // start new instant.
             startInstant();
             // sync Hive if is enabled
+            //todo checkpoint完成后，进行HiveAsync
             syncHiveAsync();
           }
         }, "commits the instant %s", this.instant
@@ -617,6 +618,7 @@ public class StreamWriteOperatorCoordinator
       this.commitAction = CommitUtils.getCommitActionType(this.operationType,
           HoodieTableType.valueOf(conf.getString(FlinkOptions.TABLE_TYPE).toUpperCase(Locale.ROOT)));
       this.isOverwrite = WriteOperationType.isOverwrite(this.operationType);
+      //todo 是否需要触发Compaction
       this.scheduleCompaction = StreamerUtil.needsScheduleCompaction(conf);
       this.syncHive = conf.getBoolean(FlinkOptions.HIVE_SYNC_ENABLED);
       this.syncMetadata = conf.getBoolean(FlinkOptions.METADATA_ENABLED);

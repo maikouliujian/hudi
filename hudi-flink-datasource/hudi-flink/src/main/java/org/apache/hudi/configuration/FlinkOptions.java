@@ -50,6 +50,7 @@ import java.util.Set;
  *
  * <p>It has the options for Hoodie table read and write. It also defines some utilities.
  */
+//todo hoodie flink config
 @ConfigClassProperty(name = "Flink Options",
     groupName = ConfigGroups.Names.FLINK_SQL,
     description = "Flink jobs using the SQL can be configured through the options in WITH clause."
@@ -456,6 +457,7 @@ public class FlinkOptions extends HoodieConfig {
 
 
   // this is only for internal use
+  //todo 如果是flink，则是flink checkpoint的超时时间
   public static final ConfigOption<Long> WRITE_COMMIT_ACK_TIMEOUT = ConfigOptions
       .key("write.commit.ack.timeout")
       .longType()

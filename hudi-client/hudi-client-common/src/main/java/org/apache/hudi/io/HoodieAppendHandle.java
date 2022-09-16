@@ -140,6 +140,7 @@ public class HoodieAppendHandle<T extends HoodieRecordPayload, I, K, O> extends 
     if (doInit) {
       // extract some information from the first record
       SliceView rtView = hoodieTable.getSliceView();
+      //todo 获取fileslice
       Option<FileSlice> fileSlice = rtView.getLatestFileSlice(partitionPath, fileId);
       // Set the base commit time as the current instantTime for new inserts into log files
       String baseInstantTime;
@@ -401,6 +402,7 @@ public class HoodieAppendHandle<T extends HoodieRecordPayload, I, K, O> extends 
       }
 
       if (blocks.size() > 0) {
+        //todo 触发写逻辑
         AppendResult appendResult = writer.appendBlocks(blocks);
         processAppendResult(appendResult, recordList);
         recordList.clear();
@@ -416,6 +418,7 @@ public class HoodieAppendHandle<T extends HoodieRecordPayload, I, K, O> extends 
     return config.getParquetMaxFileSize() >= estimatedNumberOfBytesWritten
         * config.getLogFileToParquetCompressionRatio();
   }
+
 
   @Override
   public void write(HoodieRecord record, Option<IndexedRecord> insertValue) {

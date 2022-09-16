@@ -38,6 +38,7 @@ import java.util.Objects;
  * </ol>
  */
 
+
 public class OverwriteWithLatestAvroPayload extends BaseAvroPayload
     implements HoodieRecordPayload<OverwriteWithLatestAvroPayload> {
 

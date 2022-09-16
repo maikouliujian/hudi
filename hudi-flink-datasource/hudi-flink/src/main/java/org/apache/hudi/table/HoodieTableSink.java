@@ -90,12 +90,16 @@ public class HoodieTableSink implements DynamicTableSink, SupportsPartitioning, 
       int parallelism = dataStream.getExecutionConfig().getParallelism();
       DataStream<Object> pipeline;
       // bootstrap
+      //todo 第一步：将DataStream<RowData>转化为DataStream<HoodieRecord>
       final DataStream<HoodieRecord> hoodieRecordDataStream =
           Pipelines.bootstrap(conf, rowType, parallelism, dataStream, context.isBounded(), overwrite);
       // write pipeline
+      //todo 第二步：
+      //todo 1）根据record key进行keyby
+      //todo 2）再根据bucketid进行keyby
       pipeline = Pipelines.hoodieStreamWrite(conf, parallelism, hoodieRecordDataStream);
       // compaction
-      //todo // 如果需要压缩（表类型为MERGE_ON_READ，并且启用了异步压缩）
+      //todo 第三步： 如果需要压缩（表类型为MERGE_ON_READ，并且启用了异步压缩）
       if (StreamerUtil.needsAsyncCompaction(conf)) {
         return Pipelines.compact(conf, pipeline);
       } else {

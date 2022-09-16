@@ -37,6 +37,7 @@ public abstract class RowDataToHoodieFunctions {
    */
   @SuppressWarnings("rawtypes")
   public static RowDataToHoodieFunction<RowData, HoodieRecord> create(RowType rowType, Configuration conf) {
+    //todo 是否开启限速
     if (conf.getLong(FlinkOptions.WRITE_RATE_LIMIT) > 0) {
       return new RowDataToHoodieFunctionWithRateLimit<>(rowType, conf);
     } else {

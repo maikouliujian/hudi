@@ -82,6 +82,7 @@ public class BucketAssignFunction<K, I, O extends HoodieRecord<?>>
    *   <li>If it does not, use the {@link BucketAssigner} to generate a new bucket ID</li>
    * </ul>
    */
+  //todo 每一个recordKey维护了一个自己的index
   private ValueState<HoodieRecordGlobalLocation> indexState;
 
   /**
@@ -124,6 +125,7 @@ public class BucketAssignFunction<K, I, O extends HoodieRecord<?>>
         getRuntimeContext().getMaxNumberOfParallelSubtasks(),
         getRuntimeContext().getNumberOfParallelSubtasks(),
         ignoreSmallFiles(),
+        //todo table.type 默认COPY_ON_WRITE
         HoodieTableType.valueOf(conf.getString(FlinkOptions.TABLE_TYPE)),
         context,
         writeConfig);
@@ -155,10 +157,15 @@ public class BucketAssignFunction<K, I, O extends HoodieRecord<?>>
 
   @Override
   public void processElement(I value, Context ctx, Collector<O> out) throws Exception {
+    //todo // 如果接收到的是索引数据
+    //    // 如果启用的加载索引，上一节的BootstrapFunction会产生IndexRecord
+    //    // 这里需要根据索引，更新recordKey和储存位置的对应关系
     if (value instanceof IndexRecord) {
       IndexRecord<?> indexRecord = (IndexRecord<?>) value;
+      //todo 将IndexRecord携带的recordKey和location信息对应存入indexState中
       this.indexState.update((HoodieRecordGlobalLocation) indexRecord.getCurrentLocation());
     } else {
+      //todo 进入此分支伤命接收到的事HoodieRecord，开始处理数据过程
       processRecord((HoodieRecord<?>) value, out);
     }
   }
@@ -168,6 +175,7 @@ public class BucketAssignFunction<K, I, O extends HoodieRecord<?>>
     // 1. put the record into the BucketAssigner;
     // 2. look up the state for location, if the record has a location, just send it out;
     // 3. if it is an INSERT, decide the location using the BucketAssigner then send it out.
+    //todo // 获取HoodieKey，分别拿出recordKey和partitionPath
     final HoodieKey hoodieKey = record.getKey();
     final String recordKey = hoodieKey.getRecordKey();
     final String partitionPath = hoodieKey.getPartitionPath();
@@ -176,6 +184,7 @@ public class BucketAssignFunction<K, I, O extends HoodieRecord<?>>
     // Only changing records need looking up the index for the location,
     // append only records are always recognized as INSERT.
     HoodieRecordGlobalLocation oldLoc = indexState.value();
+    //todo 如果操作类型为UPSERT，DELETE或者UPSERT_PREPPED，isChangingRecords为true
     if (isChangingRecords && oldLoc != null) {
       // Set up the instant time as "U" to mark the bucket as an update bucket.
       if (!Objects.equals(oldLoc.getPartitionPath(), partitionPath)) {

@@ -207,6 +207,7 @@ public abstract class BaseFlinkCommitActionExecutor<T extends HoodieRecordPayloa
     }
   }
 
+
   @Override
   public Iterator<List<WriteStatus>> handleUpdate(String partitionPath, String fileId,
                                                   Iterator<HoodieRecord<T>> recordItr)

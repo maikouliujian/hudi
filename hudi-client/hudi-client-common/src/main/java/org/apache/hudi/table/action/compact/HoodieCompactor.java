@@ -143,6 +143,7 @@ public abstract class HoodieCompactor<T extends HoodieRecordPayload, I, K, O> im
   /**
    * Execute a single compaction operation and report back status.
    */
+
   public List<WriteStatus> compact(HoodieCompactionHandler compactionHandler,
                                    HoodieTableMetaClient metaClient,
                                    HoodieWriteConfig config,

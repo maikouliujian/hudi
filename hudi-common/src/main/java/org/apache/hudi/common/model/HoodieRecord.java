@@ -85,6 +85,7 @@ public abstract class HoodieRecord<T> implements Serializable {
   /**
    * Indicates whether the object is sealed.
    */
+  //todo 封上(信封); 密封(容器); 封盖…的表面
   private boolean sealed;
 
   /**

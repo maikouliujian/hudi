@@ -50,6 +50,7 @@ public class FileSlice implements Serializable {
    * List of appendable log files with real time data - Sorted with greater log version first - Always empty for
    * copy_on_write storage.
    */
+  //todo 按照commit instant倒序排列
   private final TreeSet<HoodieLogFile> logFiles;
 
   public FileSlice(FileSlice fileSlice) {

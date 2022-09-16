@@ -338,6 +338,7 @@ public class HoodieAvroUtils {
     return record;
   }
 
+
   public static GenericRecord stitchRecords(GenericRecord left, GenericRecord right, Schema stitchedSchema) {
     GenericRecord result = new Record(stitchedSchema);
     for (Schema.Field f : left.getSchema().getFields()) {

@@ -29,6 +29,7 @@ import org.apache.flink.table.types.logical.RowType;
 /**
  * Function that transforms RowData to a HoodieRecord with RateLimit.
  */
+//todo flink写入时限速
 public class RowDataToHoodieFunctionWithRateLimit<I extends RowData, O extends HoodieRecord>
     extends RowDataToHoodieFunction<I, O> {
   /**

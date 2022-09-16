@@ -175,6 +175,7 @@ public class StreamWriteFunction<I> extends AbstractStreamWriteFunction<I> {
   }
 
   private void initWriteFunction() {
+    //todo 默认：upsert
     final String writeOperation = this.config.get(FlinkOptions.OPERATION);
     switch (WriteOperationType.fromValue(writeOperation)) {
       case INSERT:
@@ -372,6 +373,7 @@ public class StreamWriteFunction<I> extends AbstractStreamWriteFunction<I> {
    * @param value HoodieRecord
    */
   protected void bufferRecord(HoodieRecord<?> value) {
+    //todo 获取bucketid
     final String bucketID = getBucketID(value);
 
     DataBucket bucket = this.buckets.computeIfAbsent(bucketID,
@@ -420,9 +422,11 @@ public class StreamWriteFunction<I> extends AbstractStreamWriteFunction<I> {
     List<HoodieRecord> records = bucket.writeBuffer();
     ValidationUtils.checkState(records.size() > 0, "Data bucket to flush has no buffering records");
     if (config.getBoolean(FlinkOptions.PRE_COMBINE)) {
+      //todo 根据write.precombine进行去重
       records = FlinkWriteHelper.newInstance().deduplicateRecords(records, (HoodieIndex) null, -1);
     }
     bucket.preWrite(records);
+    //todo 写入数据
     final List<WriteStatus> writeStatus = new ArrayList<>(writeFunction.apply(records, instant));
     records.clear();
     final WriteMetadataEvent event = WriteMetadataEvent.builder()
@@ -432,7 +436,7 @@ public class StreamWriteFunction<I> extends AbstractStreamWriteFunction<I> {
         .lastBatch(false)
         .endInput(false)
         .build();
-
+    //todo 写完数据通知Coordinator，最终触发StreamWriteOperatorCoordinator.handleEventFromOperator
     this.eventGateway.sendEventToCoordinator(event);
     writeStatuses.addAll(writeStatus);
     return true;
