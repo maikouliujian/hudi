@@ -111,7 +111,7 @@ public class RowDataToHoodieFunction<I extends RowData, O extends HoodieRecord>
     GenericRecord gr = (GenericRecord) this.converter.convert(this.avroSchema, record);
     //todo 获取HoodieKey，它由record key字段值和partitionPath（分区路径）共同确定
     final HoodieKey hoodieKey = keyGenerator.getKey(gr);
-    //todo 创建数据载体，该对象包含RowData数据
+    //todo 创建数据载体，该对象包含RowData数据【payload】
     HoodieRecordPayload payload = payloadCreation.createPayload(gr);
     //todo 获取操作类型，增删改查
     HoodieOperation operation = HoodieOperation.fromValue(record.getRowKind().toByteValue());

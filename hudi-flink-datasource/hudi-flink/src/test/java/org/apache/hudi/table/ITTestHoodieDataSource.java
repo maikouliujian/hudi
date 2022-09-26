@@ -1093,6 +1093,7 @@ public class ITTestHoodieDataSource extends AbstractTestBase {
     assertRowsEquals(result1, "[+I[1.23, 12345678.12, 12345.12, 123456789.123450000000000000]]");
   }
 
+
   @ParameterizedTest
   @EnumSource(value = HoodieTableType.class)
   void testIncrementalRead(HoodieTableType tableType) throws Exception {

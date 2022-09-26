@@ -36,6 +36,7 @@ import java.util.List;
  * that doesn't equal defaultValue.
  * </ol>
  */
+
 public class OverwriteNonDefaultsWithLatestAvroPayload extends OverwriteWithLatestAvroPayload {
 
   public OverwriteNonDefaultsWithLatestAvroPayload(GenericRecord record, Comparable orderingVal) {
