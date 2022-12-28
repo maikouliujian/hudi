@@ -236,6 +236,7 @@ public class ParquetColumnarRowSplitReader implements Closeable {
     return vectors;
   }
 
+  //todo parquet read schema校验
   private void checkSchema() throws IOException, UnsupportedOperationException {
     /*
      * Check that the requested schema is supported.

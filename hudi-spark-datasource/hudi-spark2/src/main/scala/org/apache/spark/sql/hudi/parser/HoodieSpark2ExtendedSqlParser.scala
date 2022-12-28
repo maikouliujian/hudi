@@ -32,6 +32,7 @@ import org.apache.spark.sql.catalyst.{FunctionIdentifier, TableIdentifier}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{AnalysisException, SparkSession}
 
+
 class HoodieSpark2ExtendedSqlParser(session: SparkSession, delegate: ParserInterface)
   extends ParserInterface with Logging {
 
@@ -66,6 +67,7 @@ class HoodieSpark2ExtendedSqlParser(session: SparkSession, delegate: ParserInter
     lexer.legacy_setops_precedence_enbled = conf.setOpsPrecedenceEnforced
 
     val tokenStream = new CommonTokenStream(lexer)
+    //todo 对应HoodieSqlBase.g4
     val parser = new HoodieSqlBaseParser(tokenStream)
     parser.addParseListener(PostProcessor)
     parser.removeErrorListeners()

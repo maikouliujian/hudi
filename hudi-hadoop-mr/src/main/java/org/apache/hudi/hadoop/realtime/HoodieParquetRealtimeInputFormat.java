@@ -40,6 +40,7 @@ import java.io.IOException;
 /**
  * Input Format, that provides a real-time view of data in a Hoodie table.
  */
+
 //todo mor中 rt表 的inputformat
 @UseRecordReaderFromInputFormat
 @UseFileSplitsFromInputFormat

@@ -30,7 +30,8 @@ import org.apache.spark.sql.catalyst.parser.{ParseErrorListener, ParseException,
 import org.apache.spark.sql.catalyst.plans.logical.LogicalPlan
 import org.apache.spark.sql.catalyst.trees.Origin
 import org.apache.spark.sql.types.{DataType, StructType}
-
+//todo delegate为sparksql parser
+//todo 见spark源码中：SparkSessionExtensions 220行
 class HoodieCommonSqlParser(session: SparkSession, delegate: ParserInterface)
   extends ParserInterface with Logging with SparkAdapterSupport {
 
@@ -73,6 +74,7 @@ class HoodieCommonSqlParser(session: SparkSession, delegate: ParserInterface)
     lexer.addErrorListener(ParseErrorListener)
 
     val tokenStream = new CommonTokenStream(lexer)
+    //todo 这里的HoodieSqlCommonParser为HoodieSqlCommon.g4编译生成的
     val parser = new HoodieSqlCommonParser(tokenStream)
     parser.removeErrorListeners()
     parser.addErrorListener(ParseErrorListener)

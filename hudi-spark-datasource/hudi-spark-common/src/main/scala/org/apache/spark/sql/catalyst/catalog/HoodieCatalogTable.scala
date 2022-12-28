@@ -200,6 +200,7 @@ class HoodieCatalogTable(val spark: SparkSession, var table: CatalogTable) exten
     val globalTableConfigs = mappingSparkDatasourceConfigsToTableConfigs(globalProps)
     val globalSqlOptions = HoodieOptionConfig.mappingTableConfigToSqlOption(globalTableConfigs)
 
+
     val sqlOptions = HoodieOptionConfig.withDefaultSqlOptions(globalSqlOptions ++ catalogProperties)
 
     // get final schema and parameters

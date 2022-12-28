@@ -30,6 +30,7 @@ import org.apache.spark.sql.types.StructType
  * The HoodieOptionConfig defines some short name for the hoodie
  * option key and value.
  */
+
 object HoodieOptionConfig {
 
   /**

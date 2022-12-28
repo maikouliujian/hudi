@@ -35,6 +35,7 @@ import java.util.function.Function;
 /**
  * Configs needed to sync data into external meta stores, catalogs, etc.
  */
+
 public class HoodieSyncConfig extends HoodieConfig {
 
   @Parameter(names = {"--database"}, description = "name of the target database in meta store", required = true)

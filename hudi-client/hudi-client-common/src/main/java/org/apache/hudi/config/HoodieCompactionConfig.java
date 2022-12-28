@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
 /**
  * Compaction related config.
  */
+
 @Immutable
 @ConfigClassProperty(name = "Compaction Configs",
     groupName = ConfigGroups.Names.WRITE_CLIENT,

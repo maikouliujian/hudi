@@ -22,6 +22,7 @@ import org.apache.spark.sql.SparkSessionExtensions
 import org.apache.spark.sql.hudi.analysis.HoodieAnalysis
 import org.apache.spark.sql.parser.HoodieCommonSqlParser
 
+
 /**
  * The Hoodie SparkSessionExtension for extending the syntax and add the rules.
  */
@@ -29,10 +30,12 @@ class HoodieSparkSessionExtension extends (SparkSessionExtensions => Unit)
   with SparkAdapterSupport {
   override def apply(extensions: SparkSessionExtensions): Unit = {
 
+    //todo 扩展的sqlparser
     extensions.injectParser { (session, parser) =>
       new HoodieCommonSqlParser(session, parser)
     }
 
+    //todo 扩展的rule
     HoodieAnalysis.customResolutionRules().foreach { rule =>
       extensions.injectResolutionRule { session =>
         rule(session)
@@ -42,7 +45,7 @@ class HoodieSparkSessionExtension extends (SparkSessionExtensions => Unit)
     extensions.injectResolutionRule { session =>
       sparkAdapter.createResolveHudiAlterTableCommand(session)
     }
-
+    //todo 扩展的rule
     HoodieAnalysis.customPostHocResolutionRules().foreach { rule =>
       extensions.injectPostHocResolutionRule { session =>
         rule(session)

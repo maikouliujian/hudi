@@ -38,6 +38,7 @@ import scala.collection.JavaConverters._
 object HoodieDataSourceHelper extends PredicateHelper with SparkAdapterSupport {
 
 
+
   /**
    * Wrapper for `buildReaderWithPartitionValues` of [[ParquetFileFormat]] handling [[ColumnarBatch]],
    * when Parquet's Vectorized Reader is used

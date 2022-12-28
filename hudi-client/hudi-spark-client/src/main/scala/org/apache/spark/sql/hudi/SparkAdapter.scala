@@ -154,6 +154,7 @@ trait SparkAdapter extends Serializable {
   }
 
   def isHoodieTable(table: CatalogTable): Boolean = {
+    //todo 判断是否是Hudi表，通过比较provider是否等于"hudi"
     table.provider.map(_.toLowerCase(Locale.ROOT)).orNull == "hudi"
   }
 

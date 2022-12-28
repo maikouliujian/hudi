@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+
 package org.apache.hudi
 
 import org.apache.spark.sql.sources.DataSourceRegister

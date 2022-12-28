@@ -40,6 +40,7 @@ import org.apache.spark.sql.{AnalysisException, SparkSession}
 import java.util
 import scala.collection.JavaConverters._
 
+
 object HoodieAnalysis {
   def customResolutionRules(): Seq[SparkSession => Rule[LogicalPlan]] =
     Seq(
@@ -503,12 +504,14 @@ case class HoodieResolveReferences(sparkSession: SparkSession) extends Rule[Logi
  * Rule for rewrite some spark commands to hudi's implementation.
  * @param sparkSession
  */
+
 case class HoodiePostAnalysisRule(sparkSession: SparkSession) extends Rule[LogicalPlan] {
   override def apply(plan: LogicalPlan): LogicalPlan = {
     plan match {
       // Rewrite the CreateDataSourceTableCommand to CreateHoodieTableCommand
       case CreateDataSourceTableCommand(table, ignoreIfExists)
         if sparkAdapter.isHoodieTable(table) =>
+        //todo 创建hudi表最终走到这
         CreateHoodieTableCommand(table, ignoreIfExists)
       // Rewrite the DropTableCommand to DropHoodieTableCommand
       case DropTableCommand(tableName, ifExists, isView, purge)

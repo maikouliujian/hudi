@@ -40,7 +40,7 @@
     }
   }
 }
-
+//HoodieSqlCommon.g4文件中的statement没有对应create table相关的语法:
  singleStatement
     : statement EOF
     ;

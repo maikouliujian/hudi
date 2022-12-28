@@ -98,6 +98,7 @@ import java.util.concurrent.Future;
  *
  * NOTE : This class is implemented to work with Hive 2.x +
  */
+//todo hive表增量查询hudi表
 public class HoodieCombineHiveInputFormat<K extends WritableComparable, V extends Writable>
     extends HiveInputFormat<K, V> {
 

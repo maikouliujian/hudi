@@ -288,7 +288,7 @@ ctes
 namedQuery
     : name=identifier AS? '(' query ')'
     ;
-
+//todo 创建hudi表语法
 tableProvider
     : USING qualifiedName
     ;
