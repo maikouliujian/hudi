@@ -319,6 +319,7 @@ public class HoodieMergeHandle<T extends HoodieRecordPayload, I, K, O> extends H
 
   /**
    * Go through an old record. Here if we detect a newer version shows up, we write the new one to the file.
+   * todo 按照recordkey进行数据merge合并
    */
   public void write(GenericRecord oldRecord) {
     String key = KeyGenUtils.getRecordKeyFromGenericRecord(oldRecord, keyGeneratorOpt);

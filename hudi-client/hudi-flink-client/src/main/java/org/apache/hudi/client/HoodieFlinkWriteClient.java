@@ -176,6 +176,7 @@ public class HoodieFlinkWriteClient<T extends HoodieRecordPayload> extends
     // create the write handle if not exists
     final HoodieWriteHandle<?, ?, ?, ?> writeHandle = getOrCreateWriteHandle(records.get(0), getConfig(),
         instantTime, table, records.listIterator());
+    //todo 插入数据的逻辑
     HoodieWriteMetadata<List<WriteStatus>> result = ((HoodieFlinkTable<T>) table).insert(context, writeHandle, instantTime, records);
     if (result.getIndexLookupDuration().isPresent()) {
       metrics.updateIndexMetrics(LOOKUP_STR, result.getIndexLookupDuration().get().toMillis());
@@ -530,6 +531,8 @@ public class HoodieFlinkWriteClient<T extends HoodieRecordPayload> extends
     final HoodieRecordLocation loc = record.getCurrentLocation();
     final String fileID = loc.getFileId();
     final String partitionPath = record.getPartitionPath();
+    //todo insert模式下，在合并文件时，是否允许相同的recordkey存在，默认false，则同一个文件中会按照recordkey去重，可能会导致数据丢失
+    //todo 如果是true，则不会按照recordkey去重
     final boolean insertClustering = config.allowDuplicateInserts();
 
     if (bucketToHandles.containsKey(fileID)) {

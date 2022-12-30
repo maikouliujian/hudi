@@ -62,6 +62,7 @@ public class FlinkConcatAndReplaceHandle<T extends HoodieRecordPayload, I, K, O>
   public void write(GenericRecord oldRecord) {
     String key = KeyGenUtils.getRecordKeyFromGenericRecord(oldRecord, keyGeneratorOpt);
     try {
+      //todo 直接写入文件
       fileWriter.writeAvro(key, oldRecord);
     } catch (IOException | RuntimeException e) {
       String errMsg = String.format("Failed to write old record into new file for key %s from old file %s to new file %s with writerSchema %s",
