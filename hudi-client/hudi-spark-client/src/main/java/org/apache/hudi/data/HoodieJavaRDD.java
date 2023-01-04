@@ -35,6 +35,7 @@ import java.util.List;
 import scala.Tuple2;
 
 /**
+ *
  * Holds a {@link JavaRDD} of objects.
  *
  * @param <T> type of object.

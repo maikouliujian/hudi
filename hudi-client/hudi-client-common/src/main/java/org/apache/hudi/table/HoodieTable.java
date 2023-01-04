@@ -666,6 +666,7 @@ public abstract class HoodieTable<T extends HoodieRecordPayload, I, K, O> implem
   private void waitForAllFiles(HoodieEngineContext context, Map<String, List<Pair<String, String>>> groupByPartition, FileVisibility visibility) {
     // This will either ensure all files to be deleted are present.
     context.setJobStatus(this.getClass().getSimpleName(), "Wait for all files to appear/disappear: " + config.getTableName());
+
     boolean checkPassed =
         context.map(new ArrayList<>(groupByPartition.entrySet()), partitionWithFileList -> waitForCondition(partitionWithFileList.getKey(),
             partitionWithFileList.getValue().stream(), visibility), config.getFinalizeWriteParallelism())

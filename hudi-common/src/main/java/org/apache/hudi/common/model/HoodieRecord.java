@@ -157,6 +157,7 @@ public abstract class HoodieRecord<T> implements Serializable {
   }
 
   /**
+   *
    * Sets the new currentLocation of the record, after being written. This again should happen exactly-once.
    */
   public HoodieRecord setNewLocation(HoodieRecordLocation location) {

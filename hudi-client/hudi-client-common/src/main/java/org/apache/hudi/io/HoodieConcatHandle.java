@@ -91,6 +91,7 @@ public class HoodieConcatHandle<T extends HoodieRecordPayload, I, K, O> extends 
   }
 
   /**
+   *
    * Write old record as is w/o merging with incoming record.
    */
   @Override

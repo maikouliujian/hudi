@@ -44,6 +44,7 @@ public class EventTimeAvroPayload extends DefaultHoodieRecordPayload {
     this(record.isPresent() ? record.get() : null, 0); // natural order
   }
 
+
   @Override
   public Option<IndexedRecord> combineAndGetUpdateValue(IndexedRecord currentValue, Schema schema, Properties properties) throws IOException {
     if (recordBytes.length == 0) {

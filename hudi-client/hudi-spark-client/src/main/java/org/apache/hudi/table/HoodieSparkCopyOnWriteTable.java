@@ -87,6 +87,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * todo spark cow写入hudi
  * Implementation of a very heavily read-optimized Hoodie Table where, all data is stored in base files, with
  * zero read amplification.
  * <p>
