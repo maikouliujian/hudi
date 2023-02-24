@@ -166,6 +166,7 @@ public class HoodieLockConfig extends HoodieConfig {
           + "Final path on zk will look like base_path/lock_key. If this parameter is not set, we would "
           + "set it as the table name");
 
+
   // Pluggable type of lock provider
   public static final ConfigProperty<String> LOCK_PROVIDER_CLASS_NAME = ConfigProperty
       .key(LOCK_PREFIX + "provider")

@@ -72,7 +72,9 @@ public class JsonKafkaSource extends JsonSource {
       if (totalNewMsgs <= 0) {
         return new InputBatch<>(Option.empty(), CheckpointUtils.offsetsToStr(offsetRanges));
       }
+      //todo 真正读取数据的逻辑
       JavaRDD<String> newDataRDD = toRDD(offsetRanges);
+      //todo 返回数据 + current offset
       return new InputBatch<>(Option.of(newDataRDD), CheckpointUtils.offsetsToStr(offsetRanges));
     } catch (org.apache.kafka.common.errors.TimeoutException e) {
       throw new HoodieSourceTimeoutException("Kafka Source timed out " + e.getMessage());
@@ -80,7 +82,7 @@ public class JsonKafkaSource extends JsonSource {
   }
 
   private JavaRDD<String> toRDD(OffsetRange[] offsetRanges) {
-    //todo sparkstreaming
+    //todo 底层是sparkstreaming 读某一区间offset实现的
     JavaRDD<String> jsonStringRDD = KafkaUtils.createRDD(sparkContext,
             offsetGen.getKafkaParams(),
             offsetRanges,

@@ -96,6 +96,7 @@ public class ConcurrentOperation {
     return commitMetadataOption;
   }
 
+
   private void init(HoodieInstant instant) {
     if (this.metadataWrapper.isAvroMetadata()) {
       switch (getInstantActionType()) {

@@ -73,6 +73,7 @@ public abstract class HoodieIndex<I, O> implements Serializable {
   }
 
   /**
+   * todo 确定是upsert还是insert，如果是upsert则添加location
    * Looks up the index and tags each incoming record with a location of a file that contains
    * the row (if it is actually present).
    */

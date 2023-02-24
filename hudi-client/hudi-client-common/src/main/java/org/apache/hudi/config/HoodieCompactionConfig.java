@@ -41,6 +41,7 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 /**
+ * todo Compaction 相关的配置参数
  * Compaction related config.
  */
 
@@ -91,6 +92,7 @@ public class HoodieCompactionConfig extends HoodieConfig {
           + "compared to number of commits retained for cleaning service. Setting this property ensures all the files, but the latest in a file group,"
                   + " corresponding to commits with commit times older than the configured number of hours to be retained are cleaned.");
 
+
   public static final ConfigProperty<String> CLEANER_POLICY = ConfigProperty
       .key("hoodie.cleaner.policy")
       .defaultValue(HoodieCleaningPolicy.KEEP_LATEST_COMMITS.name())
@@ -98,6 +100,7 @@ public class HoodieCompactionConfig extends HoodieConfig {
           + " By default, cleaner spares the file slices written by the last N commits, determined by  " + CLEANER_COMMITS_RETAINED.key()
           + " Long running query plans may often refer to older file slices and will break if those are cleaned, before the query has had"
           + "   a chance to run. So, it is good to make sure that the data is retained for more than the maximum query execution time");
+
 
   public static final ConfigProperty<String> INLINE_COMPACT = ConfigProperty
       .key("hoodie.compact.inline")

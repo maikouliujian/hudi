@@ -264,6 +264,7 @@ public class UtilHelpers {
     return buildSparkConf(appName, defaultMaster, new HashMap<>());
   }
 
+
   private static SparkConf buildSparkConf(String appName, String defaultMaster, Map<String, String> additionalConfigs) {
     final SparkConf sparkConf = new SparkConf().setAppName(appName);
     String master = sparkConf.get("spark.master", defaultMaster);

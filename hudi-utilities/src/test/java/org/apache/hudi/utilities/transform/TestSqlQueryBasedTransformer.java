@@ -80,6 +80,7 @@ public class TestSqlQueryBasedTransformer {
     TypedProperties props = new TypedProperties();
     props.put("hoodie.deltastreamer.transformer.sql", transSql);
 
+
     // transform
     SqlQueryBasedTransformer transformer = new SqlQueryBasedTransformer();
     Dataset<Row> result = transformer.apply(jsc, spark, ds, props);

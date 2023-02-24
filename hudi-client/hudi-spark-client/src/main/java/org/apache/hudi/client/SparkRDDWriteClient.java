@@ -465,6 +465,7 @@ public class SparkRDDWriteClient<T extends HoodieRecordPayload> extends
     }
   }
 
+  //todo
   @Override
   protected void preCommit(HoodieInstant inflightInstant, HoodieCommitMetadata metadata) {
     // Create a Hoodie table after startTxn which encapsulated the commits and files visible.

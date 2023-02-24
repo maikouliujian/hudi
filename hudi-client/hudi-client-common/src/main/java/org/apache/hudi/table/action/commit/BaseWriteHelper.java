@@ -61,6 +61,7 @@ public abstract class BaseWriteHelper<T extends HoodieRecordPayload, I, K, O, R>
       if (e instanceof HoodieUpsertException) {
         throw (HoodieUpsertException) e;
       }
+
       throw new HoodieUpsertException("Failed to upsert for commit time " + instantTime, e);
     }
   }

@@ -21,6 +21,7 @@ package org.apache.hudi.common.table.view;
 /**
  * Storage Type used to store/retrieve File system view of a table.
  */
+
 public enum FileSystemViewStorageType {
   // In-memory storage of file-system view
   MEMORY,

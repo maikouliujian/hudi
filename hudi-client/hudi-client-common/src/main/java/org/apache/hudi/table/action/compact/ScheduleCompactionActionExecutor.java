@@ -66,6 +66,7 @@ public class ScheduleCompactionActionExecutor<T extends HoodieRecordPayload, I, 
     this.compactor = compactor;
   }
 
+
   @Override
   public Option<HoodieCompactionPlan> execute() {
     if (!config.getWriteConcurrencyMode().supportsOptimisticConcurrencyControl()

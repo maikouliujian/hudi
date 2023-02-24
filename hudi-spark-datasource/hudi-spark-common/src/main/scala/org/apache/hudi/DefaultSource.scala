@@ -160,6 +160,7 @@ class DefaultSource extends RelationProvider
     if (optParams.get(OPERATION.key).contains(BOOTSTRAP_OPERATION_OPT_VAL)) {
       HoodieSparkSqlWriter.bootstrap(sqlContext, mode, optParams, dfWithoutMetaCols)
     } else {
+      //todo spark hudi写入的入口
       HoodieSparkSqlWriter.write(sqlContext, mode, optParams, dfWithoutMetaCols)
     }
     new HoodieEmptyRelation(sqlContext, dfWithoutMetaCols.schema)

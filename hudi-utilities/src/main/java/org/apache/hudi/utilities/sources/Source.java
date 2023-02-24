@@ -78,7 +78,7 @@ public abstract class Source<T> implements SourceCommitCallback, Serializable {
     return overriddenSchemaProvider == null ? batch
         : new InputBatch<>(batch.getBatch(), batch.getCheckpointForNextBatch(), overriddenSchemaProvider);
   }
-
+  //todo 由--source-class决定，如 org.apache.hudi.utilities.sources.JsonKafkaSource 就是json
   public SourceType getSourceType() {
     return sourceType;
   }

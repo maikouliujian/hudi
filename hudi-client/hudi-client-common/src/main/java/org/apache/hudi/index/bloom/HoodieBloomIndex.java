@@ -111,6 +111,7 @@ public class HoodieBloomIndex extends HoodieIndex<Object, Object> {
   }
 
   /**
+   *
    * Lookup the location for each record key and return the pair<record_key,location> for all record keys already
    * present and drop the record keys if not present.
    */

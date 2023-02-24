@@ -373,7 +373,7 @@ object DataSourceWriteOptions {
     .defaultValue("_")
     .withDocumentation("Option keys beginning with this prefix, are automatically added to the commit/deltacommit metadata. " +
       "This is useful to store checkpointing information, in a consistent way with the hudi timeline")
-
+  //todo 设置为true，会修改upsert为insert
   val INSERT_DROP_DUPS: ConfigProperty[String] = ConfigProperty
     .key("hoodie.datasource.write.insert.drop.duplicates")
     .defaultValue("false")
@@ -393,6 +393,7 @@ object DataSourceWriteOptions {
     .key("hoodie.datasource.write.streaming.retry.interval.ms")
     .defaultValue("2000")
     .withDocumentation(" Config to indicate how long (by millisecond) before a retry should issued for failed microbatch")
+
 
   /**
    * By default true (in favor of streaming progressing over data integrity)

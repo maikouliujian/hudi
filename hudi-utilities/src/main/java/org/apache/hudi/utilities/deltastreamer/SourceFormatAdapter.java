@@ -60,6 +60,7 @@ public final class SourceFormatAdapter {
       case AVRO:
         return ((AvroSource) source).fetchNext(lastCkptStr, sourceLimit);
       case JSON: {
+        //todo 拿到了数据，通过r.getSchemaProvider()，将数据转为avro格式
         InputBatch<JavaRDD<String>> r = ((JsonSource) source).fetchNext(lastCkptStr, sourceLimit);
         AvroConvertor convertor = new AvroConvertor(r.getSchemaProvider().getSourceSchema());
         return new InputBatch<>(Option.ofNullable(r.getBatch().map(rdd -> rdd.map(convertor::fromJson)).orElse(null)),
@@ -89,6 +90,7 @@ public final class SourceFormatAdapter {
   /**
    * Fetch new data in row format. If the source provides data in different format, they are translated to Row format
    */
+
   public InputBatch<Dataset<Row>> fetchNewDataInRowFormat(Option<String> lastCkptStr, long sourceLimit) {
     switch (source.getSourceType()) {
       case ROW:

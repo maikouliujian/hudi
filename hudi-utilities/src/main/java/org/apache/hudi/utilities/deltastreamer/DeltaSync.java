@@ -298,7 +298,7 @@ public class DeltaSync implements Serializable {
 
     // Refresh Timeline
     refreshTimeline();
-
+    //todo 读数据
     Pair<SchemaProvider, Pair<String, JavaRDD<HoodieRecord>>> srcRecordsWithCkpt = readFromSource(commitTimelineOpt);
 
     if (null != srcRecordsWithCkpt) {
@@ -329,7 +329,7 @@ public class DeltaSync implements Serializable {
           writeClient.cluster(pendingClusteringInstant.get(), true);
         }
       }
-
+      //todo 写数据
       result = writeToSink(srcRecordsWithCkpt.getRight().getRight(),
           srcRecordsWithCkpt.getRight().getLeft(), metrics, overallTimerContext);
     }
@@ -356,10 +356,12 @@ public class DeltaSync implements Serializable {
    * @return Pair<SchemaProvider, Pair<String, JavaRDD<HoodieRecord>>> Input data read from upstream source, consists
    * of schemaProvider, checkpointStr and hoodieRecord
    * @throws Exception in case of any Exception
+   * //todo 读取数据的逻辑
    */
   public Pair<SchemaProvider, Pair<String, JavaRDD<HoodieRecord>>> readFromSource(Option<HoodieTimeline> commitTimelineOpt) throws IOException {
     // Retrieve the previous round checkpoints, if any
     Option<String> resumeCheckpointStr = Option.empty();
+    //todo 计算resumeCheckpointStr
     if (commitTimelineOpt.isPresent()) {
       resumeCheckpointStr = getCheckpointToResume(commitTimelineOpt);
     } else {
@@ -394,6 +396,7 @@ public class DeltaSync implements Serializable {
     Pair<SchemaProvider, Pair<String, JavaRDD<HoodieRecord>>> sourceDataToSync = null;
     while (curRetryCount++ < maxRetryCount && sourceDataToSync == null) {
       try {
+        //todo 读取数据！！！
         sourceDataToSync = fetchFromSource(resumeCheckpointStr);
       } catch (HoodieSourceTimeoutException e) {
         if (curRetryCount >= maxRetryCount) {
@@ -415,6 +418,7 @@ public class DeltaSync implements Serializable {
     final Option<JavaRDD<GenericRecord>> avroRDDOptional;
     final String checkpointStr;
     SchemaProvider schemaProvider;
+    //todo 是否设置了transformer
     if (transformer.isPresent()) {
       // Transformation is needed. Fetch New rows in Row Format, apply transformation and then convert them
       // to generic records for writing
@@ -463,6 +467,7 @@ public class DeltaSync implements Serializable {
       InputBatch<JavaRDD<GenericRecord>> dataAndCheckpoint =
           formatAdapter.fetchNewDataInAvroFormat(resumeCheckpointStr, cfg.sourceLimit);
       avroRDDOptional = dataAndCheckpoint.getBatch();
+      //todo 下次拉取的offset
       checkpointStr = dataAndCheckpoint.getCheckpointForNextBatch();
       schemaProvider = dataAndCheckpoint.getSchemaProvider();
     }
@@ -517,6 +522,7 @@ public class DeltaSync implements Serializable {
           resumeCheckpointStr = Option.of(cfg.checkpoint);
         } else if (!StringUtils.isNullOrEmpty(commitMetadata.getMetadata(CHECKPOINT_KEY))) {
           //if previous checkpoint is an empty string, skip resume use Option.empty()
+          //todo 获取上次读取结束的offset
           resumeCheckpointStr = Option.of(commitMetadata.getMetadata(CHECKPOINT_KEY));
         } else if (HoodieTimeline.compareTimestamps(HoodieTimeline.FULL_BOOTSTRAP_INSTANT_TS,
             HoodieTimeline.LESSER_THAN, lastCommit.get().getTimestamp())) {
@@ -608,6 +614,7 @@ public class DeltaSync implements Serializable {
     if (!hasErrors || cfg.commitOnErrors) {
       HashMap<String, String> checkpointCommitMetadata = new HashMap<>();
       if (checkpointStr != null) {
+        //todo 将下次拉取的数据的offset 记录下来！！！
         checkpointCommitMetadata.put(CHECKPOINT_KEY, checkpointStr);
       }
       if (cfg.checkpoint != null) {
@@ -624,11 +631,13 @@ public class DeltaSync implements Serializable {
         LOG.info("Commit " + instantTime + " successful!");
         this.formatAdapter.getSource().onCommit(checkpointStr);
         // Schedule compaction if needed
+        //todo compact
         if (cfg.isAsyncCompactionEnabled()) {
           scheduledCompactionInstant = writeClient.scheduleCompaction(Option.empty());
         }
 
         if (!isEmpty) {
+          //todo 同步元数据
           syncMeta(metrics);
         }
       } else {

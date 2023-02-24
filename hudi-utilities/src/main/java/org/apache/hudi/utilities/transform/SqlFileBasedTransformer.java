@@ -52,6 +52,7 @@ import java.util.UUID;
  * <p>
  * SELECT * FROM tmp_personal_trips;
  */
+
 public class SqlFileBasedTransformer implements Transformer {
 
   private static final Logger LOG = LogManager.getLogger(SqlFileBasedTransformer.class);

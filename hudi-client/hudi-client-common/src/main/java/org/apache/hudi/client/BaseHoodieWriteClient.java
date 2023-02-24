@@ -230,6 +230,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
     this.txnManager.beginTransaction(Option.of(inflightInstant),
         lastCompletedTxnAndMetadata.isPresent() ? Option.of(lastCompletedTxnAndMetadata.get().getLeft()) : Option.empty());
     try {
+      //todo 提交逻辑
       preCommit(inflightInstant, metadata);
       commit(table, commitActionType, instantTime, metadata, stats);
       // already within lock, and so no lock requried for archival

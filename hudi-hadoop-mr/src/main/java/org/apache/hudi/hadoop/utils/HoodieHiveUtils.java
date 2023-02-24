@@ -36,6 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+
 public class HoodieHiveUtils {
 
   public static final Logger LOG = LogManager.getLogger(HoodieHiveUtils.class);
@@ -98,7 +99,7 @@ public class HoodieHiveUtils {
     LOG.info("Read max commits - " + maxCommits);
     return maxCommits;
   }
-
+  //todo consume.start.timestamp
   public static String readStartCommitTime(JobContext job, String tableName) {
     String startCommitTimestampName = String.format(HOODIE_START_COMMIT_PATTERN, tableName);
     LOG.info("Read start commit time - " + job.getConfiguration().get(startCommitTimestampName));

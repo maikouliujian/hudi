@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 /**
+ *
  * A simple schema provider, that reads off files on DFS.
  */
 public class FilebasedSchemaProvider extends SchemaProvider {

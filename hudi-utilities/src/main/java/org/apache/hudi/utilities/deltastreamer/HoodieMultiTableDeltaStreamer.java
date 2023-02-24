@@ -59,6 +59,7 @@ import static org.apache.hudi.utilities.schema.SchemaRegistryProvider.Config.TAR
  * Wrapper over HoodieDeltaStreamer.java class.
  * Helps with ingesting incremental data into hoodie datasets for multiple tables.
  * Currently supports only COPY_ON_WRITE storage type.
+ *
  */
 public class HoodieMultiTableDeltaStreamer {
 

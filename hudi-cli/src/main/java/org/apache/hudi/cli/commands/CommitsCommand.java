@@ -56,6 +56,7 @@ import java.util.stream.Collectors;
 
 /**
  * CLI command to display commits options.
+ * todo 命令参数
  */
 @Component
 public class CommitsCommand implements CommandMarker {
@@ -178,7 +179,7 @@ public class CommitsCommand implements CommandMarker {
       @CliOption(key = {"headeronly"}, help = "Print Header Only",
           unspecifiedDefaultValue = "false") final boolean headerOnly)
       throws IOException {
-
+    //todo HoodieActiveTimeline
     HoodieActiveTimeline activeTimeline = HoodieCLI.getTableMetaClient().getActiveTimeline();
     if (includeExtraMetadata) {
       return printCommitsWithMetadata(activeTimeline, limit, sortByField, descending, headerOnly, exportTableName);

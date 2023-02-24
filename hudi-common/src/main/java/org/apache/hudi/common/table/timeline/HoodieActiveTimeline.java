@@ -52,6 +52,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
+ *
  * Represents the Active Timeline for the Hoodie table. Instants for the last 12 hours (configurable) is in the
  * ActiveTimeline and the rest are Archived. ActiveTimeline is a special timeline that allows for creation of instants
  * on the timeline.

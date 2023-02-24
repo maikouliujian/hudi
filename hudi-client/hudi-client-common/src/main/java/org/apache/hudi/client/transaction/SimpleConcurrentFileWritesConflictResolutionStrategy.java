@@ -84,6 +84,8 @@ public class SimpleConcurrentFileWritesConflictResolutionStrategy
     return false;
   }
 
+
+
   @Override
   public Option<HoodieCommitMetadata> resolveConflict(HoodieTable table,
       ConcurrentOperation thisOperation, ConcurrentOperation otherOperation) {

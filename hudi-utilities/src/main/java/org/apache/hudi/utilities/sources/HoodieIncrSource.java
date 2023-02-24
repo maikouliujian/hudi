@@ -133,6 +133,7 @@ public class HoodieIncrSource extends RowSource {
     Dataset<Row> source = null;
     // Do Incr pull. Set end instant if available
     if (queryTypeAndInstantEndpts.getKey().equals(DataSourceReadOptions.QUERY_TYPE_INCREMENTAL_OPT_VAL())) {
+
       source = sparkSession.read().format("org.apache.hudi")
           .option(DataSourceReadOptions.QUERY_TYPE().key(), DataSourceReadOptions.QUERY_TYPE_INCREMENTAL_OPT_VAL())
           .option(DataSourceReadOptions.BEGIN_INSTANTTIME().key(), queryTypeAndInstantEndpts.getValue().getLeft())

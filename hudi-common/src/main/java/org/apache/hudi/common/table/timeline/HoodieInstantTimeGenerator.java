@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ *
  * Utility class to generate and parse timestamps used in Instants.
  */
 public class HoodieInstantTimeGenerator {

@@ -89,6 +89,7 @@ public abstract class BaseRollbackActionExecutor<T extends HoodieRecordPayload, 
     this.deleteInstants = deleteInstants;
     this.skipTimelinePublish = skipTimelinePublish;
     this.useMarkerBasedStrategy = useMarkerBasedStrategy;
+
     if (useMarkerBasedStrategy) {
       ValidationUtils.checkArgument(!instantToRollback.isCompleted(),
           "Cannot use marker based rollback strategy on completed instant:" + instantToRollback);

@@ -104,6 +104,7 @@ public class HoodieWriteConfig extends HoodieConfig {
 
   // This is a constant as is should never be changed via config (will invalidate previous commits)
   // It is here so that both the client and deltastreamer use the same reference
+  //todo 记录下次读取数据offset的key
   public static final String DELTASTREAMER_CHECKPOINT_KEY = "deltastreamer.checkpoint.key";
 
   public static final ConfigProperty<String> TBL_NAME = ConfigProperty
@@ -134,6 +135,7 @@ public class HoodieWriteConfig extends HoodieConfig {
       .defaultValue(KeyGeneratorType.SIMPLE.name())
       .withDocumentation("Easily configure one the built-in key generators, instead of specifying the key generator class."
           + "Currently supports SIMPLE, COMPLEX, TIMESTAMP, CUSTOM, NON_PARTITION, GLOBAL_DELETE");
+
 
   public static final ConfigProperty<String> ROLLBACK_USING_MARKERS_ENABLE = ConfigProperty
       .key("hoodie.rollback.using.markers")
@@ -321,6 +323,8 @@ public class HoodieWriteConfig extends HoodieConfig {
           + "PARTITION_SORT: Strikes a balance by only sorting within a partition, still keeping the memory overhead of writing "
           + "lowest and best effort file sizing. "
           + "NONE: No sorting. Fastest and matches `spark.write.parquet()` in terms of number of files, overheads");
+
+
 
   public static final ConfigProperty<String> EMBEDDED_TIMELINE_SERVER_ENABLE = ConfigProperty
       .key("hoodie.embed.timeline.server")

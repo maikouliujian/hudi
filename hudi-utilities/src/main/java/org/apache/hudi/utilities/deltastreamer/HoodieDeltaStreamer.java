@@ -92,12 +92,14 @@ import java.util.concurrent.Executors;
  * continuous mode enabled, a separate compactor thread is allocated to execute compactions
  */
 
+
 public class HoodieDeltaStreamer implements Serializable {
 
   private static final long serialVersionUID = 1L;
   private static final Logger LOG = LogManager.getLogger(HoodieDeltaStreamer.class);
 
   public static final String CHECKPOINT_KEY = HoodieWriteConfig.DELTASTREAMER_CHECKPOINT_KEY;
+  //todo 初始化时设定的offset
   public static final String CHECKPOINT_RESET_KEY = "deltastreamer.checkpoint.reset_key";
 
   protected final transient Config cfg;
@@ -130,6 +132,7 @@ public class HoodieDeltaStreamer implements Serializable {
   public HoodieDeltaStreamer(Config cfg, JavaSparkContext jssc, FileSystem fs, Configuration conf,
                              Option<TypedProperties> propsOverride) throws IOException {
     this.properties = combineProperties(cfg, propsOverride, jssc.hadoopConfiguration());
+    //todo ckp初始化路径
     if (cfg.initialCheckpointProvider != null && cfg.checkpoint == null) {
       InitialCheckPointProvider checkPointProvider =
           UtilHelpers.createInitialCheckpointProvider(cfg.initialCheckpointProvider, this.properties);
@@ -184,6 +187,7 @@ public class HoodieDeltaStreamer implements Serializable {
       LOG.info("Performing bootstrap. Source=" + bootstrapExecutor.get().getBootstrapConfig().getBootstrapSourceBasePath());
       bootstrapExecutor.get().execute();
     } else {
+      //todo --continuous 模式
       if (cfg.continuousMode) {
         deltaSyncService.ifPresent(ds -> {
           ds.start(this::onDeltaSyncShutdown);
@@ -197,6 +201,7 @@ public class HoodieDeltaStreamer implements Serializable {
       } else {
         LOG.info("Delta Streamer running only single round");
         try {
+          //todo once模式
           deltaSyncService.ifPresent(ds -> {
             try {
               ds.getDeltaSync().syncOnce();
@@ -278,6 +283,7 @@ public class HoodieDeltaStreamer implements Serializable {
         + " For Sources that return Dataset<Row>, the schema is obtained implicitly. "
         + "However, this CLI option allows overriding the schemaprovider returned by Source.")
     public String schemaProviderClassName = null;
+
 
     @Parameter(names = {"--transformer-class"},
         description = "A subclass or a list of subclasses of org.apache.hudi.utilities.transform.Transformer"
@@ -555,11 +561,13 @@ public class HoodieDeltaStreamer implements Serializable {
     }
 
     try {
+      //todo HoodieDeltaStreamer 数据同步的入口！！！
       new HoodieDeltaStreamer(cfg, jssc).sync();
     } finally {
       jssc.stop();
     }
   }
+
 
   /**
    * Syncs data either in single-run or in continuous mode.
@@ -686,6 +694,7 @@ public class HoodieDeltaStreamer implements Serializable {
           while (!isShutdownRequested()) {
             try {
               long start = System.currentTimeMillis();
+              //todo 循环读取数据入口！！！
               Option<Pair<Option<String>, JavaRDD<WriteStatus>>> scheduledCompactionInstantAndRDD = Option.ofNullable(deltaSync.syncOnce());
               if (scheduledCompactionInstantAndRDD.isPresent() && scheduledCompactionInstantAndRDD.get().getLeft().isPresent()) {
                 LOG.info("Enqueuing new pending compaction instant (" + scheduledCompactionInstantAndRDD.get().getLeft() + ")");

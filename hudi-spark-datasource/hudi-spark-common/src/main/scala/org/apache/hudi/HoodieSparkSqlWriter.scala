@@ -309,10 +309,12 @@ object HoodieSparkSqlWriter {
         }
 
       // Check for errors and commit the write.
-      val (writeSuccessful, compactionInstant, clusteringInstant) =
+      val (writeSuccessful, compactionInstant, clusteringInstant) = {
+        //todo
         commitAndPerformPostOperations(sqlContext.sparkSession, df.schema,
           writeResult, parameters, writeClient, tableConfig, jsc,
           TableInstantInfo(basePath, instantTime, commitActionType, operation))
+      }
 
       (writeSuccessful, common.util.Option.ofNullable(instantTime), compactionInstant, clusteringInstant, writeClient, tableConfig)
     }
@@ -645,11 +647,13 @@ object HoodieSparkSqlWriter {
       log.info("Proceeding to commit the write.")
       val metaMap = parameters.filter(kv =>
         kv._1.startsWith(parameters(COMMIT_METADATA_KEYPREFIX.key)))
-      val commitSuccess =
+      val commitSuccess = {
+        //todo
         client.commit(tableInstantInfo.instantTime, writeResult.getWriteStatuses,
           common.util.Option.of(new java.util.HashMap[String, String](mapAsJavaMap(metaMap))),
           tableInstantInfo.commitActionType,
           writeResult.getPartitionToReplaceFileIds)
+      }
 
       if (commitSuccess) {
         log.info("Commit " + tableInstantInfo.instantTime + " successful!")

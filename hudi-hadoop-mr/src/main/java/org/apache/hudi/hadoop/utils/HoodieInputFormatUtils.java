@@ -288,6 +288,7 @@ public class HoodieInputFormatUtils {
         .getInstants().collect(Collectors.toList()));
   }
 
+
   /**
    * Get HoodieTimeline for incremental query from Hive map reduce configuration.
    *

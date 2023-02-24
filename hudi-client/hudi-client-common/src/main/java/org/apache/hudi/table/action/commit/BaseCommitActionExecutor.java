@@ -178,6 +178,7 @@ public abstract class BaseCommitActionExecutor<T extends HoodieRecordPayload, I,
     }
   }
 
+
   protected void autoCommit(Option<Map<String, String>> extraMetadata, HoodieWriteMetadata<O> result) {
     final Option<HoodieInstant> inflightInstant = Option.of(new HoodieInstant(State.INFLIGHT,
         getCommitActionType(), instantTime));

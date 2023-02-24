@@ -85,6 +85,7 @@ import static org.apache.hudi.common.table.timeline.HoodieTimeline.LESSER_THAN_O
 
 /**
  * Archiver to bound the growth of files under .hoodie meta path.
+ * todo 对active timeline上的commits进行archived
  */
 public class HoodieTimelineArchiver<T extends HoodieAvroPayload, I, K, O> {
 

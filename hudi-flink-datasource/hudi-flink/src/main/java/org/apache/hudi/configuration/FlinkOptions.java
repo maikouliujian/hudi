@@ -746,7 +746,7 @@ public class FlinkOptions extends HoodieConfig {
       .booleanType()
       .defaultValue(false)
       .withDescription("Ignore exceptions during hive synchronization, default false");
-
+  //todo 是否跳过ro后缀
   public static final ConfigOption<Boolean> HIVE_SYNC_SKIP_RO_SUFFIX = ConfigOptions
       .key("hive_sync.skip_ro_suffix")
       .booleanType()

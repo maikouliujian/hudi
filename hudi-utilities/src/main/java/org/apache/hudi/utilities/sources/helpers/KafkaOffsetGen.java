@@ -178,7 +178,7 @@ public class KafkaOffsetGen {
         .key("hoodie.deltastreamer.source.kafka.fetch_partition.time.out")
         .defaultValue(300 * 1000L)
         .withDocumentation("Time out for fetching partitions. 5min by default");
-
+    //todo 是否提交offset
     public static final ConfigProperty<Boolean> ENABLE_KAFKA_COMMIT_OFFSET = ConfigProperty
             .key("hoodie.deltastreamer.source.kafka.enable.commit.offset")
             .defaultValue(false)
@@ -214,6 +214,7 @@ public class KafkaOffsetGen {
     this.props = props;
     kafkaParams = excludeHoodieConfigs(props);
     DataSourceUtils.checkRequiredProperties(props, Collections.singletonList(Config.KAFKA_TOPIC_NAME.key()));
+    //todo 获取配置中topic name
     topicName = props.getString(Config.KAFKA_TOPIC_NAME.key());
     kafkaCheckpointType = props.getString(Config.KAFKA_CHECKPOINT_TYPE.key(), Config.KAFKA_CHECKPOINT_TYPE.defaultValue());
     String kafkaAutoResetOffsetsStr = props.getString(Config.KAFKA_AUTO_OFFSET_RESET.key(), Config.KAFKA_AUTO_OFFSET_RESET.defaultValue().name().toLowerCase());
@@ -233,6 +234,12 @@ public class KafkaOffsetGen {
     }
   }
 
+  /***
+   * @param lastCheckpointStr
+   * @param sourceLimit
+   * @param metrics
+   * @return todo OffsetRange[] 为上次ckp结束的offset到当前最新的offset之间的范围！！！
+   */
   public OffsetRange[] getNextOffsetRanges(Option<String> lastCheckpointStr, long sourceLimit, HoodieDeltaStreamerMetrics metrics) {
 
     // Obtain current metadata for the topic
@@ -251,6 +258,7 @@ public class KafkaOffsetGen {
       }
       // Determine the offset ranges to read from
       if (lastCheckpointStr.isPresent() && !lastCheckpointStr.get().isEmpty() && checkTopicCheckpoint(lastCheckpointStr)) {
+        //todo 从ckp拉取offset
         fromOffsets = fetchValidOffsets(consumer, lastCheckpointStr, topicPartitions);
         metrics.updateDeltaStreamerKafkaDelayCountMetrics(delayOffsetCalculation(lastCheckpointStr, topicPartitions, consumer));
       } else {
@@ -270,6 +278,7 @@ public class KafkaOffsetGen {
       }
 
       // Obtain the latest offsets.
+      //todo toOffset为当前最新的offset
       toOffsets = consumer.endOffsets(topicPartitions);
     }
 
