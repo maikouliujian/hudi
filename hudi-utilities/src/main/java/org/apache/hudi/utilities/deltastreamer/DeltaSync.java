@@ -230,6 +230,7 @@ public class DeltaSync implements Serializable {
     this.userProvidedSchemaProvider = schemaProvider;
     this.processedSchema = new SchemaSet();
     this.keyGenerator = HoodieSparkKeyGeneratorFactory.createKeyGenerator(props);
+    //todo
     refreshTimeline();
     // Register User Provided schema first
     registerAvroSchemas(schemaProvider);
@@ -265,6 +266,7 @@ public class DeltaSync implements Serializable {
           throw new HoodieException("Unsupported table type :" + meta.getTableType());
       }
     } else {
+      //todo 第一次启动创建.hoodie目录
       this.commitTimelineOpt = Option.empty();
       this.allCommitsTimelineOpt = Option.empty();
       String partitionColumns = HoodieSparkUtils.getPartitionColumns(keyGenerator, props);

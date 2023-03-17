@@ -632,7 +632,7 @@ public class HoodieDeltaStreamer implements Serializable {
       this.asyncClusteringService = Option.empty();
       this.postWriteTerminationStrategy = StringUtils.isNullOrEmpty(cfg.postWriteTerminationStrategyClass) ? Option.empty() :
           TerminationStrategyUtils.createPostWriteTerminationStrategy(properties.get(), cfg.postWriteTerminationStrategyClass);
-
+      //todo 如果hudi表对应的目录是存在的，会做相关目录的校验
       if (fs.exists(new Path(cfg.targetBasePath))) {
         HoodieTableMetaClient meta =
             HoodieTableMetaClient.builder().setConf(new Configuration(fs.getConf())).setBasePath(cfg.targetBasePath).setLoadActiveTimelineOnLoad(false).build();
@@ -779,6 +779,7 @@ public class HoodieDeltaStreamer implements Serializable {
     }
 
     /**
+     * todo 回调函数
      * Callback to initialize write client and start compaction service if required.
      *
      * @param writeClient HoodieWriteClient
