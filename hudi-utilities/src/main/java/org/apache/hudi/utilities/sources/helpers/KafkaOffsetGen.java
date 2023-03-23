@@ -283,6 +283,7 @@ public class KafkaOffsetGen {
     }
 
     // Come up with final set of OffsetRanges to read (account for new partitions, limit number of events)
+    //todo 每一次读取数据量的默认限制！！！【500w】
     long maxEventsToReadFromKafka = props.getLong(Config.MAX_EVENTS_FROM_KAFKA_SOURCE_PROP.key(),
             Config.MAX_EVENTS_FROM_KAFKA_SOURCE_PROP.defaultValue());
 

@@ -49,6 +49,7 @@ public class HoodieDefaultTimeline implements HoodieTimeline {
   private static final String HASHING_ALGORITHM = "SHA-256";
 
   protected transient Function<HoodieInstant, Option<byte[]>> details;
+  //todo 所有的instants
   private List<HoodieInstant> instants;
   private String timelineHash;
 

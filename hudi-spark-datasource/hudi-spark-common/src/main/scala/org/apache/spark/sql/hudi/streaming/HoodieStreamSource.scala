@@ -162,6 +162,7 @@ class HoodieStreamSource(
       val rdd = tableType match {
         case HoodieTableType.COPY_ON_WRITE =>
           val serDe = sparkAdapter.createSparkRowSerDe(RowEncoder(schema))
+          //todo
           new IncrementalRelation(sqlContext, incParams, Some(schema), metaClient)
             .buildScan()
             .map(serDe.serializeRow)

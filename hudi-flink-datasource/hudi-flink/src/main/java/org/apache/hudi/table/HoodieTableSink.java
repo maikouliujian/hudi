@@ -82,6 +82,7 @@ public class HoodieTableSink implements DynamicTableSink, SupportsPartitioning, 
       }
 
       // Append mode
+      //todo append模式【只有cow才支持append模式？？？】
       if (OptionsResolver.isAppendMode(conf)) {
         return Pipelines.append(conf, rowType, dataStream, context.isBounded());
       }

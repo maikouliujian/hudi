@@ -255,7 +255,7 @@ abstract class HoodieBaseRelation(val sqlContext: SQLContext,
 
     val filterExpressions = convertToExpressions(filters)
     val (partitionFilters, dataFilters) = filterExpressions.partition(isPartitionPredicate)
-
+    //todo
     val fileSplits = collectFileSplits(partitionFilters, dataFilters)
 
     val tableAvroSchemaStr =

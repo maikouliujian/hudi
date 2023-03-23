@@ -43,6 +43,7 @@ import scala.collection.mutable
  * meta of Hudi table can be from Spark catalog or meta directory on filesystem.
  * [[HoodieCatalogTable]] takes both meta sources into consideration when handling
  * EXTERNAL and MANAGED tables.
+ * todo
  */
 class HoodieCatalogTable(val spark: SparkSession, var table: CatalogTable) extends Logging {
 
@@ -72,7 +73,7 @@ class HoodieCatalogTable(val spark: SparkSession, var table: CatalogTable) exten
   val hoodieTableExists: Boolean = tableExistsInPath(tableLocation, hadoopConf)
 
   /**
-   * Meta Client.
+   * Meta Client.【todo 本质上就是可以读取./hoodie下面各个目录的客户端】
    */
   lazy val metaClient: HoodieTableMetaClient = HoodieTableMetaClient.builder()
     .setBasePath(tableLocation)

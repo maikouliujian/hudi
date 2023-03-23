@@ -107,6 +107,7 @@ import static org.apache.hudi.metadata.HoodieTableMetadataUtil.tryUpcastDecimal;
  * -- This is an index for base file bloom filters. This is a map of FileID to its BloomFilter byte[].
  * <p>
  * During compaction on the table, the deletions are merged with additions and hence records are pruned.
+ *
  */
 public class HoodieMetadataPayload implements HoodieRecordPayload<HoodieMetadataPayload> {
 

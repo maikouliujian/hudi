@@ -112,6 +112,7 @@ object HoodieHadoopFSUtils extends Logging {
 
     val previousJobDescription = sc.getLocalProperty(SparkContext.SPARK_JOB_DESCRIPTION)
     val statusMap = try {
+      //todo
       val description = paths.size match {
         case 0 =>
           "Listing leaf files and directories 0 paths"

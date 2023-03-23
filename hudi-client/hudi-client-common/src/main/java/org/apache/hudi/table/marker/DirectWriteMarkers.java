@@ -154,7 +154,7 @@ public class DirectWriteMarkers extends WriteMarkers {
   protected Option<Path> create(String partitionPath, String dataFileName, IOType type, boolean checkIfExists) {
     return create(getMarkerPath(partitionPath, dataFileName, type), checkIfExists);
   }
-
+  //todo
   private Option<Path> create(Path markerPath, boolean checkIfExists) {
     HoodieTimer timer = new HoodieTimer().startTimer();
     Path dirPath = markerPath.getParent();

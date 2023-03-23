@@ -57,7 +57,9 @@ import java.util.concurrent.LinkedBlockingDeque;
  * the {@code MailboxExecutor} read the actual data of the split.
  * This architecture allows the separation of split reading from processing the checkpoint barriers,
  * thus removing any potential back-pressure.
+ * todo 流读算子
  */
+
 public class StreamReadOperator extends AbstractStreamOperatorAdapter<RowData>
     implements OneInputStreamOperator<MergeOnReadInputSplit, RowData> {
 
@@ -75,7 +77,7 @@ public class StreamReadOperator extends AbstractStreamOperatorAdapter<RowData>
   private transient SourceFunction.SourceContext<RowData> sourceContext;
 
   private transient ListState<MergeOnReadInputSplit> inputSplitsState;
-
+  //todo MergeOnReadInputSplit 的队列
   private transient Queue<MergeOnReadInputSplit> splits;
 
   // Splits are read by the same thread that calls #processElement. Each read task is submitted to that thread by adding
@@ -163,6 +165,7 @@ public class StreamReadOperator extends AbstractStreamOperatorAdapter<RowData>
       format.open(split);
     }
     try {
+      //todo 处理当前split
       consumeAsMiniBatch(split);
     } finally {
       currentSplitState = SplitState.IDLE;
@@ -184,7 +187,9 @@ public class StreamReadOperator extends AbstractStreamOperatorAdapter<RowData>
   private void consumeAsMiniBatch(MergeOnReadInputSplit split) throws IOException {
     for (int i = 0; i < MINI_BATCH_SIZE; i++) {
       if (!format.reachedEnd()) {
+        //todo 发送数据
         sourceContext.collect(format.nextRecord(null));
+        //todo 记数
         split.consume();
       } else {
         // close the input format
@@ -245,6 +250,7 @@ public class StreamReadOperator extends AbstractStreamOperatorAdapter<RowData>
     @SuppressWarnings("unchecked")
     @Override
     public <O extends StreamOperator<RowData>> O createStreamOperator(StreamOperatorParameters<RowData> parameters) {
+      //todo 流读的算子StreamReadOperator
       StreamReadOperator operator = new StreamReadOperator(format, processingTimeService, getMailboxExecutorAdapter());
       operator.setup(parameters.getContainingTask(), parameters.getStreamConfig(), parameters.getOutput());
       return (O) operator;

@@ -66,7 +66,7 @@ public class HoodieTableFactory implements DynamicTableSourceFactory, DynamicTab
   private static final Logger LOG = LoggerFactory.getLogger(HoodieTableFactory.class);
 
   public static final String FACTORY_ID = "hudi";
-
+  //todo 读取
   @Override
   public DynamicTableSource createDynamicTableSource(Context context) {
     Configuration conf = FlinkOptions.fromMap(context.getCatalogTable().getOptions());

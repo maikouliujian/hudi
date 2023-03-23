@@ -43,13 +43,13 @@ public class HoodieWriteHelper<T extends HoodieRecordPayload, R> extends BaseWri
   public static HoodieWriteHelper newInstance() {
     return WriteHelperHolder.HOODIE_WRITE_HELPER;
   }
-
+  //todo tagging，用来区分insert/update数据
   @Override
   protected HoodieData<HoodieRecord<T>> tag(HoodieData<HoodieRecord<T>> dedupedRecords, HoodieEngineContext context,
                                             HoodieTable<T, HoodieData<HoodieRecord<T>>, HoodieData<HoodieKey>, HoodieData<WriteStatus>> table) {
     return table.getIndex().tagLocation(dedupedRecords, context, table);
   }
-
+  //todo
   @Override
   public HoodieData<HoodieRecord<T>> deduplicateRecords(
       HoodieData<HoodieRecord<T>> records, HoodieIndex<?, ?> index, int parallelism) {
@@ -61,6 +61,7 @@ public class HoodieWriteHelper<T extends HoodieRecordPayload, R> extends BaseWri
       return Pair.of(key, record);
     }).reduceByKey((rec1, rec2) -> {
       @SuppressWarnings("unchecked")
+              //todo 对数据做去重！！！
       T reducedData = (T) rec2.getData().preCombine(rec1.getData());
       HoodieKey reducedKey = rec1.getData().equals(reducedData) ? rec1.getKey() : rec2.getKey();
 

@@ -95,7 +95,7 @@ public class FlinkOptions extends HoodieConfig {
   // ------------------------------------------------------------------------
   //  Metadata table Options
   // ------------------------------------------------------------------------
-
+  //todo 是否开启metatable
   public static final ConfigOption<Boolean> METADATA_ENABLED = ConfigOptions
       .key("metadata.enabled")
       .booleanType()
@@ -282,6 +282,7 @@ public class FlinkOptions extends HoodieConfig {
   /**
    * Flag to indicate whether to drop duplicates before insert/upsert.
    * By default false to gain extra performance.
+   * //todo
    */
   public static final ConfigOption<Boolean> PRE_COMBINE = ConfigOptions
       .key("write.precombine")
@@ -396,7 +397,7 @@ public class FlinkOptions extends HoodieConfig {
       .intType()
       .defaultValue(4)
       .withDescription("Parallelism of tasks that do actual write, default is 4");
-
+  //todo
   public static final ConfigOption<Double> WRITE_TASK_MAX_SIZE = ConfigOptions
       .key("write.task.max.size")
       .doubleType()
@@ -448,7 +449,7 @@ public class FlinkOptions extends HoodieConfig {
       .defaultValue(1)
       .withDescription("Parquet page size. Page is the unit of read within a parquet file. "
           + "Within a block, pages are compressed separately.");
-
+  //todo
   public static final ConfigOption<Integer> WRITE_MERGE_MAX_MEMORY = ConfigOptions
       .key("write.merge.max_memory")
       .intType()

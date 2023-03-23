@@ -64,6 +64,8 @@ import scala.util.{Failure, Success, Try}
  * , we read it as a Non-Partitioned table because we cannot know how to mapping the partition
  * path with the partition columns in this case.
  *
+ * todo 对应的目录是meta表
+ * todo【如：s3://clotho-emr-data-prod/bondee_dw.db/dwd_event_user_general_hudi_delta/.hoodie/metadata/】
  * TODO rename to HoodieSparkSqlFileIndex
  */
 case class HoodieFileIndex(spark: SparkSession,
@@ -106,6 +108,7 @@ case class HoodieFileIndex(spark: SparkSession,
    * @param partitionFilters partition column filters
    * @param dataFilters      data columns filters
    * @return list of PartitionDirectory containing partition to base files mapping
+   *         //todo
    */
   override def listFiles(partitionFilters: Seq[Expression], dataFilters: Seq[Expression]): Seq[PartitionDirectory] = {
     // Look up candidate files names in the col-stats index, if all of the following conditions are true
@@ -242,7 +245,7 @@ case class HoodieFileIndex(spark: SparkSession,
       }
     }
   }
-
+  //todo
   override def refresh(): Unit = super.refresh()
 
   override def inputFiles: Array[String] =

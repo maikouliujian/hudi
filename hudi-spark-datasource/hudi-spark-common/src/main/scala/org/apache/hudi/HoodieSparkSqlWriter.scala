@@ -612,7 +612,7 @@ object HoodieSparkSqlWriter {
       metaSyncEnabled = true
       syncClientToolClassSet += classOf[HiveSyncTool].getName
     }
-
+    //todo 是否开启metasync
     if (metaSyncEnabled) {
       val fs = basePath.getFileSystem(spark.sessionState.newHadoopConf())
       val baseFileFormat = hoodieConfig.getStringOrDefault(HoodieSyncConfig.META_SYNC_BASE_FILE_FORMAT);
@@ -648,7 +648,7 @@ object HoodieSparkSqlWriter {
       val metaMap = parameters.filter(kv =>
         kv._1.startsWith(parameters(COMMIT_METADATA_KEYPREFIX.key)))
       val commitSuccess = {
-        //todo
+        //todo 进行数据提交
         client.commit(tableInstantInfo.instantTime, writeResult.getWriteStatuses,
           common.util.Option.of(new java.util.HashMap[String, String](mapAsJavaMap(metaMap))),
           tableInstantInfo.commitActionType,

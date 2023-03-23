@@ -223,6 +223,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
     LOG.info("Committing " + instantTime + " action " + commitActionType);
     // Create a Hoodie table which encapsulated the commits and files visible
     HoodieTable table = createTable(config, hadoopConf);
+    //todo 提交meta表信息
     HoodieCommitMetadata metadata = CommitUtils.buildMetadata(stats, partitionToReplaceFileIds,
         extraMetadata, operationType, config.getWriteSchema(), commitActionType);
     HoodieInstant inflightInstant = new HoodieInstant(State.INFLIGHT, table.getMetaClient().getCommitActionType(), instantTime);
@@ -267,6 +268,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
       saveInternalSchema(table, instantTime, metadata);
     }
     // update Metadata table
+    //todo 更新meta表信息
     writeTableMetadata(table, instantTime, commitActionType, metadata);
     activeTimeline.saveAsComplete(new HoodieInstant(true, commitActionType, instantTime),
         Option.of(metadata.toJsonString().getBytes(StandardCharsets.UTF_8)));

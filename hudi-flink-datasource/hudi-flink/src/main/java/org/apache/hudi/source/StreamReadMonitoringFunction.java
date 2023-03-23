@@ -103,6 +103,7 @@ public class StreamReadMonitoringFunction
       @Nullable Set<String> requiredPartitionPaths) {
     this.conf = conf;
     this.path = path;
+    //todo check commit time文件的间隔时间
     this.interval = conf.getInteger(FlinkOptions.READ_STREAMING_CHECK_INTERVAL);
     this.incrementalInputSplits = IncrementalInputSplits.builder()
         .conf(conf)
@@ -164,6 +165,7 @@ public class StreamReadMonitoringFunction
   @Override
   public void run(SourceFunction.SourceContext<MergeOnReadInputSplit> context) throws Exception {
     checkpointLock = context.getCheckpointLock();
+    //todo 轮训的检测是否有新的commit time生成
     while (isRunning) {
       synchronized (checkpointLock) {
         monitorDirAndForwardSplits(context);
@@ -192,6 +194,7 @@ public class StreamReadMonitoringFunction
       // table does not exist
       return;
     }
+    //todo 获取增量IncrementalInputSplits
     IncrementalInputSplits.Result result =
         incrementalInputSplits.inputSplits(metaClient, this.hadoopConf, this.issuedInstant);
     if (result.isEmpty()) {
@@ -203,6 +206,7 @@ public class StreamReadMonitoringFunction
       context.collect(split);
     }
     // update the issues instant time
+    //todo 将每次轮训读取的endInstant记录到ckp中，方便下次轮训使用
     this.issuedInstant = result.getEndInstant();
     LOG.info("\n"
             + "------------------------------------------------------------\n"

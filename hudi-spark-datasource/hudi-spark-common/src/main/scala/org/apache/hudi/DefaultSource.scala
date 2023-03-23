@@ -61,6 +61,7 @@ class DefaultSource extends RelationProvider
 
   private val log = LogManager.getLogger(classOf[DefaultSource])
 
+  //todo spark read入口【来自于spark DataSource.resolveRelation 344行】
   override def createRelation(sqlContext: SQLContext,
                               parameters: Map[String, String]): BaseRelation = {
     createRelation(sqlContext, parameters, null)
@@ -71,7 +72,6 @@ class DefaultSource extends RelationProvider
                               schema: StructType): BaseRelation = {
     // Add default options for unspecified read options keys.
     val parameters = DataSourceOptionsHelper.parametersWithReadDefaults(optParams)
-
     val path = parameters.get("path")
     val readPathsStr = parameters.get(DataSourceReadOptions.READ_PATHS.key)
     if (path.isEmpty && readPathsStr.isEmpty) {
@@ -89,6 +89,7 @@ class DefaultSource extends RelationProvider
       Seq.empty
     }
     // Get the table base path
+    // todo 获取表路径
     val tablePath = if (globPaths.nonEmpty) {
       DataSourceUtils.getTablePath(fs, globPaths.toArray)
     } else {
@@ -103,6 +104,7 @@ class DefaultSource extends RelationProvider
     val userSchema = if (schema == null) Option.empty[StructType] else Some(schema)
 
     log.info(s"Is bootstrapped table => $isBootstrappedTable, tableType is: $tableType, queryType is: $queryType")
+    //todo // 判断有没有完成的commit,即判断是不是空表
     if (metaClient.getCommitsTimeline.filterCompletedInstants.countInstants() == 0) {
       new EmptyRelation(sqlContext, metaClient)
     } else {
@@ -110,8 +112,10 @@ class DefaultSource extends RelationProvider
         case (COPY_ON_WRITE, QUERY_TYPE_SNAPSHOT_OPT_VAL, false) |
              (COPY_ON_WRITE, QUERY_TYPE_READ_OPTIMIZED_OPT_VAL, false) |
              (MERGE_ON_READ, QUERY_TYPE_READ_OPTIMIZED_OPT_VAL, false) =>
+          //todo
           resolveBaseFileOnlyRelation(sqlContext, globPaths, userSchema, metaClient, parameters)
         case (COPY_ON_WRITE, QUERY_TYPE_INCREMENTAL_OPT_VAL, _) =>
+          //todo incremental read
           new IncrementalRelation(sqlContext, parameters, userSchema, metaClient)
 
         case (MERGE_ON_READ, QUERY_TYPE_SNAPSHOT_OPT_VAL, false) =>
@@ -226,6 +230,7 @@ class DefaultSource extends RelationProvider
     if (enableSchemaOnRead) {
       baseRelation
     } else {
+      //todo
       baseRelation.toHadoopFsRelation
     }
   }

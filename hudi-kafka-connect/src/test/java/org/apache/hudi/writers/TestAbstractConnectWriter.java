@@ -71,6 +71,7 @@ public class TestAbstractConnectWriter {
     schemaProvider = new TestSchemaProvider();
   }
 
+
   @ParameterizedTest
   @EnumSource(value = TestInputFormats.class)
   public void testAbstractWriterForAllFormats(TestInputFormats inputFormats) throws Exception {

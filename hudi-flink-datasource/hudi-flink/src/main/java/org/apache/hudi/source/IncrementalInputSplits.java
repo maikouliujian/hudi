@@ -81,6 +81,7 @@ public class IncrementalInputSplits implements Serializable {
   // for partition pruning
   private final Set<String> requiredPartitions;
   // skip compaction
+  //todo 是否跳过Compaction
   private final boolean skipCompaction;
 
   private IncrementalInputSplits(
@@ -134,8 +135,10 @@ public class IncrementalInputSplits implements Serializable {
       LOG.warn("No splits found for the table under path " + path);
       return Result.EMPTY;
     }
+    //todo 过滤出本次计算的HoodieInstant，【issuedInstant为本次读取的起点，第一次启动issuedInstant为null】
     List<HoodieInstant> instants = filterInstantsWithRange(commitTimeline, issuedInstant);
     // get the latest instant that satisfies condition
+    //todo 【instantToIssue 本次读取的终点】
     final HoodieInstant instantToIssue = instants.size() == 0 ? null : instants.get(instants.size() - 1);
     final InstantRange instantRange;
     if (instantToIssue != null) {
@@ -145,6 +148,7 @@ public class IncrementalInputSplits implements Serializable {
         instantRange = InstantRange.getInstance(issuedInstant, instantToIssue.getTimestamp(),
             InstantRange.RangeType.OPEN_CLOSE);
       } else if (this.conf.getOptional(FlinkOptions.READ_START_COMMIT).isPresent()) {
+        //todo 第一次启动
         // first time consume and has a start commit
         final String startCommit = this.conf.getString(FlinkOptions.READ_START_COMMIT);
         instantRange = startCommit.equalsIgnoreCase(FlinkOptions.START_COMMIT_EARLIEST)
@@ -219,6 +223,7 @@ public class IncrementalInputSplits implements Serializable {
     List<MergeOnReadInputSplit> inputSplits = writePartitions.stream()
         .map(relPartitionPath -> fsView.getLatestMergedFileSlicesBeforeOrOn(relPartitionPath, endInstant)
             .map(fileSlice -> {
+              //todo 获取fileSlice下的logfile
               Option<List<String>> logPaths = Option.ofNullable(fileSlice.getLogFiles()
                   .sorted(HoodieLogFile.getLogFileComparator())
                   .map(logFile -> logFile.getPath().toString())
@@ -250,6 +255,7 @@ public class IncrementalInputSplits implements Serializable {
       InstantRange instantRange,
       HoodieTimeline commitTimeline,
       String tableName) {
+    //todo start instant 是否已经archived
     if (commitTimeline.isBeforeTimelineStarts(instantRange.getStartInstant())) {
       // read the archived metadata if the start instant is archived.
       HoodieArchivedTimeline archivedTimeline = metaClient.getArchivedTimeline(instantRange.getStartInstant());
@@ -274,13 +280,15 @@ public class IncrementalInputSplits implements Serializable {
       HoodieTimeline commitTimeline,
       final String issuedInstant) {
     HoodieTimeline completedTimeline = commitTimeline.filterCompletedInstants();
+    //todo 非第一次进来，从ckp恢复
     if (issuedInstant != null) {
       // returns early for streaming mode
+      //todo 过滤出比issuedInstant大的HoodieInstant（】
       return maySkipCompaction(completedTimeline.getInstants())
           .filter(s -> HoodieTimeline.compareTimestamps(s.getTimestamp(), GREATER_THAN, issuedInstant))
           .collect(Collectors.toList());
     }
-
+    //todo 区间读取
     Stream<HoodieInstant> instantStream = completedTimeline.getInstants();
 
     if (this.conf.getOptional(FlinkOptions.READ_START_COMMIT).isPresent()

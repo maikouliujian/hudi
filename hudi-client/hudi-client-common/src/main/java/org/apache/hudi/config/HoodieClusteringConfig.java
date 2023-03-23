@@ -118,7 +118,7 @@ public class HoodieClusteringConfig extends HoodieConfig {
       .withDocumentation("Config to provide a strategy class (subclass of RunClusteringStrategy) to define how the "
           + " clustering plan is executed. By default, we sort the file groups in th plan by the specified columns, while "
           + " meeting the configured target file sizes.");
-
+  //todo
   public static final ConfigProperty<String> INLINE_CLUSTERING = ConfigProperty
       .key("hoodie.clustering.inline")
       .defaultValue("false")

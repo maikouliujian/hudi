@@ -67,7 +67,7 @@ public class HoodieRowDataCreateHandle implements Serializable {
   private final FileSystem fs;
   protected final HoodieInternalWriteStatus writeStatus;
   private final HoodieTimer currTimer;
-
+  //todo
   public HoodieRowDataCreateHandle(HoodieTable table, HoodieWriteConfig writeConfig, String partitionPath, String fileId,
                                    String instantTime, int taskPartitionId, long taskId, long taskEpochId,
                                    RowType rowType) {
@@ -121,6 +121,7 @@ public class HoodieRowDataCreateHandle implements Serializable {
       HoodieRowData rowData = new HoodieRowData(instantTime, seqId, recordKey, partitionPath, path.getName(),
           record, writeConfig.allowOperationMetadataField());
       try {
+        //todo parquet writer写数据
         fileWriter.writeRow(recordKey, rowData);
         writeStatus.markSuccess(recordKey);
       } catch (Throwable t) {

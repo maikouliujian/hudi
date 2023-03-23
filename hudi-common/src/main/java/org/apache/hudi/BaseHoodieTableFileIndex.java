@@ -135,7 +135,7 @@ public abstract class BaseHoodieTableFileIndex {
     this.metaClient = metaClient;
     this.engineContext = engineContext;
     this.fileStatusCache = fileStatusCache;
-
+     //todo
     doRefresh();
   }
 
@@ -257,10 +257,10 @@ public abstract class BaseHoodieTableFileIndex {
 
     return CollectionUtils.combine(cachedPartitionToFiles, fetchedPartitionToFiles);
   }
-
+  //todo
   private void doRefresh() {
     long startTime = System.currentTimeMillis();
-
+    //todo
     Map<PartitionPath, FileStatus[]> partitionFiles = loadPartitionPathFiles();
     FileStatus[] allFiles = partitionFiles.values().stream().flatMap(Arrays::stream).toArray(FileStatus[]::new);
 
@@ -272,6 +272,7 @@ public abstract class BaseHoodieTableFileIndex {
     // TODO we can optimize the flow by:
     //  - First fetch list of files from instants of interest
     //  - Load FileStatus's
+    //todo
     fileSystemView = new HoodieTableFileSystemView(metaClient, activeTimeline, allFiles);
 
     Option<String> queryInstant =

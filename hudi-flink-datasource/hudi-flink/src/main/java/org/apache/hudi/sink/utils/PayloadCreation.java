@@ -63,6 +63,7 @@ public class PayloadCreation implements Serializable {
 
     final Class<?>[] argTypes;
     final Constructor<?> constructor;
+    //todo 是否combine
     if (shouldCombine) {
       argTypes = new Class<?>[] {GenericRecord.class, Comparable.class};
     } else {

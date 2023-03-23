@@ -42,6 +42,7 @@ public class FilebasedSchemaProvider extends SchemaProvider {
    * Configs supported.
    */
   public static class Config {
+    //todo read avsc
     private static final String SOURCE_SCHEMA_FILE_PROP = "hoodie.deltastreamer.schemaprovider.source.schema.file";
     private static final String TARGET_SCHEMA_FILE_PROP = "hoodie.deltastreamer.schemaprovider.target.schema.file";
   }
@@ -55,6 +56,7 @@ public class FilebasedSchemaProvider extends SchemaProvider {
     StreamerUtil.checkRequiredProperties(props, Collections.singletonList(Config.SOURCE_SCHEMA_FILE_PROP));
     FileSystem fs = FSUtils.getFs(props.getString(Config.SOURCE_SCHEMA_FILE_PROP), HadoopConfigurations.getHadoopConf(new Configuration()));
     try {
+      //todo 获取通过avsc定义的schema
       this.sourceSchema = new Schema.Parser().parse(fs.open(new Path(props.getString(Config.SOURCE_SCHEMA_FILE_PROP))));
       if (props.containsKey(Config.TARGET_SCHEMA_FILE_PROP)) {
         this.targetSchema =

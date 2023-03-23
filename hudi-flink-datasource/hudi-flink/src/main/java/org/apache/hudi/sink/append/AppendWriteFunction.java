@@ -83,6 +83,7 @@ public class AppendWriteFunction<I> extends AbstractStreamWriteFunction<I> {
     if (this.writerHelper == null) {
       initWriterHelper();
     }
+    //todo 写数据逻辑
     this.writerHelper.write((RowData) value);
   }
 
@@ -134,6 +135,7 @@ public class AppendWriteFunction<I> extends AbstractStreamWriteFunction<I> {
         .lastBatch(true)
         .endInput(endInput)
         .build();
+    //todo 最终会调用StreamWriteOperatorCoordinator::handleEventFromOperator
     this.eventGateway.sendEventToCoordinator(event);
     // nullify the write helper for next ckp
     this.writerHelper = null;

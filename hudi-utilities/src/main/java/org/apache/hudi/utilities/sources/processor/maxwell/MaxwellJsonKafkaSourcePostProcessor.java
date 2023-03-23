@@ -104,6 +104,7 @@ public class MaxwellJsonKafkaSourcePostProcessor extends JsonKafkaSourcePostProc
             + "what format it is. 'yyyy-MM-dd HH:mm:ss' by default");
   }
 
+
   @Override
   public JavaRDD<String> process(JavaRDD<String> maxwellJsonRecords) {
     return maxwellJsonRecords.map(record -> {

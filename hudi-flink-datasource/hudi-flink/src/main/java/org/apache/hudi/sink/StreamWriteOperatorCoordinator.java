@@ -171,6 +171,7 @@ public class StreamWriteOperatorCoordinator
     this.hiveConf = new SerializableConfiguration(HadoopConfigurations.getHiveConf(conf));
   }
 
+
   @Override
   public void start() throws Exception {
     // setup classloader for APIs that use reflection without taking ClassLoader param
@@ -288,6 +289,7 @@ public class StreamWriteOperatorCoordinator
 
     if (event.isEndInput()) {
       // handle end input event synchronously
+      //todo
       handleEndInputEvent(event);
     } else {
       executor.execute(
@@ -295,6 +297,7 @@ public class StreamWriteOperatorCoordinator
             if (event.isBootstrap()) {
               handleBootstrapEvent(event);
             } else {
+              //todo
               handleWriteMetaEvent(event);
             }
           }, "handle write metadata event for instant %s", this.instant
@@ -421,11 +424,13 @@ public class StreamWriteOperatorCoordinator
     addEventToBuffer(event);
     if (allEventsReceived()) {
       // start to commit the instant.
+      //todo 提交instant
       commitInstant(this.instant);
       // The executor thread inherits the classloader of the #handleEventFromOperator
       // caller, which is a AppClassLoader.
       Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
       // sync Hive synchronously if it is enabled in batch mode.
+      //todo 同步hive meta
       syncHive();
     }
   }

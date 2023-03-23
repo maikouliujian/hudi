@@ -151,7 +151,7 @@ class BaseFileOnlyRelation(sqlContext: SQLContext,
       } else {
         (StructType(Nil), tableStructSchema)
       }
-
+      //todo 返回
       HadoopFsRelation(
         location = fileIndex,
         partitionSchema = partitionSchema,

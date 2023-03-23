@@ -38,6 +38,7 @@ import java.util.Map;
 
 /**
  * Converts Json record to Avro Generic Record.
+ *
  */
 public class MercifulJsonConverter {
 

@@ -42,6 +42,7 @@ public abstract class BaseWriteHelper<T extends HoodieRecordPayload, I, K, O, R>
                                       WriteOperationType operationType) {
     try {
       // De-dupe/merge if needed
+      //todo 对数据进行预合并
       I dedupedRecords =
           combineOnCondition(shouldCombine, inputRecords, shuffleParallelism, table);
 
@@ -50,6 +51,7 @@ public abstract class BaseWriteHelper<T extends HoodieRecordPayload, I, K, O, R>
       if (table.getIndex().requiresTagging(operationType)) {
         // perform index loop up to get existing location of records
         context.setJobStatus(this.getClass().getSimpleName(), "Tagging: " + table.getConfig().getTableName());
+        //todo 打tag
         taggedRecords = tag(dedupedRecords, context, table);
       }
       Duration indexLookupDuration = Duration.between(lookupBegin, Instant.now());

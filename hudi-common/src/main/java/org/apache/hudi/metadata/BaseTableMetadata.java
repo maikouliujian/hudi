@@ -145,6 +145,7 @@ public abstract class BaseTableMetadata implements HoodieTableMetadata {
   @Override
   public Map<String, FileStatus[]> getAllFilesInPartitions(List<String> partitions)
       throws IOException {
+    //todo 是否开启meta table
     if (isMetadataTableEnabled) {
       try {
         List<Path> partitionPaths = partitions.stream().map(Path::new).collect(Collectors.toList());
@@ -278,6 +279,7 @@ public abstract class BaseTableMetadata implements HoodieTableMetadata {
    */
   protected List<String> fetchAllPartitionPaths() {
     HoodieTimer timer = new HoodieTimer().startTimer();
+    //todo
     Option<HoodieRecord<HoodieMetadataPayload>> hoodieRecord = getRecordByKey(RECORDKEY_PARTITION_LIST,
         MetadataPartitionType.FILES.getPartitionPath());
     metrics.ifPresent(m -> m.updateMetrics(HoodieMetadataMetrics.LOOKUP_PARTITIONS_STR, timer.endTimer()));

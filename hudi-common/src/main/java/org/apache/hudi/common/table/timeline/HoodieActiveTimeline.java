@@ -261,6 +261,7 @@ public class HoodieActiveTimeline extends HoodieDefaultTimeline {
     }
   }
 
+  //todo getInstantDetails
   @Override
   public Option<byte[]> getInstantDetails(HoodieInstant instant) {
     Path detailPath = getInstantFileNamePath(instant.getFileName());

@@ -221,6 +221,7 @@ public class HiveSyncTool extends AbstractSyncTool implements AutoCloseable {
       lastCommitTimeSynced = hoodieHiveClient.getLastCommitTimeSynced(tableName);
     }
     LOG.info("Last commit time synced was found to be " + lastCommitTimeSynced.orElse("null"));
+    //todo 获取lastCommitTimeSynced以后提交的分区
     List<String> writtenPartitionsSince = hoodieHiveClient.getPartitionsWrittenToSince(lastCommitTimeSynced);
     LOG.info("Storage partitions scan complete. Found " + writtenPartitionsSince.size());
 
@@ -316,6 +317,7 @@ public class HiveSyncTool extends AbstractSyncTool implements AutoCloseable {
   private boolean syncPartitions(String tableName, List<String> writtenPartitionsSince, boolean isDropPartition) {
     boolean partitionsChanged;
     try {
+      //todo 获取tableName所有分区
       List<Partition> hivePartitions = hoodieHiveClient.getAllPartitions(tableName);
       List<PartitionEvent> partitionEvents =
           hoodieHiveClient.getPartitionEvents(hivePartitions, writtenPartitionsSince, isDropPartition);

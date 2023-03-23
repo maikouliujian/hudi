@@ -515,6 +515,7 @@ public class DeltaSync implements Serializable {
     Option<HoodieInstant> lastCommit = commitTimelineOpt.get().lastInstant();
     if (lastCommit.isPresent()) {
       // if previous commit metadata did not have the checkpoint key, try traversing previous commits until we find one.
+      //todo 从meta表找ckp的offset
       Option<HoodieCommitMetadata> commitMetadataOption = getLatestCommitMetadataWithValidCheckpointInfo(commitTimelineOpt.get());
       if (commitMetadataOption.isPresent()) {
         HoodieCommitMetadata commitMetadata = commitMetadataOption.get();
@@ -616,7 +617,7 @@ public class DeltaSync implements Serializable {
     if (!hasErrors || cfg.commitOnErrors) {
       HashMap<String, String> checkpointCommitMetadata = new HashMap<>();
       if (checkpointStr != null) {
-        //todo 将下次拉取的数据的offset 记录下来！！！
+        //todo 将下次拉取的数据的offset 记录下来存在meta表中！！！
         checkpointCommitMetadata.put(CHECKPOINT_KEY, checkpointStr);
       }
       if (cfg.checkpoint != null) {

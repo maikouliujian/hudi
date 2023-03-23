@@ -97,7 +97,7 @@ public class FlinkWriteHelper<T extends HoodieRecordPayload, R> extends BaseWrit
     return keyedRecords.values().stream().map(x -> x.stream().reduce((rec1, rec2) -> {
       final T data1 = rec1.getData();
       final T data2 = rec2.getData();
-
+      //todo 数据去重！！！
       @SuppressWarnings("unchecked") final T reducedData = (T) data2.preCombine(data1);
       // we cannot allow the user to change the key or partitionPath, since that will affect
       // everything

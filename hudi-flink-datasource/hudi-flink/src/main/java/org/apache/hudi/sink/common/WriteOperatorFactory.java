@@ -33,6 +33,7 @@ import org.apache.flink.streaming.api.operators.StreamOperatorParameters;
 
 /**
  * Factory class for {@link StreamWriteOperator}.
+ * //todo 算子工厂和coordinate工厂绑定！！！
  */
 public class WriteOperatorFactory<I>
     extends SimpleUdfStreamOperatorFactory<Object>

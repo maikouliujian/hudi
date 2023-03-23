@@ -50,7 +50,7 @@ case class HoodieInternalV2Table(spark: SparkSession,
 
     val tableConfig: HoodieTableConfig = metaClient.getTableConfig
     val tableName: String = tableConfig.getTableName
-
+    //todo
     HoodieCatalogTable(spark, TableIdentifier(tableName))
   }
 

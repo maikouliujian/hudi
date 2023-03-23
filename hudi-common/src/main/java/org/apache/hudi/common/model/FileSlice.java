@@ -43,6 +43,7 @@ public class FileSlice implements Serializable {
 
   /**
    * data file, with the compacted data, for this slice.
+   * //todo 一个fileslice中含有一个basefile
    */
   private HoodieBaseFile baseFile;
 
@@ -50,7 +51,7 @@ public class FileSlice implements Serializable {
    * List of appendable log files with real time data - Sorted with greater log version first - Always empty for
    * copy_on_write storage.
    */
-  //todo 按照commit instant倒序排列
+  //todo mor表中一个fileslice中含有多个logfile，按照commit instant倒序排列
   private final TreeSet<HoodieLogFile> logFiles;
 
   public FileSlice(FileSlice fileSlice) {

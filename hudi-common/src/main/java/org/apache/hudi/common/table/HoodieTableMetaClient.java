@@ -76,17 +76,20 @@ import java.util.stream.Stream;
  *
  * @see HoodieTimeline
  * @since 0.3.0
+ * todo 本质就是对可以访问hudi表元数据的封装，通过fs去对hudi表的元数据目录进行访问！！！
  */
 
 public class HoodieTableMetaClient implements Serializable {
 
   private static final long serialVersionUID = 1L;
   private static final Logger LOG = LogManager.getLogger(HoodieTableMetaClient.class);
+  //todo METAFOLDER_NAME
   public static final String METAFOLDER_NAME = ".hoodie";
   public static final String TEMPFOLDER_NAME = METAFOLDER_NAME + Path.SEPARATOR + ".temp";
   public static final String AUXILIARYFOLDER_NAME = METAFOLDER_NAME + Path.SEPARATOR + ".aux";
   public static final String BOOTSTRAP_INDEX_ROOT_FOLDER_PATH = AUXILIARYFOLDER_NAME + Path.SEPARATOR + ".bootstrap";
   public static final String HEARTBEAT_FOLDER_NAME = METAFOLDER_NAME + Path.SEPARATOR + ".heartbeat";
+  //todo 存储元数据的目录
   public static final String METADATA_TABLE_FOLDER_PATH = METAFOLDER_NAME + Path.SEPARATOR + "metadata";
   public static final String HASHING_METADATA_FOLDER_NAME = ".bucket_index" + Path.SEPARATOR + "consistent_hashing_metadata";
   public static final String BOOTSTRAP_INDEX_BY_PARTITION_FOLDER_PATH = BOOTSTRAP_INDEX_ROOT_FOLDER_PATH
@@ -126,6 +129,7 @@ public class HoodieTableMetaClient implements Serializable {
     this.basePath = new SerializablePath(new CachingPath(basePath));
     this.metaPath = new SerializablePath(new CachingPath(basePath, METAFOLDER_NAME));
     this.fs = getFs();
+    //todo 做.hoodie目录的校验
     TableNotFoundException.checkTableValidity(fs, this.basePath.get(), metaPath.get());
     this.tableConfig = new HoodieTableConfig(fs, metaPath.toString(), payloadClassName);
     this.tableType = tableConfig.getTableType();

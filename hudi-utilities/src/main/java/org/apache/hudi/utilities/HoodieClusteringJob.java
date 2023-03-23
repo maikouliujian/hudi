@@ -48,6 +48,7 @@ import static org.apache.hudi.utilities.UtilHelpers.EXECUTE;
 import static org.apache.hudi.utilities.UtilHelpers.SCHEDULE;
 import static org.apache.hudi.utilities.UtilHelpers.SCHEDULE_AND_EXECUTE;
 
+
 public class HoodieClusteringJob {
 
   private static final Logger LOG = LogManager.getLogger(HoodieClusteringJob.class);

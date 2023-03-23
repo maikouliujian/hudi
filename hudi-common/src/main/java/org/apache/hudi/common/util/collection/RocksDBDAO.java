@@ -55,6 +55,7 @@ import java.util.stream.Stream;
 
 /**
  * Data access objects for storing and retrieving objects in Rocks DB.
+ *
  */
 public class RocksDBDAO {
 

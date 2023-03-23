@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
 
 /**
  * All the metadata that gets stored along with a commit.
+ *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HoodieCommitMetadata implements Serializable {

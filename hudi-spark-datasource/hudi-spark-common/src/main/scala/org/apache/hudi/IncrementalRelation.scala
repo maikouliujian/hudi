@@ -60,6 +60,7 @@ class IncrementalRelation(val sqlContext: SQLContext,
   val skeletonSchema: StructType = HoodieSparkUtils.getMetaSchema
   private val basePath = metaClient.getBasePath
   // TODO : Figure out a valid HoodieWriteConfig
+  //todo 创建hudi表
   private val hoodieTable = HoodieSparkTable.create(HoodieWriteConfig.newBuilder().withPath(basePath).build(),
     new HoodieSparkEngineContext(new JavaSparkContext(sqlContext.sparkContext)),
     metaClient)
@@ -79,10 +80,11 @@ class IncrementalRelation(val sqlContext: SQLContext,
     DataSourceReadOptions.INCREMENTAL_READ_SCHEMA_USE_END_INSTANTTIME.defaultValue).toBoolean
 
   private val lastInstant = commitTimeline.lastInstant().get()
-
+  //todo 获取【begintime，endtime】之间内的committimeline
   private val commitsTimelineToReturn = commitTimeline.findInstantsInRange(
     optParams(DataSourceReadOptions.BEGIN_INSTANTTIME.key),
     optParams.getOrElse(DataSourceReadOptions.END_INSTANTTIME.key(), lastInstant.getTimestamp))
+  //todo 获取【begintime，endtime】之间内的committimeline的instants
   private val commitsToReturn = commitsTimelineToReturn.getInstants.iterator().toList
 
   // use schema from a file produced in the end/latest instant
@@ -90,6 +92,7 @@ class IncrementalRelation(val sqlContext: SQLContext,
   val (usedSchema, internalSchema) = {
     log.info("Inferring schema..")
     val schemaResolver = new TableSchemaResolver(metaClient)
+    //todo 获取iSchema
     val iSchema = if (useEndInstantSchema && !commitsToReturn.isEmpty) {
       InternalSchemaCache.searchSchemaAndCache(commitsToReturn.last.getTimestamp.toLong, metaClient, hoodieTable.getConfig.getInternalSchemaCacheEnable)
     } else {
@@ -121,6 +124,7 @@ class IncrementalRelation(val sqlContext: SQLContext,
 
   override def schema: StructType = usedSchema
 
+  //todo 读取数据
   override def buildScan(): RDD[Row] = {
     if (usedSchema == StructType(Nil)) {
       // if first commit in a table is an empty commit without schema, return empty RDD here

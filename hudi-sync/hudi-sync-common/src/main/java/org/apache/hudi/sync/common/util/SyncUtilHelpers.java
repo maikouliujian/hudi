@@ -48,6 +48,7 @@ public class SyncUtilHelpers {
    * @param fs             Filesystem used.
    * @param targetBasePath The target base path that contains the hoodie table.
    * @param baseFileFormat The file format used by the hoodie table (defaults to PARQUET).
+   *
    */
   public static void runHoodieMetaSync(String metaSyncFQCN,
                                        TypedProperties props,

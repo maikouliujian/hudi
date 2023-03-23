@@ -28,6 +28,7 @@ import org.apache.hudi.config.HoodieWriteConfig;
 import org.apache.hudi.table.HoodieTable;
 import org.apache.hudi.table.action.HoodieWriteMetadata;
 
+
 public class SparkUpsertCommitActionExecutor<T extends HoodieRecordPayload<T>>
     extends BaseSparkCommitActionExecutor<T> {
 
@@ -42,6 +43,7 @@ public class SparkUpsertCommitActionExecutor<T extends HoodieRecordPayload<T>>
 
   @Override
   public HoodieWriteMetadata<HoodieData<WriteStatus>> execute() {
+    //todo 写数据
     return HoodieWriteHelper.newInstance().write(instantTime, inputRecordsRDD, context, table,
         config.shouldCombineBeforeUpsert(), config.getUpsertShuffleParallelism(), this, operationType);
   }

@@ -246,6 +246,7 @@ public class FileSystemViewManager {
     LOG.info("Creating View Manager with storage type :" + config.getStorageType());
     final SerializableConfiguration conf = context.getHadoopConf();
     switch (config.getStorageType()) {
+      //todo EMBEDDED_KV_STORE
       case EMBEDDED_KV_STORE:
         LOG.info("Creating embedded rocks-db based Table View");
         return new FileSystemViewManager(context, config,
@@ -264,6 +265,7 @@ public class FileSystemViewManager {
             viewConfig, metaClient));
       case REMOTE_FIRST:
         LOG.info("Creating remote first table view");
+        //todo
         return new FileSystemViewManager(context, config, (metaClient, viewConfig) -> {
           RemoteHoodieTableFileSystemView remoteFileSystemView =
               createRemoteFileSystemView(conf, viewConfig, metaClient);

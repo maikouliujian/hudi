@@ -26,6 +26,7 @@ import org.apache.spark.sql.sources.DataSourceRegister
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.util.CaseInsensitiveStringMap
 
+//todo hudi source provider
 class Spark3DefaultSource extends DefaultSource with DataSourceRegister with TableProvider {
 
   override def shortName(): String = "hudi"
@@ -38,9 +39,10 @@ class Spark3DefaultSource extends DefaultSource with DataSourceRegister with Tab
                         partitioning: Array[Transform],
                         properties: java.util.Map[String, String]): Table = {
     val options = new CaseInsensitiveStringMap(properties)
+    //todo hudi只能读取单个目录，如果是多个目录，则会转为paths，就会抛出异常！！！
     val path = options.get("path")
     if (path == null) throw new HoodieException("'path' cannot be null, missing 'path' from table properties")
-
+    //todo hudi table
     HoodieInternalV2Table(SparkSession.active, path)
   }
 }

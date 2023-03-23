@@ -77,6 +77,7 @@ import static org.apache.hudi.table.format.FormatUtils.buildAvroRecordBySchema;
  * <P>Use {@link org.apache.flink.formats.parquet.utils.ParquetRecordReader}
  * to read files instead of {@link org.apache.flink.core.fs.FSDataInputStream},
  * overrides {@link #createInputSplits(int)} and {@link #close()} to change the behaviors.
+ *
  */
 public class MergeOnReadInputFormat
     extends RichInputFormat<RowData, MergeOnReadInputSplit> {
@@ -91,6 +92,7 @@ public class MergeOnReadInputFormat
 
   /**
    * Uniform iterator view for the underneath records.
+   * //todo 迭代器模式
    */
   private transient RecordIterator iterator;
 
@@ -168,6 +170,7 @@ public class MergeOnReadInputFormat
     this.currentReadCount = 0L;
     this.closed = false;
     this.hadoopConf = HadoopConfigurations.getHadoopConf(this.conf);
+    //todo 如果logpath不存在
     if (!(split.getLogPaths().isPresent() && split.getLogPaths().get().size() > 0)) {
       if (split.getInstantRange() != null) {
         // base file only with commit time filtering

@@ -179,9 +179,12 @@ public class HoodieTableSource implements
         @SuppressWarnings("unchecked")
         TypeInformation<RowData> typeInfo =
             (TypeInformation<RowData>) TypeInfoDataTypeConverter.fromDataTypeToTypeInfo(getProducedDataType());
+        //todo 流读
         if (conf.getBoolean(FlinkOptions.READ_AS_STREAMING)) {
+          //todo split_monitor Function
           StreamReadMonitoringFunction monitoringFunction = new StreamReadMonitoringFunction(
               conf, FilePathUtils.toFlinkPath(path), maxCompactionMemoryInBytes, getRequiredPartitionPaths());
+          //todo 核心类
           InputFormat<RowData, ?> inputFormat = getInputFormat(true);
           OneInputStreamOperatorFactory<MergeOnReadInputSplit, RowData> factory = StreamReadOperator.factory((MergeOnReadInputFormat) inputFormat);
           SingleOutputStreamOperator<RowData> source = execEnv.addSource(monitoringFunction, getSourceOperatorName("split_monitor"))
@@ -384,6 +387,7 @@ public class HoodieTableSource implements
     }
   }
 
+  //todo 流模式增量读只支持【snapshot】
   private InputFormat<RowData, ?> getStreamInputFormat() {
     // if table does not exist or table data does not exist, use schema from the DDL
     Schema tableAvroSchema = (this.metaClient == null || !tableDataExists()) ? inferSchemaFromDdl() : getTableAvroSchema();
