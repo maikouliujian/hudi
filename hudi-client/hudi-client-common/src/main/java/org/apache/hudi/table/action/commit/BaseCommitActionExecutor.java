@@ -113,6 +113,7 @@ public abstract class BaseCommitActionExecutor<T extends HoodieRecordPayload, I,
     try {
       HoodieCommitMetadata metadata = new HoodieCommitMetadata();
       profile.getOutputPartitionPaths().forEach(path -> {
+        //todo path为partition path
         WorkloadStat partitionStat = profile.getOutputWorkloadStat(path);
         HoodieWriteStat insertStat = new HoodieWriteStat();
         insertStat.setNumInserts(partitionStat.getNumInserts());
