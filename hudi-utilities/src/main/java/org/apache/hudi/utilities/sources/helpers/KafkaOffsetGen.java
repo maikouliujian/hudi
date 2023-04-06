@@ -288,6 +288,7 @@ public class KafkaOffsetGen {
             Config.MAX_EVENTS_FROM_KAFKA_SOURCE_PROP.defaultValue());
 
     long numEvents;
+    //todo sourceLimit的默认值
     if (sourceLimit == Long.MAX_VALUE) {
       numEvents = maxEventsToReadFromKafka;
       LOG.info("SourceLimit not configured, set numEvents to default value : " + maxEventsToReadFromKafka);

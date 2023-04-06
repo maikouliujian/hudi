@@ -47,9 +47,11 @@ public class HoodieWriteHelper<T extends HoodieRecordPayload, R> extends BaseWri
   @Override
   protected HoodieData<HoodieRecord<T>> tag(HoodieData<HoodieRecord<T>> dedupedRecords, HoodieEngineContext context,
                                             HoodieTable<T, HoodieData<HoodieRecord<T>>, HoodieData<HoodieKey>, HoodieData<WriteStatus>> table) {
+    //todo 1、如果是insert，则返回新日志本身
+    // 2、如果是update，那么将新日志的location设置为老日志的location，方便新日志去更新老日志
     return table.getIndex().tagLocation(dedupedRecords, context, table);
   }
-  //todo
+  //todo 对写入的数据进行写入前的去重合并
   @Override
   public HoodieData<HoodieRecord<T>> deduplicateRecords(
       HoodieData<HoodieRecord<T>> records, HoodieIndex<?, ?> index, int parallelism) {
@@ -57,6 +59,7 @@ public class HoodieWriteHelper<T extends HoodieRecordPayload, R> extends BaseWri
     return records.mapToPair(record -> {
       HoodieKey hoodieKey = record.getKey();
       // If index used is global, then records are expected to differ in their partitionPath
+      //todo global index===>recordkey, non global index===>hoodieKey[recordkey + partitionpath]
       Object key = isIndexingGlobal ? hoodieKey.getRecordKey() : hoodieKey;
       return Pair.of(key, record);
     }).reduceByKey((rec1, rec2) -> {

@@ -46,6 +46,7 @@ public abstract class BaseAvroPayload implements Serializable {
    * @param orderingVal {@link Comparable} to be used in pre combine.
    */
   public BaseAvroPayload(GenericRecord record, Comparable orderingVal) {
+    //todo record转化为bytes
     this.recordBytes = record != null ? HoodieAvroUtils.avroToBytes(record) : new byte[0];
     this.orderingVal = orderingVal;
     if (orderingVal == null) {

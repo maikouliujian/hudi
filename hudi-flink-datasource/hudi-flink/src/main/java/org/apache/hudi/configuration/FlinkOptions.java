@@ -248,7 +248,7 @@ public class FlinkOptions extends HoodieConfig {
       .stringType()
       .defaultValue(TABLE_TYPE_COPY_ON_WRITE)
       .withDescription("Type of table to write. COPY_ON_WRITE (or) MERGE_ON_READ");
-
+  //todo Inline Clustering
   public static final ConfigOption<Boolean> INSERT_CLUSTER = ConfigOptions
       .key("write.insert.cluster")
       .booleanType()

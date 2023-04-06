@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Flink hudi clustering program that can be executed manually.
+ * //todo clustering for flink
  */
 public class HoodieFlinkClusteringJob {
 
@@ -120,6 +121,7 @@ public class HoodieFlinkClusteringJob {
 
     // generate clustering plan
     // should support configurable commit metadata
+    //todo clusteringPlanOption
     Option<Pair<HoodieInstant, HoodieClusteringPlan>> clusteringPlanOption = ClusteringUtils.getClusteringPlan(
         table.getMetaClient(), clusteringInstant);
 

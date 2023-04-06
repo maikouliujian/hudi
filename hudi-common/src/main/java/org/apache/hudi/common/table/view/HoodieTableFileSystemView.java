@@ -55,6 +55,7 @@ public class HoodieTableFileSystemView extends IncrementalTimelineSyncFileSystem
   private static final Logger LOG = LogManager.getLogger(HoodieTableFileSystemView.class);
 
   // mapping from partition paths to file groups contained within them
+  //todo 分区partitionpath对文件组的映射关系
   protected Map<String, List<HoodieFileGroup>> partitionToFileGroupsMap;
 
   /**

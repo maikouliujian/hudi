@@ -34,6 +34,7 @@ public class OptionsResolver {
   /**
    * Returns whether insert clustering is allowed with given configuration {@code conf}.
    */
+  //todo
   public static boolean insertClustering(Configuration conf) {
     return isCowTable(conf) && isInsertOperation(conf) && conf.getBoolean(FlinkOptions.INSERT_CLUSTER);
   }

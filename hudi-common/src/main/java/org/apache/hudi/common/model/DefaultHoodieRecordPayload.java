@@ -37,7 +37,7 @@ import java.util.Properties;
  * 1. preCombine - Picks the latest delta record for a key, based on an ordering field 2. combineAndGetUpdateValue/getInsertValue - Chooses the latest record based on ordering field value.
  */
 public class DefaultHoodieRecordPayload extends OverwriteWithLatestAvroPayload {
-
+  //todo metadata.event_time.key
   public static final String METADATA_EVENT_TIME_KEY = "metadata.event_time.key";
   private Option<Object> eventTime = Option.empty();
 

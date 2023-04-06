@@ -285,6 +285,7 @@ public class HoodieFlinkCopyOnWriteTable<T extends HoodieRecordPayload>
     throw new HoodieNotSupportedException("Compaction is not supported on a CopyOnWrite table");
   }
 
+  //todo
   @Override
   public Option<HoodieClusteringPlan> scheduleClustering(final HoodieEngineContext context, final String instantTime, final Option<Map<String, String>> extraMetadata) {
     return new ClusteringPlanActionExecutor<>(context, config,this, instantTime, extraMetadata).execute();

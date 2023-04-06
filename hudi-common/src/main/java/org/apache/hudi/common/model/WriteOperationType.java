@@ -38,12 +38,14 @@ public enum WriteOperationType {
   // delete
   DELETE("delete"),
   BOOTSTRAP("bootstrap"),
+  //todo for 静态分区
   // insert overwrite with static partitioning
   INSERT_OVERWRITE("insert_overwrite"),
   // cluster
   CLUSTER("cluster"),
   // delete partition
   DELETE_PARTITION("delete_partition"),
+  //todo for 动态分区【实测：会重复】
   // insert overwrite with dynamic partitioning
   INSERT_OVERWRITE_TABLE("insert_overwrite_table"),
   // compact

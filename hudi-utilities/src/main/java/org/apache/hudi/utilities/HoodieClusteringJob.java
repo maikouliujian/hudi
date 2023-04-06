@@ -49,6 +49,7 @@ import static org.apache.hudi.utilities.UtilHelpers.SCHEDULE;
 import static org.apache.hudi.utilities.UtilHelpers.SCHEDULE_AND_EXECUTE;
 
 
+//todo clustering
 public class HoodieClusteringJob {
 
   private static final Logger LOG = LogManager.getLogger(HoodieClusteringJob.class);
@@ -127,9 +128,10 @@ public class HoodieClusteringJob {
       cmd.usage();
       System.exit(1);
     }
-
+    //todo spark context
     final JavaSparkContext jsc = UtilHelpers.buildSparkContext("clustering-" + cfg.tableName, cfg.sparkMaster, cfg.sparkMemory);
     HoodieClusteringJob clusteringJob = new HoodieClusteringJob(jsc, cfg);
+    //todo 启动cluster
     int result = clusteringJob.cluster(cfg.retry);
     String resultMsg = String.format("Clustering with basePath: %s, tableName: %s, runningMode: %s",
         cfg.basePath, cfg.tableName, cfg.runningMode);
@@ -149,7 +151,7 @@ public class HoodieClusteringJob {
       cfg.runningMode = cfg.runSchedule ? SCHEDULE : EXECUTE;
     }
   }
-
+  //todo 启动
   public int cluster(int retry) {
     // need to do validate in case that users call cluster() directly without setting cfg.runningMode
     validateRunningMode(cfg);
@@ -220,11 +222,13 @@ public class HoodieClusteringJob {
       client.scheduleClusteringAtInstant(cfg.clusteringInstantTime, Option.empty());
       return Option.of(cfg.clusteringInstantTime);
     }
+    //todo
     return client.scheduleClustering(Option.empty());
   }
 
   private int doScheduleAndCluster(JavaSparkContext jsc) throws Exception {
     LOG.info("Step 1: Do schedule");
+    //todo 获取schema
     String schemaStr = UtilHelpers.getSchemaFromLatestInstant(metaClient);
     try (SparkRDDWriteClient<HoodieRecordPayload> client = UtilHelpers.createHoodieClient(jsc, cfg.basePath, schemaStr, cfg.parallelism, Option.empty(), props)) {
       Option<String> instantTime = Option.empty();
@@ -244,7 +248,7 @@ public class HoodieClusteringJob {
           }
         }
       }
-
+      //todo doSchedule
       instantTime = instantTime.isPresent() ? instantTime : doSchedule(client);
       if (!instantTime.isPresent()) {
         LOG.info("Couldn't generate cluster plan");
@@ -253,6 +257,7 @@ public class HoodieClusteringJob {
 
       LOG.info("The schedule instant time is " + instantTime.get());
       LOG.info("Step 2: Do cluster");
+      //todo doCluster
       Option<HoodieCommitMetadata> metadata = client.cluster(instantTime.get(), true).getCommitMetadata();
       return UtilHelpers.handleErrors(metadata.get(), instantTime.get());
     }

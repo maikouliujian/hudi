@@ -82,7 +82,7 @@ public abstract class PartitionAwareClusteringPlanStrategy<T extends HoodieRecor
       // In case no partitions could be picked, return no clustering plan
       return Option.empty();
     }
-
+    //todo 获取要进行clustering的clusteringGroups
     List<HoodieClusteringGroup> clusteringGroups = getEngineContext()
         .flatMap(
             partitionPaths,

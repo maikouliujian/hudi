@@ -400,7 +400,7 @@ public class HoodieFlinkWriteClient<T extends HoodieRecordPayload> extends
     commitCompaction(compactionInstantTime, compactionMetadata.getCommitMetadata().get(), Option.empty());
     return compactionMetadata;
   }
-
+  //todo 0.11.0不支持clustering
   @Override
   public HoodieWriteMetadata<List<WriteStatus>> cluster(final String clusteringInstant, final boolean shouldComplete) {
     throw new HoodieNotSupportedException("Clustering is not supported yet");

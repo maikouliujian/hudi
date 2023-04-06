@@ -100,6 +100,7 @@ public abstract class SingleSparkJobExecutionStrategy<T extends HoodieRecordPayl
           Iterable<ClusteringGroupInfo> clusteringOpsIterable = () -> clusteringOps;
           List<ClusteringGroupInfo> groupsInPartition = StreamSupport.stream(clusteringOpsIterable.spliterator(), false).collect(Collectors.toList());
           return groupsInPartition.stream().flatMap(clusteringOp ->
+                  //todo
               runClusteringForGroup(clusteringOp, clusteringPlan.getStrategy().getStrategyParams(),
                   Option.ofNullable(clusteringPlan.getPreserveHoodieMetadata()).orElse(false),
                   serializableSchema, taskContextSupplier, instantTime)
@@ -122,8 +123,9 @@ public abstract class SingleSparkJobExecutionStrategy<T extends HoodieRecordPayl
     List<HoodieFileGroupId> inputFileIds = clusteringOps.getOperations().stream()
         .map(op -> new HoodieFileGroupId(op.getPartitionPath(), op.getFileId()))
         .collect(Collectors.toList());
-
+    //todo 读取数据
     Iterator<HoodieRecord<T>> inputRecords = readRecordsForGroupBaseFiles(clusteringOps.getOperations());
+    //todo 对数据执行clustering
     Iterator<List<WriteStatus>> writeStatuses = performClusteringWithRecordsIterator(inputRecords, clusteringOps.getNumOutputGroups(), instantTime,
         strategyParams, schema.get(), inputFileIds, preserveHoodieMetadata, taskContextSupplier);
 
@@ -146,6 +148,7 @@ public abstract class SingleSparkJobExecutionStrategy<T extends HoodieRecordPayl
 
   /**
    * Read records from baseFiles and get iterator.
+   * //todo 读取要clustering的文件的数据
    */
   private Iterator<HoodieRecord<T>> readRecordsForGroupBaseFiles(List<ClusteringOperation> clusteringOps) {
     List<Iterator<HoodieRecord<T>>> iteratorsForPartition = clusteringOps.stream().map(clusteringOp -> {

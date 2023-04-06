@@ -513,7 +513,8 @@ public class HoodieTableMetaClient implements Serializable {
   /**
    * Get the commit timeline visible for this table.
    */
-  public HoodieTimeline getCommitsTimeline() {
+  public HoodieTimeline
+  getCommitsTimeline() {
     switch (this.getTableType()) {
       case COPY_ON_WRITE:
         return getActiveTimeline().getCommitTimeline();

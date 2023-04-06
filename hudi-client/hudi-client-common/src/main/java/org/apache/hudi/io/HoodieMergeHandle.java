@@ -148,6 +148,7 @@ public class HoodieMergeHandle<T extends HoodieRecordPayload, I, K, O> extends H
     this.keyGeneratorOpt = keyGeneratorOpt;
   }
 
+
   @Override
   public Schema getWriterSchemaWithMetaFields() {
     return writeSchemaWithMetaFields;
@@ -264,6 +265,7 @@ public class HoodieMergeHandle<T extends HoodieRecordPayload, I, K, O> extends H
       GenericRecord record = (GenericRecord) indexedRecord.get();
       if (oldRecord != record) {
         // the incoming record is chosen
+        //todo 删除
         isDelete = HoodieOperation.isDelete(hoodieRecord.getOperation());
       } else {
         // the incoming record is dropped
@@ -289,7 +291,7 @@ public class HoodieMergeHandle<T extends HoodieRecordPayload, I, K, O> extends H
   protected boolean writeRecord(HoodieRecord<T> hoodieRecord, Option<IndexedRecord> indexedRecord) {
     return writeRecord(hoodieRecord, indexedRecord, false);
   }
-
+  //todo 写数据
   protected boolean writeRecord(HoodieRecord<T> hoodieRecord, Option<IndexedRecord> indexedRecord, boolean isDelete) {
     Option recordMetadata = hoodieRecord.getData().getMetadata();
     if (!partitionPath.equals(hoodieRecord.getPartitionPath())) {
@@ -330,6 +332,7 @@ public class HoodieMergeHandle<T extends HoodieRecordPayload, I, K, O> extends H
       // writing the first record. So make a copy of the record to be merged
       HoodieRecord<T> hoodieRecord = keyToNewRecords.get(key).newInstance();
       try {
+        //todo 如果是EmptyHoodieRecordPayload，则返回Option.empty()
         Option<IndexedRecord> combinedAvroRecord =
             hoodieRecord.getData().combineAndGetUpdateValue(oldRecord,
               useWriterSchemaForCompaction ? tableSchemaWithMetaFields : tableSchema,

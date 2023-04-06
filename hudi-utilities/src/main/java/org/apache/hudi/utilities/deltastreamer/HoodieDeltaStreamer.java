@@ -706,7 +706,9 @@ public class HoodieDeltaStreamer implements Serializable {
                   throw new HoodieException("Async compaction failed.  Shutting down Delta Sync...");
                 }
               }
+              //todo 是否开启clustering
               if (clusteringConfig.isAsyncClusteringEnabled()) {
+                //todo 触发schedule
                 Option<String> clusteringInstant = deltaSync.getClusteringInstantOpt();
                 if (clusteringInstant.isPresent()) {
                   LOG.info("Scheduled async clustering for instant: " + clusteringInstant.get());
@@ -818,6 +820,7 @@ public class HoodieDeltaStreamer implements Serializable {
               .setConf(new Configuration(jssc.hadoopConfiguration()))
               .setBasePath(cfg.targetBasePath)
               .setLoadActiveTimelineOnLoad(true).build();
+          //todo 获取所有的replacecommit
           List<HoodieInstant> pending = ClusteringUtils.getPendingClusteringInstantTimes(meta);
           LOG.info(String.format("Found %d pending clustering instants ", pending.size()));
           pending.forEach(hoodieInstant -> asyncClusteringService.get().enqueuePendingAsyncServiceInstant(hoodieInstant));

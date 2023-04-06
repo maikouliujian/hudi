@@ -187,7 +187,7 @@ public class HoodieClusteringConfig extends HoodieConfig {
       .sinceVersion("0.7.0")
       .withDocumentation("Determines how to handle updates, deletes to file groups that are under clustering."
           + " Default strategy just rejects the update");
-
+  //todo
   public static final ConfigProperty<String> SCHEDULE_INLINE_CLUSTERING = ConfigProperty
       .key("hoodie.clustering.schedule.inline")
       .defaultValue("false")
@@ -197,7 +197,7 @@ public class HoodieClusteringConfig extends HoodieConfig {
           + "case `hoodie.clustering.async.enabled` is expected to be set to true. But if `hoodie.clustering.inline` is set to false, and `hoodie.clustering.schedule.inline` "
           + "is set to true, regular writers will schedule clustering inline, but users are expected to trigger async job for execution. If `hoodie.clustering.inline` is set "
           + "to true, regular writers will do both scheduling and execution inline for clustering");
-
+  //todo 是否开启clustering
   public static final ConfigProperty<String> ASYNC_CLUSTERING_ENABLE = ConfigProperty
       .key("hoodie.clustering.async.enabled")
       .defaultValue("false")

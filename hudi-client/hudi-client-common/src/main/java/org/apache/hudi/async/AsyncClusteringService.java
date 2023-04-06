@@ -79,6 +79,7 @@ public abstract class AsyncClusteringService extends HoodieAsyncTableService {
           final HoodieInstant instant = fetchNextAsyncServiceInstant();
           if (null != instant) {
             LOG.info("Starting clustering for instant " + instant);
+            //todo 异步clustering
             clusteringClient.cluster(instant);
             LOG.info("Finished clustering for instant " + instant);
           }

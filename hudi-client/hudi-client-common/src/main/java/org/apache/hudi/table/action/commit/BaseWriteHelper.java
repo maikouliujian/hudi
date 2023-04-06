@@ -48,6 +48,7 @@ public abstract class BaseWriteHelper<T extends HoodieRecordPayload, I, K, O, R>
 
       Instant lookupBegin = Instant.now();
       I taggedRecords = dedupedRecords;
+      //todo 是否需要tagging
       if (table.getIndex().requiresTagging(operationType)) {
         // perform index loop up to get existing location of records
         context.setJobStatus(this.getClass().getSimpleName(), "Tagging: " + table.getConfig().getTableName());
@@ -55,7 +56,7 @@ public abstract class BaseWriteHelper<T extends HoodieRecordPayload, I, K, O, R>
         taggedRecords = tag(dedupedRecords, context, table);
       }
       Duration indexLookupDuration = Duration.between(lookupBegin, Instant.now());
-
+      //todo 写数据
       HoodieWriteMetadata<O> result = executor.execute(taggedRecords);
       result.setIndexLookupDuration(indexLookupDuration);
       return result;

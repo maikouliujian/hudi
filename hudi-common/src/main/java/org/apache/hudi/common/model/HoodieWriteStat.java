@@ -28,6 +28,7 @@ import java.io.Serializable;
 
 /**
  * Statistics about a single Hoodie write operation.
+ *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HoodieWriteStat implements Serializable {

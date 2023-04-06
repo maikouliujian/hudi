@@ -80,12 +80,13 @@ public class ClusteringPlanActionExecutor<T extends HoodieRecordPayload, I, K, O
     LOG.info("Generating clustering plan for table " + config.getBasePath());
     ClusteringPlanStrategy strategy = (ClusteringPlanStrategy)
         ReflectionUtils.loadClass(ClusteringPlanStrategy.checkAndGetClusteringPlanStrategy(config), table, context, config);
-
+    //todo 生成ClusteringPlan
     return strategy.generateClusteringPlan();
   }
 
   @Override
   public Option<HoodieClusteringPlan> execute() {
+    //todo 创建ClusteringPlan
     Option<HoodieClusteringPlan> planOption = createClusteringPlan();
     if (planOption.isPresent()) {
       HoodieInstant clusteringInstant =
@@ -96,6 +97,7 @@ public class ClusteringPlanActionExecutor<T extends HoodieRecordPayload, I, K, O
             .setExtraMetadata(extraMetadata.orElse(Collections.emptyMap()))
             .setClusteringPlan(planOption.get())
             .build();
+        //todo
         table.getActiveTimeline().saveToPendingReplaceCommit(clusteringInstant,
             TimelineMetadataUtils.serializeRequestedReplaceMetadata(requestedReplaceMetadata));
       } catch (IOException ioe) {

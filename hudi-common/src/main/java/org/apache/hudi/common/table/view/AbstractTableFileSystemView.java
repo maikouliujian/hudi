@@ -500,6 +500,7 @@ public abstract class AbstractTableFileSystemView implements SyncableFileSystemV
       readLock.lock();
       String partitionPath = formatPartitionKey(partitionStr);
       ensurePartitionLoadedCorrectly(partitionPath);
+      //todo 获取partitionPath下所有的fg
       return fetchAllStoredFileGroups(partitionPath)
           .filter(fileGroup -> !isFileGroupReplacedBeforeOrOn(fileGroup.getFileGroupId(), maxCommitTime))
           .map(fileGroup -> Option.fromJavaOptional(fileGroup.getAllBaseFiles()

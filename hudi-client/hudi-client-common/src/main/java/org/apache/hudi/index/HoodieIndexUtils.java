@@ -62,9 +62,11 @@ public class HoodieIndexUtils {
   public static List<HoodieBaseFile> getLatestBaseFilesForPartition(
       final String partition,
       final HoodieTable hoodieTable) {
+    //todo 获取时间轴上最新的commit time
     Option<HoodieInstant> latestCommitTime = hoodieTable.getMetaClient().getCommitsTimeline()
         .filterCompletedInstants().lastInstant();
     if (latestCommitTime.isPresent()) {
+      //todo 获取每个分区中
       return hoodieTable.getBaseFileOnlyView()
           .getLatestBaseFilesBeforeOrOn(partition, latestCommitTime.get().getTimestamp())
           .collect(toList());
@@ -103,6 +105,7 @@ public class HoodieIndexUtils {
    */
   public static HoodieRecord getTaggedRecord(HoodieRecord inputRecord, Option<HoodieRecordLocation> location) {
     HoodieRecord<?> record = inputRecord;
+    //todo upate逻辑
     if (location.isPresent()) {
       // When you have a record in multiple files in the same partition, then <row key, record> collection
       // will have 2 entries with the same exact in memory copy of the HoodieRecord and the 2
@@ -111,6 +114,7 @@ public class HoodieIndexUtils {
       // copy of the hoodie record.
       record = inputRecord.newInstance();
       record.unseal();
+      //todo 为要update的记录设置location
       record.setCurrentLocation(location.get());
       record.seal();
     }

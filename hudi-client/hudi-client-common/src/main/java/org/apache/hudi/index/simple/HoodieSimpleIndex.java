@@ -109,13 +109,16 @@ public class HoodieSimpleIndex
 
     HoodiePairData<HoodieKey, HoodieRecord<R>> keyedInputRecords =
         inputRecords.mapToPair(record -> new ImmutablePair<>(record.getKey(), record));
+    //todo 找到inputRecords将要写入的多个partition path对应的last basefile中已存在的每条记录的<HoodieKey, HoodieRecordLocation>映射关系
     HoodiePairData<HoodieKey, HoodieRecordLocation> existingLocationsOnTable =
         fetchRecordLocationsForAffectedPartitions(keyedInputRecords.keys(), context, hoodieTable,
             config.getSimpleIndexParallelism());
 
     HoodieData<HoodieRecord<R>> taggedRecords =
         keyedInputRecords.leftOuterJoin(existingLocationsOnTable).map(entry -> {
+          //todo 待写入的数据
           final HoodieRecord<R> untaggedRecord = entry.getRight().getLeft();
+          //todo 如果是insert，则为null；如果是update，则是已存在数据的HoodieRecordLocation
           final Option<HoodieRecordLocation> location = Option.ofNullable(entry.getRight().getRight().orElse(null));
           return HoodieIndexUtils.getTaggedRecord(untaggedRecord, location);
         });
@@ -138,15 +141,19 @@ public class HoodieSimpleIndex
   protected HoodiePairData<HoodieKey, HoodieRecordLocation> fetchRecordLocationsForAffectedPartitions(
       HoodieData<HoodieKey> hoodieKeys, HoodieEngineContext context, HoodieTable hoodieTable,
       int parallelism) {
+    //todo 要处理数据hoodieKeys的分区【这个分区一般都是按照时间最新的】
     List<String> affectedPartitionPathList =
         hoodieKeys.map(HoodieKey::getPartitionPath).distinct().collectAsList();
     List<Pair<String, HoodieBaseFile>> latestBaseFiles =
+            //todo 找到每个partition path对应的最近的basefile
         getLatestBaseFilesForAllPartitions(affectedPartitionPathList, context, hoodieTable);
     return fetchRecordLocations(context, hoodieTable, parallelism, latestBaseFiles);
   }
 
+  //todo 获取所有baseFiles中所有记录的HoodieRecordLocation
   protected HoodiePairData<HoodieKey, HoodieRecordLocation> fetchRecordLocations(
       HoodieEngineContext context, HoodieTable hoodieTable, int parallelism,
+      //todo baseFiles ===> <partitionpath,lastbasefile>
       List<Pair<String, HoodieBaseFile>> baseFiles) {
     int fetchParallelism = Math.max(1, Math.min(baseFiles.size(), parallelism));
 

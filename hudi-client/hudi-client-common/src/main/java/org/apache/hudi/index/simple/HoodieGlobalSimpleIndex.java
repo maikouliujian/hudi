@@ -76,6 +76,7 @@ public class HoodieGlobalSimpleIndex extends HoodieSimpleIndex {
 
     HoodiePairData<String, HoodieRecord<R>> keyedInputRecords =
         inputRecords.mapToPair(entry -> new ImmutablePair<>(entry.getRecordKey(), entry));
+    //todo 获取所有partition path中last basefile中所有记录的HoodieRecordLocation
     HoodiePairData<HoodieKey, HoodieRecordLocation> allRecordLocationsInTable =
         fetchAllRecordLocations(context, hoodieTable, config.getGlobalSimpleIndexParallelism());
     return getTaggedRecords(keyedInputRecords, allRecordLocationsInTable);
@@ -101,6 +102,7 @@ public class HoodieGlobalSimpleIndex extends HoodieSimpleIndex {
   protected List<Pair<String, HoodieBaseFile>> getAllBaseFilesInTable(
       final HoodieEngineContext context, final HoodieTable hoodieTable) {
     HoodieTableMetaClient metaClient = hoodieTable.getMetaClient();
+    //todo 获取所有分区partition path
     List<String> allPartitionPaths = FSUtils.getAllPartitionPaths(context, config.getMetadataConfig(), metaClient.getBasePath());
     // Obtain the latest data files from all the partitions.
     return getLatestBaseFilesForAllPartitions(allPartitionPaths, context, hoodieTable);
@@ -123,14 +125,19 @@ public class HoodieGlobalSimpleIndex extends HoodieSimpleIndex {
 
     return incomingRecords.leftOuterJoin(existingRecordByRecordKey).values()
         .flatMap(entry -> {
+          //todo 待写入的记录
           HoodieRecord<R> inputRecord = entry.getLeft();
           Option<Pair<String, HoodieRecordLocation>> partitionPathLocationPair = Option.ofNullable(entry.getRight().orElse(null));
           List<HoodieRecord<R>> taggedRecords;
 
           if (partitionPathLocationPair.isPresent()) {
+            //todo 需要update
+            //todo 需要更新 老记录的partitionPath
             String partitionPath = partitionPathLocationPair.get().getKey();
             HoodieRecordLocation location = partitionPathLocationPair.get().getRight();
+            //todo 新老日志不在一个分区中，需要删除老分区数据
             if (config.getGlobalSimpleIndexUpdatePartitionPath() && !(inputRecord.getPartitionPath().equals(partitionPath))) {
+              //todo 构建删除HoodieRecord
               // Create an empty record to delete the record in the old partition
               HoodieRecord<R> deleteRecord = new HoodieAvroRecord(new HoodieKey(inputRecord.getRecordKey(), partitionPath), new EmptyHoodieRecordPayload());
               deleteRecord.setCurrentLocation(location);

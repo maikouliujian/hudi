@@ -57,6 +57,7 @@ public class HoodieKeyLocationFetchHandle<T extends HoodieRecordPayload, I, K, O
     BaseFileUtils baseFileUtils = BaseFileUtils.getInstance(baseFile.getPath());
     List<HoodieKey> hoodieKeyList = new ArrayList<>();
     if (keyGeneratorOpt.isPresent()) {
+      //todo 获取baseFile文件中所有数据的hoodieKey
       hoodieKeyList = baseFileUtils.fetchHoodieKeys(hoodieTable.getHadoopConf(), new Path(baseFile.getPath()), keyGeneratorOpt);
     } else {
       hoodieKeyList = baseFileUtils.fetchHoodieKeys(hoodieTable.getHadoopConf(), new Path(baseFile.getPath()));

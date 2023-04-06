@@ -50,6 +50,7 @@ public class SparkExecuteClusteringCommitActionExecutor<T extends HoodieRecordPa
 
   @Override
   public HoodieWriteMetadata<HoodieData<WriteStatus>> execute() {
+    //todo 真正的执行clustering
     return executeClustering(clusteringPlan);
   }
 

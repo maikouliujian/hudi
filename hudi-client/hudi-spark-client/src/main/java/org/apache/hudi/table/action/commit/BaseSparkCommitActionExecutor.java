@@ -117,6 +117,7 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
     UpdateStrategy<T, HoodieData<HoodieRecord<T>>> updateStrategy = (UpdateStrategy<T, HoodieData<HoodieRecord<T>>>) ReflectionUtils
         .loadClass(config.getClusteringUpdatesStrategyClass(), this.context, fileGroupsInPendingClustering);
     Pair<HoodieData<HoodieRecord<T>>, Set<HoodieFileGroupId>> recordsAndPendingClusteringFileGroups =
+
         updateStrategy.handleUpdate(inputRecords);
     Set<HoodieFileGroupId> fileGroupsWithUpdatesAndPendingClustering = recordsAndPendingClusteringFileGroups.getRight();
     if (fileGroupsWithUpdatesAndPendingClustering.isEmpty()) {
@@ -153,6 +154,7 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
     WorkloadProfile workloadProfile = null;
     if (isWorkloadProfileNeeded()) {
       context.setJobStatus(this.getClass().getSimpleName(), "Building workload profile: " + config.getTableName());
+      //todo
       workloadProfile = new WorkloadProfile(buildProfile(inputRecords), operationType, table.getIndex().canIndexLogFiles());
       LOG.info("Input workload profile :" + workloadProfile);
     }
@@ -169,6 +171,7 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
     HoodieData<HoodieRecord<T>> inputRecordsWithClusteringUpdate = fileGroupsInPendingClustering.isEmpty() ? inputRecords : clusteringHandleUpdate(inputRecords, fileGroupsInPendingClustering);
 
     context.setJobStatus(this.getClass().getSimpleName(), "Doing partition and writing data: " + config.getTableName());
+    //todo 真正写数据的地方！！！
     HoodieData<WriteStatus> writeStatuses = mapPartitionsAsRDD(inputRecordsWithClusteringUpdate, partitioner);
     HoodieWriteMetadata<HoodieData<WriteStatus>> result = new HoodieWriteMetadata<>();
     updateIndexAndCommitIfNeeded(writeStatuses, result);
@@ -225,6 +228,7 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
         dedupedRecords.mapToPair(record -> Pair.of(new Tuple2<>(record.getKey(), Option.ofNullable(record.getCurrentLocation())), record)));
 
     JavaPairRDD<Tuple2<HoodieKey, Option<HoodieRecordLocation>>, HoodieRecord<T>> partitionedRDD;
+    //todo for hfile
     if (table.requireSortedRecords()) {
       // Partition and sort within each partition as a single step. This is faster than partitioning first and then
       // applying a sort.
@@ -240,6 +244,7 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
       partitionedRDD = mappedRDD.partitionBy(partitioner);
     }
     return HoodieJavaRDD.of(partitionedRDD.map(Tuple2::_2).mapPartitionsWithIndex((partition, recordItr) -> {
+      //todo update
       if (WriteOperationType.isChangingRecords(operationType)) {
         return handleUpsertPartition(instantTime, partition, recordItr, partitioner);
       } else {
@@ -317,8 +322,10 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
     BucketType btype = binfo.bucketType;
     try {
       if (btype.equals(BucketType.INSERT)) {
+        //todo insert
         return handleInsert(binfo.fileIdPrefix, recordItr);
       } else if (btype.equals(BucketType.UPDATE)) {
+        //todo update
         return handleUpdate(binfo.partitionPath, binfo.fileIdPrefix, recordItr);
       } else {
         throw new HoodieUpsertException("Unknown bucketType " + btype + " for partition :" + partition);
@@ -345,6 +352,7 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
       return Collections.emptyIterator();
     }
     // these are updates
+    //todo 处理update
     HoodieMergeHandle upsertHandle = getUpdateHandle(partitionPath, fileId, recordItr);
     return handleUpdateInternal(upsertHandle, fileId);
   }
@@ -374,6 +382,7 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
     } else if (!WriteOperationType.isChangingRecords(operationType) && config.allowDuplicateInserts()) {
       return new HoodieConcatHandle<>(config, instantTime, table, recordItr, partitionPath, fileId, taskContextSupplier, keyGeneratorOpt);
     } else {
+      //todo update
       return new HoodieMergeHandle<>(config, instantTime, table, recordItr, partitionPath, fileId, taskContextSupplier, keyGeneratorOpt);
     }
   }

@@ -57,6 +57,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+//todo 触发update 写入的class
 public class HoodieMergeHelper<T extends HoodieRecordPayload> extends
     BaseMergeHelper<T, HoodieData<HoodieRecord<T>>, HoodieData<HoodieKey>, HoodieData<WriteStatus>> {
 
@@ -144,6 +145,7 @@ public class HoodieMergeHelper<T extends HoodieRecordPayload> extends
         }
         return transformRecordBasedOnNewSchema(gReader, gWriter, encoderCache, decoderCache, (GenericRecord) record);
       }, table.getPreExecuteRunnable());
+      //todo 执行
       wrapper.execute();
     } catch (Exception e) {
       throw new HoodieException(e);

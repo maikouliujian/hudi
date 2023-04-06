@@ -330,7 +330,7 @@ object HoodieSqlCommonUtils extends SparkAdapterSupport {
       }
       normalizedKey -> value
     }
-
+    //todo
     if (normalizedPartSpec.size < partColNames.size) {
       throw new AnalysisException(
         "All partition columns need to be specified for Hoodie's partition")

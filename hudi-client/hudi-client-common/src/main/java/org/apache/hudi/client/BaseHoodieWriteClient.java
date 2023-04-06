@@ -244,6 +244,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
       this.txnManager.endTransaction(Option.of(inflightInstant));
     }
     // do this outside of lock since compaction, clustering can be time taking and we don't need a lock for the entire execution period
+    //todo 【compaction or clustering】
     runTableServicesInline(table, metadata, extraMetadata);
     emitCommitMetrics(instantTime, metadata, commitActionType);
     // callback if needed.
@@ -563,8 +564,10 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
 
       // Do an inline clustering if enabled
       if (config.inlineClusteringEnabled()) {
+        //todo
         runAnyPendingClustering(table);
         metadata.addMetadata(HoodieClusteringConfig.INLINE_CLUSTERING.key(), "true");
+        //todo clustering
         inlineClustering(extraMetadata);
       } else {
         metadata.addMetadata(HoodieClusteringConfig.INLINE_CLUSTERING.key(), "false");
@@ -575,6 +578,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
           && !table.getActiveTimeline().filterPendingReplaceTimeline().getInstants().findAny().isPresent()) {
         // proceed only if there are no pending clustering
         metadata.addMetadata(HoodieClusteringConfig.SCHEDULE_INLINE_CLUSTERING.key(), "true");
+        //todo clustering
         inlineScheduleClustering(extraMetadata);
       }
     }
@@ -593,6 +597,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
       Option<Pair<HoodieInstant, HoodieClusteringPlan>> instantPlan = ClusteringUtils.getClusteringPlan(table.getMetaClient(), instant);
       if (instantPlan.isPresent()) {
         LOG.info("Running pending clustering at instant " + instantPlan.get().getLeft());
+        //todo 触发clustering
         cluster(instant.getTimestamp(), true);
       }
     });
@@ -1255,6 +1260,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
   /**
    * Schedules a new clustering instant.
    * @param extraMetadata Extra Metadata to be stored
+   * //todo scheduleClustering
    */
   public Option<String> scheduleClustering(Option<Map<String, String>> extraMetadata) throws HoodieIOException {
     String instantTime = HoodieActiveTimeline.createNewInstantTime();
@@ -1322,6 +1328,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
     try {
       this.txnManager.beginTransaction(inflightInstant, Option.empty());
       LOG.info("Scheduling table service " + tableServiceType);
+      //todo 启动scheduleTableService
       return scheduleTableServiceInternal(instantTime, extraMetadata, tableServiceType);
     } finally {
       this.txnManager.endTransaction(inflightInstant);
@@ -1338,6 +1345,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
         LOG.info("Scheduling archiving is not supported. Skipping.");
         return Option.empty();
       case CLUSTER:
+        //todo CLUSTER
         LOG.info("Scheduling clustering at instant time :" + instantTime);
         Option<HoodieClusteringPlan> clusteringPlan = createTable(config, hadoopConf)
             .scheduleClustering(context, instantTime, extraMetadata);

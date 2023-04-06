@@ -62,6 +62,7 @@ public class HoodieAvroParquetWriter<R extends IndexedRecord>
   @Override
   public void writeAvroWithMetadata(HoodieKey key, R avroRecord) throws IOException {
     if (populateMetaFields) {
+      //todo 写meta table
       prepRecordWithMetadata(key, avroRecord, instantTime,
           taskContextSupplier.getPartitionIdSupplier().get(), getWrittenRecordCount(), fileName);
       super.write(avroRecord);

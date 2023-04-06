@@ -493,6 +493,7 @@ public class DeltaSync implements Serializable {
     JavaRDD<GenericRecord> avroRDD = avroRDDOptional.get();
     JavaRDD<HoodieRecord> records = avroRDD.map(record -> {
       GenericRecord gr = isDropPartitionColumns() ? HoodieAvroUtils.removeFields(record, partitionColumns) : record;
+      //todo DataSourceUtils.createPayload
       HoodieRecordPayload payload = shouldCombine ? DataSourceUtils.createPayload(cfg.payloadClassName, gr,
           (Comparable) HoodieAvroUtils.getNestedFieldVal(gr, cfg.sourceOrderingField, false, props.getBoolean(
               KeyGeneratorOptions.KEYGENERATOR_CONSISTENT_LOGICAL_TIMESTAMP_ENABLED.key(),
@@ -592,6 +593,7 @@ public class DeltaSync implements Serializable {
         writeStatusRDD = writeClient.insert(records, instantTime);
         break;
       case UPSERT:
+        //todo
         writeStatusRDD = writeClient.upsert(records, instantTime);
         break;
       case BULK_INSERT:
@@ -939,6 +941,7 @@ public class DeltaSync implements Serializable {
    */
   public Option<String> getClusteringInstantOpt() {
     if (writeClient != null) {
+      //todo 触发clustering schedule
       return writeClient.scheduleClustering(Option.empty());
     } else {
       return Option.empty();

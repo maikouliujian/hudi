@@ -189,7 +189,7 @@ public class HoodieCompactionConfig extends HoodieConfig {
           + " cleaned. Turn this to true, if you want to ensure the bootstrap dataset storage is reclaimed over time, as the"
           + " table receives updates/deletes. Another reason to turn this on, would be to ensure data residing in bootstrap "
           + " base files are also physically deleted, to comply with data privacy enforcement processes.");
-
+  //todo 【Also note that if this set <= 0, will not try to get small files and directly write new files】
   public static final ConfigProperty<String> PARQUET_SMALL_FILE_LIMIT = ConfigProperty
       .key("hoodie.parquet.small.file.limit")
       .defaultValue(String.valueOf(104857600))

@@ -308,6 +308,7 @@ public class HoodieBloomIndex extends HoodieIndex<Object, Object> {
         records.mapToPair(record -> new ImmutablePair<>(record.getKey(), record));
     // Here as the records might have more data than keyFilenamePairs (some row keys' fileId is null),
     // so we do left outer join.
+    //todo (k, (left, Some(right)))
     return keyRecordPairs.leftOuterJoin(keyFilenamePair).values()
         .map(v -> HoodieIndexUtils.getTaggedRecord(v.getLeft(), Option.ofNullable(v.getRight().orElse(null))));
   }

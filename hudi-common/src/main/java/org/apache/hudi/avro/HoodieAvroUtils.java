@@ -111,7 +111,9 @@ public class HoodieAvroUtils {
     return indexedRecordToBytes(record);
   }
 
+  //todo 将record转化为bytes
   public static <T extends IndexedRecord> byte[] indexedRecordToBytes(T record) {
+    //todo GenericDatumWriter
     GenericDatumWriter<T> writer = new GenericDatumWriter<>(record.getSchema(), ConvertingGenericData.INSTANCE);
     try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
       BinaryEncoder encoder = EncoderFactory.get().binaryEncoder(out, BINARY_ENCODER.get());
