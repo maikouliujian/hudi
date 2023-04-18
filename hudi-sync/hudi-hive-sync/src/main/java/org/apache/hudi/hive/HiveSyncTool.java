@@ -257,6 +257,7 @@ public class HiveSyncTool extends AbstractSyncTool implements AutoCloseable {
     boolean schemaChanged = false;
     // Check and sync schema
     if (!tableExists) {
+      //todo 表不存在就新建表
       LOG.info("Hive table " + tableName + " is not found. Creating it");
       HoodieFileFormat baseFileFormat = HoodieFileFormat.valueOf(hiveSyncConfig.baseFileFormat.toUpperCase());
       String inputFormatClassName = HoodieInputFormatUtils.getInputFormatClassName(baseFileFormat, useRealTimeInputFormat);
@@ -278,6 +279,7 @@ public class HiveSyncTool extends AbstractSyncTool implements AutoCloseable {
           outputFormatClassName, serDeFormatClassName, serdeProperties, tableProperties);
       schemaChanged = true;
     } else {
+      //todo 表存在，如果schema有变更，就进行hive的replace操作
       // Check if the table schema has evolved
       Map<String, String> tableSchema = hoodieHiveClient.getTableSchema(tableName);
       SchemaDifference schemaDiff = HiveSchemaUtil.getSchemaDifference(schema, tableSchema, hiveSyncConfig.partitionFields, hiveSyncConfig.supportTimestamp);
@@ -317,26 +319,30 @@ public class HiveSyncTool extends AbstractSyncTool implements AutoCloseable {
   private boolean syncPartitions(String tableName, List<String> writtenPartitionsSince, boolean isDropPartition) {
     boolean partitionsChanged;
     try {
-      //todo 获取tableName所有分区
+      //todo 获取表所有分区
       List<Partition> hivePartitions = hoodieHiveClient.getAllPartitions(tableName);
+      //todo 进行分区校验，确定要同步的分区
       List<PartitionEvent> partitionEvents =
           hoodieHiveClient.getPartitionEvents(hivePartitions, writtenPartitionsSince, isDropPartition);
 
       List<String> newPartitions = filterPartitions(partitionEvents, PartitionEventType.ADD);
       if (!newPartitions.isEmpty()) {
         LOG.info("New Partitions " + newPartitions);
+        //todo 新加分区
         hoodieHiveClient.addPartitionsToTable(tableName, newPartitions);
       }
 
       List<String> updatePartitions = filterPartitions(partitionEvents, PartitionEventType.UPDATE);
       if (!updatePartitions.isEmpty()) {
         LOG.info("Changed Partitions " + updatePartitions);
+        //todo 更新分区
         hoodieHiveClient.updatePartitionsToTable(tableName, updatePartitions);
       }
 
       List<String> dropPartitions = filterPartitions(partitionEvents, PartitionEventType.DROP);
       if (!dropPartitions.isEmpty()) {
         LOG.info("Drop Partitions " + dropPartitions);
+        //todo 删除分区
         hoodieHiveClient.dropPartitions(tableName, dropPartitions);
       }
 

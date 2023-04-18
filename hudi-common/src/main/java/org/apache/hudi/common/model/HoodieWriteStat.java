@@ -28,6 +28,7 @@ import java.io.Serializable;
 
 /**
  * Statistics about a single Hoodie write operation.
+ * //todo 写入状态统计
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

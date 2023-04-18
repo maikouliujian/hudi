@@ -557,6 +557,7 @@ public class HoodieFlinkWriteClient<T extends HoodieRecordPayload> extends
       writeHandle = new FlinkCreateHandle<>(config, instantTime, table, partitionPath,
           fileID, table.getTaskContextSupplier());
     } else {
+      //todo
       writeHandle = insertClustering
           ? new FlinkConcatHandle<>(config, instantTime, table, recordItr, partitionPath,
               fileID, table.getTaskContextSupplier())

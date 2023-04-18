@@ -266,6 +266,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
     // do save internal schema to support Implicitly add columns in write process
     if (!metadata.getExtraMetadata().containsKey(SerDeHelper.LATEST_SCHEMA)
         && metadata.getExtraMetadata().containsKey(SCHEMA_KEY) && table.getConfig().getSchemaEvolutionEnable()) {
+      //todo schema变更
       saveInternalSchema(table, instantTime, metadata);
     }
     // update Metadata table
@@ -284,6 +285,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
       InternalSchema internalSchema = InternalSchemaUtils.searchSchema(Long.parseLong(instantTime),
           SerDeHelper.parseSchemas(historySchemaStr));
       Schema avroSchema = HoodieAvroUtils.createHoodieWriteSchema(new Schema.Parser().parse(config.getSchema()));
+      //todo schema变更
       InternalSchema evolvedSchema = AvroSchemaEvolutionUtils.evolveSchemaFromNewAvroSchema(avroSchema, internalSchema);
       if (evolvedSchema.equals(internalSchema)) {
         metadata.addMetadata(SerDeHelper.LATEST_SCHEMA, SerDeHelper.toJson(evolvedSchema));

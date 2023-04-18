@@ -48,6 +48,7 @@ public class AvroSchemaEvolutionUtils {
     // do check, only support add column evolution
     List<String> colNamesFromEvolved = evolvedInternalSchema.getAllColsFullName();
     List<String> colNamesFromOldSchema = oldSchema.getAllColsFullName();
+    //todo diffFromOldSchema 被删除的列
     List<String> diffFromOldSchema = colNamesFromOldSchema.stream().filter(f -> !colNamesFromEvolved.contains(f)).collect(Collectors.toList());
     List<Types.Field> newFields = new ArrayList<>();
     if (colNamesFromEvolved.size() == colNamesFromOldSchema.size() && diffFromOldSchema.size() == 0) {
@@ -58,11 +59,12 @@ public class AvroSchemaEvolutionUtils {
       }
       return oldSchema;
     }
+    //todo evolve schema exception
     // try to find all added columns
     if (diffFromOldSchema.size() != 0) {
       throw new UnsupportedOperationException("Cannot evolve schema implicitly, find delete/rename operation");
     }
-
+    //todo 新增的列
     List<String> diffFromEvolutionSchema = colNamesFromEvolved.stream().filter(f -> !colNamesFromOldSchema.contains(f)).collect(Collectors.toList());
     // Remove redundancy from diffFromEvolutionSchema.
     // for example, now we add a struct col in evolvedSchema, the struct col is " user struct<name:string, age:int> "
@@ -88,7 +90,7 @@ public class AvroSchemaEvolutionUtils {
       String rawName = splitPoint > 0 ? name.substring(splitPoint + 1) : name;
       addChange.addColumns(parentName, rawName, evolvedInternalSchema.findType(name), null);
     });
-
+    //todo schema更新
     InternalSchema res = SchemaChangeUtils.applyTableChanges2Schema(oldSchema, addChange);
     if (supportPositionReorder) {
       evolvedInternalSchema.getRecord().fields().forEach(f -> newFields.add(oldSchema.getRecord().field(f.name())));

@@ -40,6 +40,7 @@ public class HivePartitionUtil {
    */
   public static String getPartitionClauseForDrop(String partition, PartitionValueExtractor partitionValueExtractor, HiveSyncConfig config) {
     List<String> partitionValues = partitionValueExtractor.extractPartitionValuesInPath(partition);
+    //todo 校验配置中的分区和目录中的分区是否是一致的！！！
     ValidationUtils.checkArgument(config.partitionFields.size() == partitionValues.size(),
         "Partition key parts " + config.partitionFields + " does not match with partition values " + partitionValues
             + ". Check partition strategy. ");

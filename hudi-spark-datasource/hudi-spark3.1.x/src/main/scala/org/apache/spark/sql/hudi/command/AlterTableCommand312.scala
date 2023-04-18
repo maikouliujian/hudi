@@ -92,6 +92,7 @@ case class AlterTableCommand312(table: CatalogTable, changes: Seq[TableChange], 
     } else {
       historySchema
     }
+    //todo 提交
     AlterTableCommand312.commitWithSchema(newSchema, verifiedHistorySchema, table, sparkSession)
     logInfo("column add finished")
   }
@@ -234,8 +235,10 @@ object AlterTableCommand312 extends Logging {
     timeLine.transitionRequestedToInflight(requested, Option.of(metadata.toJsonString.getBytes(StandardCharsets.UTF_8)))
     val extraMeta = new util.HashMap[String, String]()
     extraMeta.put(SerDeHelper.LATEST_SCHEMA, SerDeHelper.toJson(internalSchema.setSchemaId(instantTime.toLong)))
+    //todo 记录到.schema目录下！！！
     val schemaManager = new FileBasedInternalSchemaStorageManager(metaClient)
     schemaManager.persistHistorySchemaStr(instantTime, SerDeHelper.inheritSchemas(internalSchema, historySchemaStr))
+    //todo
     client.commit(instantTime, jsc.emptyRDD, Option.of(extraMeta))
     val existRoTable = sparkSession.catalog.tableExists(table.identifier.unquotedString + "_ro")
     val existRtTable = sparkSession.catalog.tableExists(table.identifier.unquotedString + "_rt")

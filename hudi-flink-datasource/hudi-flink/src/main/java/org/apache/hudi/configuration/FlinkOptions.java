@@ -248,7 +248,7 @@ public class FlinkOptions extends HoodieConfig {
       .stringType()
       .defaultValue(TABLE_TYPE_COPY_ON_WRITE)
       .withDescription("Type of table to write. COPY_ON_WRITE (or) MERGE_ON_READ");
-  //todo Inline Clustering
+  //todo Inline Clustering【用来合并小文件】
   public static final ConfigOption<Boolean> INSERT_CLUSTER = ConfigOptions
       .key("write.insert.cluster")
       .booleanType()
@@ -385,7 +385,7 @@ public class FlinkOptions extends HoodieConfig {
       .intType()
       .noDefaultValue()
       .withDescription("Parallelism of tasks that do index bootstrap, default is the parallelism of the execution environment");
-
+  //todo write.bucket_assign.tasks
   public static final ConfigOption<Integer> BUCKET_ASSIGN_TASKS = ConfigOptions
       .key("write.bucket_assign.tasks")
       .intType()

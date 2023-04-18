@@ -86,8 +86,10 @@ public abstract class AbstractHiveSyncHoodieClient extends AbstractSyncHoodieCli
         if (!storagePartitionValues.isEmpty()) {
           String storageValue = String.join(", ", storagePartitionValues);
           if (!paths.containsKey(storageValue)) {
+            //todo 新加分区
             events.add(PartitionEvent.newPartitionAddEvent(storagePartition));
           } else if (!paths.get(storageValue).equals(fullStoragePartitionPath)) {
+            //todo 更新分区
             events.add(PartitionEvent.newPartitionUpdateEvent(storagePartition));
           }
         }

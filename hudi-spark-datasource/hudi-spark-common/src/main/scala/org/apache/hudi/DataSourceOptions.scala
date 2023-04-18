@@ -408,7 +408,7 @@ object DataSourceWriteOptions {
     .key("hoodie.meta.sync.client.tool.class")
     .defaultValue(classOf[HiveSyncTool].getName)
     .withDocumentation("Sync tool class name used to sync to metastore. Defaults to Hive.")
-
+  //todo RECONCILE_SCHEMA
   val RECONCILE_SCHEMA: ConfigProperty[Boolean] = ConfigProperty
     .key("hoodie.datasource.write.reconcile.schema")
     .defaultValue(false)
