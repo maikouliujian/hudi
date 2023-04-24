@@ -107,6 +107,7 @@ public class ClusteringUtil {
       return false;
     }
     try {
+      //todo 过滤出OperationType=cluster
       return TimelineUtils.getCommitMetadata(instant, timeline).getOperationType().equals(WriteOperationType.CLUSTER);
     } catch (IOException e) {
       throw new HoodieException("Resolve replace commit metadata error for instant: " + instant, e);

@@ -247,6 +247,7 @@ public class TimelineUtils {
       HoodieTimeline timeline) throws IOException {
     byte[] data = timeline.getInstantDetails(instant).get();
     if (instant.getAction().equals(REPLACE_COMMIT_ACTION)) {
+      //todo 获取replacecommit文件内容，即HoodieReplaceCommitMetadata
       return HoodieReplaceCommitMetadata.fromBytes(data, HoodieReplaceCommitMetadata.class);
     } else {
       return HoodieCommitMetadata.fromBytes(data, HoodieCommitMetadata.class);

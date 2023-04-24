@@ -541,6 +541,8 @@ public class IncrementalInputSplits implements Serializable {
       // the compaction commit uses 'commit' as action which is tricky
       timeline = timeline.filter(instant -> !instant.getAction().equals(HoodieTimeline.COMMIT_ACTION));
     }
+    //todo 跳过clustering，即过滤出action为replacecommit并且OperationType不为cluster的instant
+    //todo 这里对于insert overwrite产生的replacecommit并未做过滤，估计是设计如此！！！
     if (this.skipClustering) {
       timeline = timeline.filter(instant -> !ClusteringUtil.isClusteringInstant(instant, oriTimeline));
     }
