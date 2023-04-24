@@ -47,6 +47,7 @@ public class SparkInsertOverwriteCommitActionExecutor<T extends HoodieRecordPayl
   public SparkInsertOverwriteCommitActionExecutor(HoodieEngineContext context,
                                                   HoodieWriteConfig config, HoodieTable table,
                                                   String instantTime, HoodieData<HoodieRecord<T>> inputRecordsRDD) {
+    //todo
     this(context, config, table, instantTime, inputRecordsRDD, WriteOperationType.INSERT_OVERWRITE);
   }
 
@@ -76,8 +77,10 @@ public class SparkInsertOverwriteCommitActionExecutor<T extends HoodieRecordPayl
     return HoodieTimeline.REPLACE_COMMIT_ACTION;
   }
 
+  //todo ReplacedFileIds为将要被替换的老fileid
   @Override
   protected Map<String, List<String>> getPartitionToReplacedFileIds(HoodieWriteMetadata<HoodieData<WriteStatus>> writeMetadata) {
+    //todo 处理特定分区
     return HoodieJavaPairRDD.getJavaPairRDD(writeMetadata.getWriteStatuses().map(status -> status.getStat().getPartitionPath()).distinct().mapToPair(partitionPath ->
         Pair.of(partitionPath, getAllExistingFileIds(partitionPath)))).collectAsMap();
   }

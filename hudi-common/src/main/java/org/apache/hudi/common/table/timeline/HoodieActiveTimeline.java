@@ -261,9 +261,10 @@ public class HoodieActiveTimeline extends HoodieDefaultTimeline {
     }
   }
 
-  //todo getInstantDetails
+  //todo getInstantDetails===>读取timeline上文件内容
   @Override
   public Option<byte[]> getInstantDetails(HoodieInstant instant) {
+    //todo detailPath 就是时间轴上的文件
     Path detailPath = getInstantFileNamePath(instant.getFileName());
     return readDataFromPath(detailPath);
   }
@@ -603,6 +604,7 @@ public class HoodieActiveTimeline extends HoodieDefaultTimeline {
   }
 
   private Path getInstantFileNamePath(String fileName) {
+    //todo 注：schemacommit事件是在.schema目录下
     return new Path(fileName.contains(SCHEMA_COMMIT_ACTION) ? metaClient.getSchemaFolderName() : metaClient.getMetaPath(), fileName);
   }
 

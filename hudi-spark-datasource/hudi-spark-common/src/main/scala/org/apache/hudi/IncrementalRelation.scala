@@ -49,6 +49,8 @@ import scala.collection.mutable
  *
  * Implemented for Copy_on_write storage.
  *
+ * todo 增量读取入口
+ *
  */
 class IncrementalRelation(val sqlContext: SQLContext,
                           val optParams: Map[String, String],
@@ -135,27 +137,33 @@ class IncrementalRelation(val sqlContext: SQLContext,
 
       // create Replaced file group
       val replacedTimeline = commitsTimelineToReturn.getCompletedReplaceTimeline
+      //todo ReplaceTimeline上<replacefileid,partitionpath>的对应关系
       val replacedFile = replacedTimeline.getInstants.collect(Collectors.toList[HoodieInstant]).flatMap { instant =>
+        //todo 将instant对应的文件转化为HoodieReplaceCommitMetadata
         val replaceMetadata = HoodieReplaceCommitMetadata.
           fromBytes(metaClient.getActiveTimeline.getInstantDetails(instant).get, classOf[HoodieReplaceCommitMetadata])
         replaceMetadata.getPartitionToReplaceFileIds.entrySet().flatMap { entry =>
           entry.getValue.map { e =>
             val fullPath = FSUtils.getPartitionPath(basePath, entry.getKey).toString
+            //todo (replacefileid,partitionpath全路径)
             (e, fullPath)
           }
         }
       }.toMap
-
+      //todo 区间范围内的commit
       for (commit <- commitsToReturn) {
         val metadata: HoodieCommitMetadata = HoodieCommitMetadata.fromBytes(commitTimeline.getInstantDetails(commit)
           .get, classOf[HoodieCommitMetadata])
 
         if (HoodieTimeline.METADATA_BOOTSTRAP_INSTANT_TS == commit.getTimestamp) {
           metaBootstrapFileIdToFullPath ++= metadata.getFileIdAndFullPaths(basePath).toMap.filterNot { case (k, v) =>
+            //todo 去除replacedFile
             replacedFile.contains(k) && v.startsWith(replacedFile(k))
           }
         } else {
-          regularFileIdToFullPath ++= metadata.getFileIdAndFullPaths(basePath).toMap.filterNot { case (k, v) =>
+          //todo 过滤掉replacedFile【老fileid】,避免重复读取
+          regularFileIdToFullPath ++= metadata
+            .getFileIdAndFullPaths(basePath).toMap.filterNot { case (k, v) =>
             replacedFile.contains(k) && v.startsWith(replacedFile(k))
           }
         }
@@ -176,6 +184,7 @@ class IncrementalRelation(val sqlContext: SQLContext,
           (regularFileIdToFullPath.filter(p => globMatcher.matches(p._2)).values,
             metaBootstrapFileIdToFullPath.filter(p => globMatcher.matches(p._2)).values)
         } else {
+          //todo
           (regularFileIdToFullPath.values, metaBootstrapFileIdToFullPath.values)
         }
       }
@@ -247,7 +256,9 @@ class IncrementalRelation(val sqlContext: SQLContext,
           if (regularFileIdToFullPath.nonEmpty) {
             df = df.union(sqlContext.read.options(sOpts)
               .schema(usedSchema).format(formatClassName)
+               //todo 读取filteredRegularFullPaths中的数据！！！
               .load(filteredRegularFullPaths.toList: _*)
+              //todo 增量查询的本质是用_hoodie_commit_time做了过滤！！！
               .filter(String.format("%s >= '%s'", HoodieRecord.COMMIT_TIME_METADATA_FIELD,
                 commitsToReturn.head.getTimestamp))
               .filter(String.format("%s <= '%s'", HoodieRecord.COMMIT_TIME_METADATA_FIELD,

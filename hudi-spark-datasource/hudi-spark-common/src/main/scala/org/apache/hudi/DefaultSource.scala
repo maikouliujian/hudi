@@ -112,10 +112,10 @@ class DefaultSource extends RelationProvider
         case (COPY_ON_WRITE, QUERY_TYPE_SNAPSHOT_OPT_VAL, false) |
              (COPY_ON_WRITE, QUERY_TYPE_READ_OPTIMIZED_OPT_VAL, false) |
              (MERGE_ON_READ, QUERY_TYPE_READ_OPTIMIZED_OPT_VAL, false) =>
-          //todo 快照读
+          //todo 只读取basefile文件
           resolveBaseFileOnlyRelation(sqlContext, globPaths, userSchema, metaClient, parameters)
         case (COPY_ON_WRITE, QUERY_TYPE_INCREMENTAL_OPT_VAL, _) =>
-          //todo incremental read
+          //todo 增量读取incremental read
           new IncrementalRelation(sqlContext, parameters, userSchema, metaClient)
 
         case (MERGE_ON_READ, QUERY_TYPE_SNAPSHOT_OPT_VAL, false) =>
@@ -155,6 +155,7 @@ class DefaultSource extends RelationProvider
     * @param df Spark DataFrame to be written
     * @return Spark Relation
     */
+  //todo spark hudi写入的入口
   override def createRelation(sqlContext: SQLContext,
                               mode: SaveMode,
                               optParams: Map[String, String],
@@ -219,6 +220,7 @@ class DefaultSource extends RelationProvider
                                           userSchema: Option[StructType],
                                           metaClient: HoodieTableMetaClient,
                                           optParams: Map[String, String]) = {
+    //todo 只读取basefile
     val baseRelation = new BaseFileOnlyRelation(sqlContext, metaClient, optParams, userSchema, globPaths)
     val enableSchemaOnRead: Boolean = !tryFetchInternalSchema(metaClient).isEmptySchema
 

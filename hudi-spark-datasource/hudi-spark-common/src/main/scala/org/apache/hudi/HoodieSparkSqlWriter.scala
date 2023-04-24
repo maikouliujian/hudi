@@ -104,6 +104,7 @@ object HoodieSparkSqlWriter {
       case _ => throw new HoodieException("hoodie only support org.apache.spark.serializer.KryoSerializer as spark.serializer")
     }
     val tableType = HoodieTableType.valueOf(hoodieConfig.getString(TABLE_TYPE))
+    //todo 写入操作类型
     var operation = WriteOperationType.fromValue(hoodieConfig.getString(OPERATION))
     // It does not make sense to allow upsert() operation if INSERT_DROP_DUPS is true
     // Auto-correct the operation to "insert" if OPERATION is set to "upsert" wrongly
@@ -179,7 +180,7 @@ object HoodieSparkSqlWriter {
         return (success, commitTime, common.util.Option.empty(), common.util.Option.empty(), hoodieWriteClient.orNull, tableConfig)
       }
       // scalastyle:on
-      //todo
+      //todo reconcileSchema
       val reconcileSchema = parameters(DataSourceWriteOptions.RECONCILE_SCHEMA.key()).toBoolean
       val (writeResult, writeClient: SparkRDDWriteClient[HoodieRecordPayload[Nothing]]) =
         operation match {
@@ -258,12 +259,14 @@ object HoodieSparkSqlWriter {
             log.info(s"Registered avro schema : ${schema.toString(true)}")
 
             // Convert to RDD[HoodieRecord]
+            //todo df===>rdd
             val genericRecords: RDD[GenericRecord] = HoodieSparkUtils.createRdd(df, structName, nameSpace, reconcileSchema,
               org.apache.hudi.common.util.Option.of(schema))
             val shouldCombine = parameters(INSERT_DROP_DUPS.key()).toBoolean ||
               operation.equals(WriteOperationType.UPSERT) ||
               parameters.getOrElse(HoodieWriteConfig.COMBINE_BEFORE_INSERT.key(),
                 HoodieWriteConfig.COMBINE_BEFORE_INSERT.defaultValue()).toBoolean
+            //todo 要写的数据hoodieAllIncomingRecords
             val hoodieAllIncomingRecords = genericRecords.map(gr => {
               val processedRecord = getProcessedRecord(partitionColumns, gr, dropPartitionColumns)
               val hoodieRecord = if (shouldCombine) {
@@ -283,7 +286,7 @@ object HoodieSparkSqlWriter {
 
             val writeSchema = if (dropPartitionColumns) generateSchemaWithoutPartitionColumns(partitionColumns, schema) else schema
             // Create a HoodieWriteClient & issue the write.
-
+            //todo 获取hoodieWriteClient
             val client = hoodieWriteClient.getOrElse(DataSourceUtils.createHoodieClient(jsc, writeSchema.toString, path,
               tblName, mapAsJavaMap(addSchemaEvolutionParameters(parameters, internalSchemaOpt) - HoodieWriteConfig.AUTO_COMMIT_ENABLE.key)
             )).asInstanceOf[SparkRDDWriteClient[HoodieRecordPayload[Nothing]]]
@@ -303,6 +306,7 @@ object HoodieSparkSqlWriter {
                 hoodieAllIncomingRecords
               }
             client.startCommitWithTime(instantTime, commitActionType)
+            //todo 写操作
             val writeResult = DataSourceUtils.doWriteOperation(client, hoodieRecords, instantTime, operation)
             (writeResult, client)
           }

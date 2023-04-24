@@ -50,6 +50,7 @@ public class HoodieCommitMetadata implements Serializable {
 
   public static final String SCHEMA_KEY = "schema";
   private static final Logger LOG = LogManager.getLogger(HoodieCommitMetadata.class);
+  //todo partitionToWriteStats
   protected Map<String, List<HoodieWriteStat>> partitionToWriteStats;
   protected Boolean compacted;
 
@@ -107,6 +108,7 @@ public class HoodieCommitMetadata implements Serializable {
     this.compacted = compacted;
   }
 
+  //todo fileid和partitionpath相对路径对应关系
   public HashMap<String, String> getFileIdAndRelativePaths() {
     HashMap<String, String> filePaths = new HashMap<>();
     // list all partitions paths
@@ -125,9 +127,10 @@ public class HoodieCommitMetadata implements Serializable {
   public WriteOperationType getOperationType() {
     return this.operationType;
   }
-
+  //todo fileid和partitionpath绝对路径对应关系
   public HashMap<String, String> getFileIdAndFullPaths(String basePath) {
     HashMap<String, String> fullPaths = new HashMap<>();
+    //todo
     for (Map.Entry<String, String> entry : getFileIdAndRelativePaths().entrySet()) {
       String fullPath = entry.getValue() != null
           ? FSUtils.getPartitionPath(basePath, entry.getValue()).toString()
@@ -447,7 +450,7 @@ public class HoodieCommitMetadata implements Serializable {
     result = 31 * result + compacted.hashCode();
     return result;
   }
-
+  //todo 文件内容转化为javabean
   public static <T> T fromBytes(byte[] bytes, Class<T> clazz) throws IOException {
     try {
       return fromJsonString(new String(bytes, StandardCharsets.UTF_8), clazz);

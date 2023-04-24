@@ -123,6 +123,7 @@ public class BucketAssignFunction<K, I, O extends HoodieRecord<?>>
     this.bucketAssigner = BucketAssigners.create(
         getRuntimeContext().getIndexOfThisSubtask(),
         getRuntimeContext().getMaxNumberOfParallelSubtasks(),
+        //todo 当前算子的并行度【bucket数】
         getRuntimeContext().getNumberOfParallelSubtasks(),
         ignoreSmallFiles(),
         //todo table.type 默认COPY_ON_WRITE

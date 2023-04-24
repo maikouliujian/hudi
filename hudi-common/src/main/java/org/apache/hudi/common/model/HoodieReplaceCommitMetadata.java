@@ -37,6 +37,8 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class HoodieReplaceCommitMetadata extends HoodieCommitMetadata {
   private static final Logger LOG = LogManager.getLogger(HoodieReplaceCommitMetadata.class);
+
+  //todo 分区===>>list<Replacefileid>
   protected Map<String, List<String>> partitionToReplaceFileIds;
 
   // for ser/deser
@@ -113,7 +115,7 @@ public class HoodieReplaceCommitMetadata extends HoodieCommitMetadata {
     result = 31 * result + compacted.hashCode();
     return result;
   }
-
+  //todo 文件内容转化为javabean
   public static <T> T fromBytes(byte[] bytes, Class<T> clazz) throws IOException {
     try {
       return fromJsonString(new String(bytes, StandardCharsets.UTF_8), clazz);

@@ -233,6 +233,7 @@ abstract class HoodieBaseRelation(val sqlContext: SQLContext,
 
   /**
    * NOTE: DO NOT OVERRIDE THIS METHOD
+   * //todo 读取数据入口
    */
   override final def buildScan(requiredColumns: Array[String], filters: Array[Filter]): RDD[Row] = {
     // NOTE: PLEAS READ CAREFULLY BEFORE MAKING CHANGES
@@ -255,7 +256,7 @@ abstract class HoodieBaseRelation(val sqlContext: SQLContext,
 
     val filterExpressions = convertToExpressions(filters)
     val (partitionFilters, dataFilters) = filterExpressions.partition(isPartitionPredicate)
-    //todo
+    //todo 读取数据的文件
     val fileSplits = collectFileSplits(partitionFilters, dataFilters)
 
     val tableAvroSchemaStr =
@@ -280,6 +281,7 @@ abstract class HoodieBaseRelation(val sqlContext: SQLContext,
     if (fileSplits.isEmpty) {
       sparkSession.sparkContext.emptyRDD
     } else {
+      //todo 读取数据为rdd
       val rdd = composeRDD(fileSplits, partitionSchema, dataSchema, prunedRequiredSchema, filters)
 
       // NOTE: In case when partition columns have been pruned from the required schema, we have to project
@@ -335,6 +337,7 @@ abstract class HoodieBaseRelation(val sqlContext: SQLContext,
     }
 
     val fsView = new HoodieTableFileSystemView(metaClient, timeline, partitionDirs.flatMap(_.files).toArray)
+    //todo 获取所有的basefile
     val latestBaseFiles = fsView.getLatestBaseFiles.iterator().asScala.toList.map(_.getFileStatus)
 
     latestBaseFiles.groupBy(getPartitionPath)
@@ -468,6 +471,7 @@ abstract class HoodieBaseRelation(val sqlContext: SQLContext,
     partitionedFile => {
       val extension = FSUtils.getFileExtension(partitionedFile.filePath)
       if (HoodieFileFormat.PARQUET.getFileExtension.equals(extension)) {
+        //todo 读取文件
         parquetReader.apply(partitionedFile)
       } else if (HoodieFileFormat.HFILE.getFileExtension.equals(extension)) {
         hfileReader.apply(partitionedFile)

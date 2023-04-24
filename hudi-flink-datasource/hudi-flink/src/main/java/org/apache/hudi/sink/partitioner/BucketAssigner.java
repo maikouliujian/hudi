@@ -135,6 +135,7 @@ public class BucketAssigner implements AutoCloseable {
 
   public BucketInfo addInsert(String partitionPath) {
     // for new inserts, compute buckets depending on how many records we have for each partition
+    //todo 获取分区下的小文件
     SmallFileAssign smallFileAssign = getSmallFileAssign(partitionPath);
 
     // first try packing this into one of the smallFiles
@@ -165,6 +166,7 @@ public class BucketAssigner implements AutoCloseable {
       }
     }
     BucketInfo bucketInfo = new BucketInfo(BucketType.INSERT, createFileIdOfThisTask(), partitionPath);
+    //todo 生成bucket key
     final String key = StreamerUtil.generateBucketKey(partitionPath, bucketInfo.getFileIdPrefix());
     bucketInfoMap.put(key, bucketInfo);
     NewFileAssignState newFileAssignState = new NewFileAssignState(bucketInfo.getFileIdPrefix(), writeProfile.getRecordsPerBucket());
@@ -216,6 +218,7 @@ public class BucketAssigner implements AutoCloseable {
     return KeyGroupRangeAssignment.assignKeyToParallelOperator(fileId, maxParallelism, numTasks) == taskID;
   }
 
+  //todo 生成filegroupid
   @VisibleForTesting
   public String createFileIdOfThisTask() {
     String newFileIdPfx = FSUtils.createNewFileIdPfx();

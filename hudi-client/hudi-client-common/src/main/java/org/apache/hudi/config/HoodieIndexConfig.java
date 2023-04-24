@@ -257,6 +257,7 @@ public class HoodieIndexConfig extends HoodieConfig {
    *
    * In dynamic bucket index cases (e.g., using CONSISTENT_HASHING), this config of number of bucket serves as a initial bucket size
    */
+  //todo bucket.index 设置bucket数
   public static final ConfigProperty<Integer> BUCKET_INDEX_NUM_BUCKETS = ConfigProperty
       .key("hoodie.bucket.index.num.buckets")
       .defaultValue(256)

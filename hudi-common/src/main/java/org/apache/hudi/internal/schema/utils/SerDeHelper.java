@@ -271,6 +271,7 @@ public class SerDeHelper {
     Long versionId = !jsonNode.has(VERSION_ID) ? null : jsonNode.get(VERSION_ID).asLong();
     Types.RecordType type = (Types.RecordType)parserTypeFromJson(jsonNode);
     if (versionId == null) {
+      //todo 获取schema
       return new InternalSchema(type.fields());
     } else {
       if (maxColumnId != null) {

@@ -44,8 +44,10 @@ public class SparkInsertOverwriteTableCommitActionExecutor<T extends HoodieRecor
     super(context, config, table, instantTime, inputRecordsRDD, WriteOperationType.INSERT_OVERWRITE_TABLE);
   }
 
+
   @Override
   protected Map<String, List<String>> getPartitionToReplacedFileIds(HoodieWriteMetadata<HoodieData<WriteStatus>> writeMetadata) {
+    //todo 处理所有分区
     List<String> partitionPaths = FSUtils.getAllPartitionPaths(context, config.getMetadataConfig(), table.getMetaClient().getBasePath());
     if (partitionPaths == null || partitionPaths.isEmpty()) {
       return Collections.emptyMap();

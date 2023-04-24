@@ -267,6 +267,7 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
 
   protected void updateIndexAndCommitIfNeeded(HoodieData<WriteStatus> writeStatusRDD, HoodieWriteMetadata<HoodieData<WriteStatus>> result) {
     updateIndex(writeStatusRDD, result);
+    //todo 设置PartitionToReplaceFileIds【做insert overwrite】
     result.setPartitionToReplaceFileIds(getPartitionToReplacedFileIds(result));
     commitOnAutoCommit(result);
   }

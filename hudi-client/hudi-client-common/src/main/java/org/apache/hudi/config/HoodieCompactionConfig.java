@@ -287,7 +287,9 @@ public class HoodieCompactionConfig extends HoodieConfig {
       .withDocumentation("Config to control whether we control insert split sizes automatically based on average"
           + " record sizes. It's recommended to keep this turned on, since hand tuning is otherwise extremely"
           + " cumbersome.");
-
+  //todo 每条日志的大小，合并小文件时要用，假如设置文件大小为200m，那么一个文件中能存储的数据条数为：200/hoodie.copyonwrite.record.size.estimate,
+  //todo 文件中条数限制的前提下，如果实际的日志比这个值小，那么就会出现小文件！！！
+  //todo hudi会根据历史数据动态调整该值！！！
   public static final ConfigProperty<String> COPY_ON_WRITE_RECORD_SIZE_ESTIMATE = ConfigProperty
       .key("hoodie.copyonwrite.record.size.estimate")
       .defaultValue(String.valueOf(1024))

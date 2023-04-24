@@ -975,7 +975,9 @@ public abstract class AbstractTableFileSystemView implements SyncableFileSystemV
    */
   private Stream<HoodieBaseFile> fetchLatestBaseFiles() {
     return fetchAllStoredFileGroups()
+            //todo 获取非replace filegroup
         .filter(fg -> !isFileGroupReplaced(fg))
+            //todo 获取basefile
         .map(fg -> Pair.of(fg.getFileGroupId(), getLatestBaseFile(fg)))
         .filter(p -> p.getValue().isPresent())
         .map(p -> addBootstrapBaseFileIfPresent(p.getKey(), p.getValue().get()));

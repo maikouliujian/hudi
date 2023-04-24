@@ -179,6 +179,7 @@ public abstract class BaseRollbackActionExecutor<T extends HoodieRecordPayload, 
         try {
           if (!HoodieHeartbeatClient.heartbeatExists(table.getMetaClient().getFs(),
               config.getBasePath(), instantTimeToRollback)) {
+            //todo
             throw new HoodieRollbackException(
                 "Found commits after time :" + instantTimeToRollback + ", please rollback greater commits first");
           }

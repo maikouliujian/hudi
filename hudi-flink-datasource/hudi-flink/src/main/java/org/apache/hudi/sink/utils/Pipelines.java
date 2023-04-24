@@ -300,6 +300,7 @@ public class Pipelines {
 
   /**
    * Transforms the row data to hoodie records.
+   * //todo
    */
   public static DataStream<HoodieRecord> rowDataToHoodieRecord(Configuration conf, RowType rowType, DataStream<RowData> dataStream) {
     return dataStream.map(RowDataToHoodieFunctions.create(rowType, conf), TypeInformation.of(HoodieRecord.class))
@@ -332,6 +333,7 @@ public class Pipelines {
   public static DataStream<Object> hoodieStreamWrite(Configuration conf, int defaultParallelism, DataStream<HoodieRecord> dataStream) {
     if (OptionsResolver.isBucketIndexType(conf)) {
       WriteOperatorFactory<HoodieRecord> operatorFactory = BucketStreamWriteOperator.getFactory(conf);
+      //todo bucketindex时的数据！！！
       int bucketNum = conf.getInteger(FlinkOptions.BUCKET_INDEX_NUM_BUCKETS);
       String indexKeyFields = conf.getString(FlinkOptions.INDEX_KEY_FIELD);
       BucketIndexPartitioner<HoodieKey> partitioner = new BucketIndexPartitioner<>(bucketNum, indexKeyFields);
@@ -350,6 +352,7 @@ public class Pipelines {
               TypeInformation.of(HoodieRecord.class),
               new KeyedProcessOperator<>(new BucketAssignFunction<>(conf)))
           .uid("uid_bucket_assigner_" + conf.getString(FlinkOptions.TABLE_NAME))
+              //todo write.bucket_assign.tasks
           .setParallelism(conf.getOptional(FlinkOptions.BUCKET_ASSIGN_TASKS).orElse(defaultParallelism))
           // shuffle by fileId(bucket id)
               //todo 再根据bucketid进行keyby
