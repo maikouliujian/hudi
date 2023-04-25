@@ -83,7 +83,7 @@ public class StreamReadMonitoringFunction
   private transient Object checkpointLock;
 
   private volatile boolean isRunning = true;
-
+  //todo 宣布、公布的instant
   private String issuedInstant;
 
   private transient ListState<String> instantState;
@@ -147,6 +147,7 @@ public class StreamReadMonitoringFunction
             "The " + getClass().getSimpleName() + " has already restored from a previous Flink version.");
 
       } else if (retrievedStates.size() == 1) {
+        //todo 上次状态retrievedStates中第一个(最早的)commit time
         this.issuedInstant = retrievedStates.get(0);
         if (LOG.isDebugEnabled()) {
           LOG.debug("{} retrieved a issued instant of time {} for table {} with path {}.",
@@ -253,6 +254,7 @@ public class StreamReadMonitoringFunction
   public void snapshotState(FunctionSnapshotContext context) throws Exception {
     this.instantState.clear();
     if (this.issuedInstant != null) {
+      //todo 将issuedInstant记录到状态中
       this.instantState.add(this.issuedInstant);
     }
   }
