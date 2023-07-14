@@ -48,7 +48,7 @@ public class CommitUtils {
    * Use this API when commit action type can differ not only on the basis of table type but also write operation type.
    * For example, INSERT_OVERWRITE/INSERT_OVERWRITE_TABLE operations have REPLACE commit action type.
    */
-  //todo
+  //todo INSERT_OVERWRITE、INSERT_OVERWRITE_TABLE、DELETE_PARTITION产生的都是REPLACE_COMMIT_ACTION
   public static String getCommitActionType(WriteOperationType operation, HoodieTableType tableType) {
     if (operation == WriteOperationType.INSERT_OVERWRITE || operation == WriteOperationType.INSERT_OVERWRITE_TABLE
         || operation == WriteOperationType.DELETE_PARTITION) {

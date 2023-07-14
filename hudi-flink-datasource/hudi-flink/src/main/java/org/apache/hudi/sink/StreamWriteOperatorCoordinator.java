@@ -439,6 +439,7 @@ public class StreamWriteOperatorCoordinator
     // the write task does not block after checkpointing(and before it receives a checkpoint success event),
     // if it checkpoints succeed then flushes the data buffer again before this coordinator receives a checkpoint
     // success event, the data buffer would flush with an older instant time.
+    //todo 如果是并发写,可能会报出这个异常！！！
     ValidationUtils.checkState(
         HoodieTimeline.compareTimestamps(this.instant, HoodieTimeline.GREATER_THAN_OR_EQUALS, event.getInstantTime()),
         String.format("Receive an unexpected event for instant %s from task %d",
