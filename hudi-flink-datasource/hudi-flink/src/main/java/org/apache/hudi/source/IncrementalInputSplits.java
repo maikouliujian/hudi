@@ -539,6 +539,7 @@ public class IncrementalInputSplits implements Serializable {
     final HoodieTimeline oriTimeline = timeline;
     if (this.skipCompaction) {
       // the compaction commit uses 'commit' as action which is tricky
+      //todo 对应mor表，读取deltacommit,不读取commit
       timeline = timeline.filter(instant -> !instant.getAction().equals(HoodieTimeline.COMMIT_ACTION));
     }
     //todo 跳过clustering，即过滤出action为replacecommit并且OperationType不为cluster的instant
