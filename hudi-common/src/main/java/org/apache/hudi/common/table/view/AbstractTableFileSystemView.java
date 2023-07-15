@@ -847,6 +847,7 @@ public abstract class AbstractTableFileSystemView implements SyncableFileSystemV
       String partition = formatPartitionKey(partitionStr);
       ensurePartitionLoadedCorrectly(partition);
       return fetchAllStoredFileGroups(partition)
+              //todo 过滤出未被 replace的 filegroup
           .filter(fg -> !isFileGroupReplacedBeforeOrOn(fg.getFileGroupId(), maxInstantTime))
           .map(fileGroup -> {
             Option<FileSlice> fileSlice = fileGroup.getLatestFileSliceBeforeOrOn(maxInstantTime);
@@ -1370,7 +1371,7 @@ public abstract class AbstractTableFileSystemView implements SyncableFileSystemV
     if (!hoodieInstantOption.isPresent()) {
       return false;
     }
-
+    //todo 如果被replace commit了，那么不能小于等于nstant
     return HoodieTimeline.compareTimestamps(instant, GREATER_THAN_OR_EQUALS, hoodieInstantOption.get().getTimestamp());
   }
 

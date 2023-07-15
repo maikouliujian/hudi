@@ -46,6 +46,7 @@ import scala.collection.JavaConverters._
   * Hoodie Spark Datasource, for reading and writing hoodie tables
   *
   */
+//todo spark读写hudi的入口
 class DefaultSource extends RelationProvider
   with SchemaRelationProvider
   with CreatableRelationProvider
@@ -252,11 +253,12 @@ object DefaultSource {
           resolveBaseFileOnlyRelation(sqlContext, globPaths, userSchema, metaClient, parameters)
 
         case (COPY_ON_WRITE, QUERY_TYPE_INCREMENTAL_OPT_VAL, _) =>
+          //todo cow 增量读入口
           new IncrementalRelation(sqlContext, parameters, userSchema, metaClient)
 
         case (MERGE_ON_READ, QUERY_TYPE_SNAPSHOT_OPT_VAL, false) =>
           new MergeOnReadSnapshotRelation(sqlContext, parameters, metaClient, globPaths, userSchema)
-
+          //todo mor 增量读入口
         case (MERGE_ON_READ, QUERY_TYPE_INCREMENTAL_OPT_VAL, _) =>
           new MergeOnReadIncrementalRelation(sqlContext, parameters, metaClient, userSchema)
 

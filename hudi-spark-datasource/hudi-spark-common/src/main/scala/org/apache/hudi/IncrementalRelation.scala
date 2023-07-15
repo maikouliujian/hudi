@@ -141,6 +141,7 @@ class IncrementalRelation(val sqlContext: SQLContext,
         replaceMetadata.getPartitionToReplaceFileIds.entrySet().flatMap { entry =>
           entry.getValue.map { e =>
             val fullPath = FSUtils.getPartitionPath(basePath, entry.getKey).toString
+            //todo （replaced fileid,partition full path）
             (e, fullPath)
           }
         }
@@ -155,6 +156,8 @@ class IncrementalRelation(val sqlContext: SQLContext,
             replacedFile.contains(k) && v.startsWith(replacedFile(k))
           }
         } else {
+          //todo metadata.getFileIdAndFullPaths(basePath)     <fileid,filepath>
+          //todo 过滤掉replace commit,避免数据重复
           regularFileIdToFullPath ++= metadata.getFileIdAndFullPaths(basePath).toMap.filterNot { case (k, v) =>
             replacedFile.contains(k) && v.startsWith(replacedFile(k))
           }

@@ -80,6 +80,7 @@ class HoodieMergeOnReadRDD(@transient sc: SparkContext,
   private val hadoopConfBroadcast = sc.broadcast(new SerializableWritable(config))
 
   override def compute(split: Partition, context: TaskContext): Iterator[InternalRow] = {
+    ///todo 执行计算
     val partition = split.asInstanceOf[HoodieMergeOnReadPartition]
     val iter = partition.split match {
       case dataFileOnlySplit if dataFileOnlySplit.logFiles.isEmpty =>

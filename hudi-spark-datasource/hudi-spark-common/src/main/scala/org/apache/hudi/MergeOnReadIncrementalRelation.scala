@@ -40,6 +40,7 @@ import scala.collection.immutable
 /**
  * @Experimental
  */
+//todo mor表增量读
 case class MergeOnReadIncrementalRelation(override val sqlContext: SQLContext,
                                           override val optParams: Map[String, String],
                                           override val metaClient: HoodieTableMetaClient,
@@ -97,6 +98,7 @@ case class MergeOnReadIncrementalRelation(override val sqlContext: SQLContext,
       val fileSlices = if (fullTableScan) {
         listLatestFileSlices(Seq(), partitionFilters, dataFilters)
       } else {
+        //todo 获取fileSlices
         val latestCommit = includedCommits.last.getTimestamp
 
         val fsView = new HoodieTableFileSystemView(metaClient, timeline, affectedFilesInCommits)
@@ -104,6 +106,7 @@ case class MergeOnReadIncrementalRelation(override val sqlContext: SQLContext,
         val modifiedPartitions = getWritePartitionPaths(commitsMetadata)
 
         modifiedPartitions.asScala.flatMap { relativePartitionPath =>
+          //todo 过滤出未被replace commit的fileid
           fsView.getLatestMergedFileSlicesBeforeOrOn(relativePartitionPath, latestCommit).iterator().asScala
         }.toSeq
       }
@@ -149,7 +152,7 @@ trait HoodieIncrementalRelationTrait extends HoodieBaseRelation {
 
     fallbackToFullTableScan && (startInstantArchived || endInstantArchived || affectedFilesInCommits.exists(fileStatus => !metaClient.getFs.exists(fileStatus.getPath)))
   }
-
+  //todo 获取读取区间内的commits
   protected lazy val includedCommits: immutable.Seq[HoodieInstant] = {
     if (!startInstantArchived || !endInstantArchived) {
       // If endTimestamp commit is not archived, will filter instants
