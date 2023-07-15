@@ -257,11 +257,13 @@ public class IncrementalInputSplits implements Serializable {
       String issuedInstant,
       boolean cdcEnabled) {
     metaClient.reloadActiveTimeline();
+    //todo 获取时间区间内的HoodieTimeline
     HoodieTimeline commitTimeline = getReadTimeline(metaClient);
     if (commitTimeline.empty()) {
       LOG.warn("No splits found for the table under path " + path);
       return Result.EMPTY;
     }
+    //todo 过滤时间区间内的instants
     List<HoodieInstant> instants = filterInstantsWithRange(commitTimeline, issuedInstant);
     // get the latest instant that satisfies condition
     final HoodieInstant instantToIssue = instants.size() == 0 ? null : instants.get(instants.size() - 1);
@@ -300,6 +302,7 @@ public class IncrementalInputSplits implements Serializable {
       return Result.instance(inputSplits, endInstant);
     } else {
       // streaming read
+      //todo for cdc
       if (cdcEnabled) {
         // case1: cdc change log enabled
         final String endInstant = instantToIssue.getTimestamp();
@@ -307,9 +310,12 @@ public class IncrementalInputSplits implements Serializable {
         return Result.instance(inputSplits, endInstant);
       }
       // case2: normal streaming read
+      //todo 一般的流读
       String tableName = conf.getString(FlinkOptions.TABLE_NAME);
+      //todo 读取active
       List<HoodieCommitMetadata> activeMetadataList = instants.stream()
           .map(instant -> WriteProfiles.getCommitMetadata(tableName, path, instant, commitTimeline)).collect(Collectors.toList());
+      //todo 读取archive
       List<HoodieCommitMetadata> archivedMetadataList = getArchivedMetadata(metaClient, instantRange, commitTimeline, tableName);
       if (archivedMetadataList.size() > 0) {
         LOG.warn("\n"
@@ -322,7 +328,7 @@ public class IncrementalInputSplits implements Serializable {
           // IMPORTANT: the merged metadata list must be in ascending order by instant time
           ? mergeList(archivedMetadataList, activeMetadataList)
           : activeMetadataList;
-
+      //todo 获取读取的partition path
       readPartitions = getReadPartitions(metadataList);
       if (readPartitions.size() == 0) {
         LOG.warn("No partitions found for reading under path: " + path);
@@ -336,6 +342,7 @@ public class IncrementalInputSplits implements Serializable {
       }
 
       final String endInstant = instantToIssue.getTimestamp();
+      //todo 获取inputSplits
       List<MergeOnReadInputSplit> inputSplits = getInputSplits(metaClient, commitTimeline,
           fileStatuses, readPartitions, endInstant, instantRange, skipCompaction);
 
@@ -353,6 +360,7 @@ public class IncrementalInputSplits implements Serializable {
     } else if (this.conf.getOptional(FlinkOptions.READ_START_COMMIT).isPresent()) {
       // first time consume and has a start commit
       final String startCommit = this.conf.getString(FlinkOptions.READ_START_COMMIT);
+      //todo
       return startCommit.equalsIgnoreCase(FlinkOptions.START_COMMIT_EARLIEST)
           ? null
           : InstantRange.builder().startInstant(startCommit).endInstant(instantToIssue)
@@ -363,7 +371,7 @@ public class IncrementalInputSplits implements Serializable {
           .nullableBoundary(nullableBoundary).rangeType(InstantRange.RangeType.CLOSE_CLOSE).build();
     }
   }
-
+  //todo 获取InputSplits
   private List<MergeOnReadInputSplit> getInputSplits(
       HoodieTableMetaClient metaClient,
       HoodieTimeline commitTimeline,
@@ -492,6 +500,7 @@ public class IncrementalInputSplits implements Serializable {
    * @param issuedInstant  The last issued instant that has already been delivered to downstream
    * @return the filtered hoodie instants
    */
+  //todo 读取区间 (,]
   @VisibleForTesting
   public List<HoodieInstant> filterInstantsWithRange(
       HoodieTimeline commitTimeline,
@@ -499,14 +508,16 @@ public class IncrementalInputSplits implements Serializable {
     HoodieTimeline completedTimeline = commitTimeline.filterCompletedInstants();
     if (issuedInstant != null) {
       // returns early for streaming mode
+      //todo 寻找所有大于issuedInstant
       return completedTimeline
           .getInstantsAsStream()
           .filter(s -> HoodieTimeline.compareTimestamps(s.getTimestamp(), GREATER_THAN, issuedInstant))
           .collect(Collectors.toList());
     }
 
+    //todo 第一次读取进来！！！
     Stream<HoodieInstant> instantStream = completedTimeline.getInstantsAsStream();
-
+    //todo 没有配置读取区间，则从latest commit开始读取
     if (OptionsResolver.hasNoSpecificReadCommits(this.conf)) {
       // by default read from the latest commit
       List<HoodieInstant> instants = completedTimeline.getInstants();
@@ -515,7 +526,7 @@ public class IncrementalInputSplits implements Serializable {
       }
       return instants;
     }
-
+    //todo 有配置读取区间，则过滤区间内的timeline
     if (OptionsResolver.isSpecificStartCommit(this.conf)) {
       final String startCommit = this.conf.get(FlinkOptions.READ_START_COMMIT);
       instantStream = instantStream

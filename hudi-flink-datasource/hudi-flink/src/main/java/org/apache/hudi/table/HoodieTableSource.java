@@ -191,6 +191,7 @@ public class HoodieTableSource implements
             (TypeInformation<RowData>) TypeInfoDataTypeConverter.fromDataTypeToTypeInfo(getProducedDataType());
         OptionsInference.setupSourceTasks(conf, execEnv.getParallelism());
         if (conf.getBoolean(FlinkOptions.READ_AS_STREAMING)) {
+          //todo 增量流读
           StreamReadMonitoringFunction monitoringFunction = new StreamReadMonitoringFunction(
               conf, FilePathUtils.toFlinkPath(path), tableRowType, maxCompactionMemoryInBytes, getRequiredPartitionPaths());
           InputFormat<RowData, ?> inputFormat = getInputFormat(true);

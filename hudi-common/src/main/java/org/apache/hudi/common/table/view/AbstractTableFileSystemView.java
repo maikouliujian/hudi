@@ -135,6 +135,7 @@ public abstract class AbstractTableFileSystemView implements SyncableFileSystemV
   /**
    * Adds the provided statuses into the file system view, and also caches it inside this object.
    */
+  //todo
   public List<HoodieFileGroup> addFilesToView(FileStatus[] statuses) {
     HoodieTimer timer = HoodieTimer.start();
     List<HoodieFileGroup> fileGroups = buildFileGroups(statuses, visibleCommitsAndCompactionTimeline, true);

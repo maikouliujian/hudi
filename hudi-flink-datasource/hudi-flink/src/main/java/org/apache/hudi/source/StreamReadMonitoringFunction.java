@@ -89,7 +89,7 @@ public class StreamReadMonitoringFunction
   private transient Object checkpointLock;
 
   private volatile boolean isRunning = true;
-
+  //todo 上一次ckp中记录的结束Instant
   private String issuedInstant;
 
   private transient ListState<String> instantState;
@@ -176,6 +176,7 @@ public class StreamReadMonitoringFunction
     checkpointLock = context.getCheckpointLock();
     while (isRunning) {
       synchronized (checkpointLock) {
+        //todo
         monitorDirAndForwardSplits(context);
       }
       TimeUnit.SECONDS.sleep(interval);
@@ -202,6 +203,7 @@ public class StreamReadMonitoringFunction
       // table does not exist
       return;
     }
+    //todo 获取InputSplits
     IncrementalInputSplits.Result result =
         incrementalInputSplits.inputSplits(metaClient, this.hadoopConf, this.issuedInstant, this.cdcEnabled);
     if (result.isEmpty()) {

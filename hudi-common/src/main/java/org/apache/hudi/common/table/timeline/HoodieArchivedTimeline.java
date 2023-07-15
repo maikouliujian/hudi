@@ -237,6 +237,7 @@ public class HoodieArchivedTimeline extends HoodieDefaultTimeline {
    * If filter is specified, only the filtered instants are loaded
    * If commitsFilter is specified, only the filtered records are loaded
    */
+  //todo 读取ArchivedTimeline
   private List<HoodieInstant> loadInstants(TimeRangeFilter filter, boolean loadInstantDetails,
        Function<GenericRecord, Boolean> commitsFilter) {
     try {

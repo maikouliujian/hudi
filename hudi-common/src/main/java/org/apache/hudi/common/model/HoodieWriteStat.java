@@ -30,6 +30,31 @@ import java.util.Map;
 /**
  * Statistics about a single Hoodie write operation.
  */
+/***
+ * {
+ *       "fileId" : "6302658c-a758-4ee0-bfb4-8f427c1774cc-0",
+ *       "path" : "2023-04-24/04/my/appsdk/6302658c-a758-4ee0-bfb4-8f427c1774cc-0_0-16-3429_20230424073816368.parquet",
+ *       "prevCommit" : "null",
+ *       "numWrites" : 67930,
+ *       "numDeletes" : 0,
+ *       "numUpdateWrites" : 0,
+ *       "numInserts" : 67930,
+ *       "totalWriteBytes" : 9438462,
+ *       "totalWriteErrors" : 0,
+ *       "tempPath" : null,
+ *       "partitionPath" : "2023-04-24/04/my/appsdk",
+ *       "totalLogRecords" : 0,
+ *       "totalLogFilesCompacted" : 0,
+ *       "totalLogSizeCompacted" : 0,
+ *       "totalUpdatedRecordsCompacted" : 0,
+ *       "totalLogBlocks" : 0,
+ *       "totalCorruptLogBlock" : 0,
+ *       "totalRollbackBlocks" : 0,
+ *       "fileSizeInBytes" : 9438462,
+ *       "minEventTime" : null,
+ *       "maxEventTime" : null
+ *     }
+ */
 public class HoodieWriteStat implements Serializable {
 
   public static final String NULL_COMMIT = "null";
