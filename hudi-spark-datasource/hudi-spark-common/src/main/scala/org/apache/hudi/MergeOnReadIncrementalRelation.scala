@@ -113,6 +113,7 @@ class MergeOnReadIncrementalRelation(sqlContext: SQLContext,
       val modifiedPartitions = getWritePartitionPaths(commitsMetadata)
 
       val fileSlices = modifiedPartitions.asScala.flatMap { relativePartitionPath =>
+        //todo 过滤出未被replace commit的fileid
         fsView.getLatestMergedFileSlicesBeforeOrOn(relativePartitionPath, latestCommit).iterator().asScala
       }.toSeq
 

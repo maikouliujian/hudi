@@ -670,6 +670,7 @@ public abstract class AbstractTableFileSystemView implements SyncableFileSystemV
       String partition = formatPartitionKey(partitionStr);
       ensurePartitionLoadedCorrectly(partition);
       return fetchAllStoredFileGroups(partition)
+              //todo 过滤出没有被Replace的filegroup
           .filter(fg -> !isFileGroupReplacedBeforeOrOn(fg.getFileGroupId(), maxInstantTime))
           .map(fileGroup -> {
             Option<FileSlice> fileSlice = fileGroup.getLatestFileSliceBeforeOrOn(maxInstantTime);
