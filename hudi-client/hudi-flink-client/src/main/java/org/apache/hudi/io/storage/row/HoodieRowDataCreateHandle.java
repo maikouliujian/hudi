@@ -82,6 +82,7 @@ public class HoodieRowDataCreateHandle implements Serializable {
     this.currTimer = new HoodieTimer();
     this.currTimer.startTimer();
     this.fs = table.getMetaClient().getFs();
+    //todo 创建path路径
     this.path = makeNewPath(partitionPath);
     this.writeStatus = new HoodieInternalWriteStatus(!table.getIndex().isImplicitWithStorage(),
         writeConfig.getWriteStatusFailureFraction());
@@ -181,6 +182,7 @@ public class HoodieRowDataCreateHandle implements Serializable {
       throw new HoodieIOException("Failed to make dir " + path, e);
     }
     HoodieTableConfig tableConfig = table.getMetaClient().getTableConfig();
+    //todo 新的path fileId不变
     return new Path(path.toString(), FSUtils.makeBaseFileName(instantTime, getWriteToken(), fileId,
         tableConfig.getBaseFileFormat().getFileExtension()));
   }
@@ -194,7 +196,7 @@ public class HoodieRowDataCreateHandle implements Serializable {
     WriteMarkers writeMarkers = WriteMarkersFactory.get(writeConfig.getMarkersType(), table, instantTime);
     writeMarkers.create(partitionPath, dataFileName, IOType.CREATE);
   }
-
+  //todo taskPartitionId + "-" + taskId + "-" + taskEpochId
   private String getWriteToken() {
     return taskPartitionId + "-" + taskId + "-" + taskEpochId;
   }

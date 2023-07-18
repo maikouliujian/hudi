@@ -281,12 +281,14 @@ public abstract class IncrementalTimelineSyncFileSystemView extends AbstractTabl
     HoodieReplaceCommitMetadata replaceMetadata =
         HoodieReplaceCommitMetadata.fromBytes(timeline.getInstantDetails(instant).get(), HoodieReplaceCommitMetadata.class);
     updatePartitionWriteFileGroups(replaceMetadata.getPartitionToWriteStats(), timeline, instant);
+    //todo 要被replace 的fileid
     replaceMetadata.getPartitionToReplaceFileIds().entrySet().stream().forEach(entry -> {
       String partition = entry.getKey();
       Map<HoodieFileGroupId, HoodieInstant> replacedFileIds = entry.getValue().stream()
           .collect(Collectors.toMap(replaceStat -> new HoodieFileGroupId(partition, replaceStat), replaceStat -> instant));
 
       LOG.info("For partition (" + partition + ") of instant (" + instant + "), excluding " + replacedFileIds.size() + " file groups");
+      //todo 添加 replace fg
       addReplacedFileGroups(replacedFileIds);
     });
     LOG.info("Done Syncing REPLACE instant (" + instant + ")");

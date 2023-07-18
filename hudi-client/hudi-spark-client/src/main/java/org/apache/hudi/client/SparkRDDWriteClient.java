@@ -485,6 +485,7 @@ public class SparkRDDWriteClient<T extends HoodieRecordPayload> extends
 
   @Override
   protected void initWrapperFSMetrics() {
+    //todo 是否开启metrics
     if (config.isMetricsOn()) {
       Registry registry;
       Registry registryMeta;

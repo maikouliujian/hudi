@@ -662,7 +662,7 @@ public abstract class AbstractTableFileSystemView implements SyncableFileSystemV
       readLock.unlock();
     }
   }
-
+  //todo 获取小于等于maxInstantTime的所有FileSlice
   @Override
   public final Stream<FileSlice> getLatestMergedFileSlicesBeforeOrOn(String partitionStr, String maxInstantTime) {
     try {
@@ -673,6 +673,7 @@ public abstract class AbstractTableFileSystemView implements SyncableFileSystemV
               //todo 过滤出没有被Replace的filegroup
           .filter(fg -> !isFileGroupReplacedBeforeOrOn(fg.getFileGroupId(), maxInstantTime))
           .map(fileGroup -> {
+            //todo 寻找fg中小于等于maxInstantTime中commit time最大的那个！！！
             Option<FileSlice> fileSlice = fileGroup.getLatestFileSliceBeforeOrOn(maxInstantTime);
             // if the file-group is under construction, pick the latest before compaction instant time.
             if (fileSlice.isPresent()) {

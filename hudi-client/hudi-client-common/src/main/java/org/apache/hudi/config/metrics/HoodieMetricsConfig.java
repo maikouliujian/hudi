@@ -44,7 +44,7 @@ import java.util.Properties;
 public class HoodieMetricsConfig extends HoodieConfig {
 
   public static final String METRIC_PREFIX = "hoodie.metrics";
-
+  //todo 开关
   public static final ConfigProperty<Boolean> TURN_METRICS_ON = ConfigProperty
       .key(METRIC_PREFIX + ".on")
       .defaultValue(false)

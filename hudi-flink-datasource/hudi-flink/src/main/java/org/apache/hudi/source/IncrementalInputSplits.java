@@ -221,6 +221,7 @@ public class IncrementalInputSplits implements Serializable {
     final AtomicInteger cnt = new AtomicInteger(0);
     final String mergeType = this.conf.getString(FlinkOptions.MERGE_TYPE);
     List<MergeOnReadInputSplit> inputSplits = writePartitions.stream()
+            //todo getLatestMergedFileSlicesBeforeOrOn
         .map(relPartitionPath -> fsView.getLatestMergedFileSlicesBeforeOrOn(relPartitionPath, endInstant)
             .map(fileSlice -> {
               //todo 获取fileSlice下的logfile

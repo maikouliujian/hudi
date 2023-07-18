@@ -170,6 +170,7 @@ public class HoodieFileGroup implements Serializable {
   /**
    * Obtain the latest file slice, upto a instantTime i.e <= maxInstantTime.
    */
+  //todo 寻找fg中小于等于maxInstantTime中commit time最大的那个！！！
   public Option<FileSlice> getLatestFileSliceBeforeOrOn(String maxInstantTime) {
     return Option.fromJavaOptional(getAllFileSlices().filter(slice -> HoodieTimeline
         .compareTimestamps(slice.getBaseInstantTime(), HoodieTimeline.LESSER_THAN_OR_EQUALS, maxInstantTime)).findFirst());

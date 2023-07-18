@@ -39,11 +39,13 @@ public class FileSlice implements Serializable {
   /**
    * Point in the timeline, at which the slice was created.
    */
+  //todo commit time：如20230718020351089
   private final String baseInstantTime;
 
   /**
    * data file, with the compacted data, for this slice.
    * //todo 一个fileslice中含有一个basefile
+   * //todo s3://clotho-emr-data-prod/bondee_dw.db/dwd_event_user_original_hudi/2023-07-18/10/kr/appsdk/0018e8f7-231e-4709-8c6a-af034154bfb0-5_0-3-0_20230718020351089.parquet
    */
   private HoodieBaseFile baseFile;
 

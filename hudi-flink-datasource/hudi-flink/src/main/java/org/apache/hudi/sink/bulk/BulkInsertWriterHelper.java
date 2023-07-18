@@ -76,6 +76,7 @@ public class BulkInsertWriterHelper {
     this.taskEpochId = taskEpochId;
     this.rowType = addMetadataFields(rowType, writeConfig.allowOperationMetadataField()); // patch up with metadata fields
     this.isInputSorted = conf.getBoolean(FlinkOptions.WRITE_BULK_INSERT_SORT_INPUT);
+    //todo append模式，每次的fileid都是一个新的uuid
     this.fileIdPrefix = UUID.randomUUID().toString();
     this.keyGen = RowDataKeyGen.instance(conf, rowType);
   }
@@ -94,6 +95,7 @@ public class BulkInsertWriterHelper {
 
       if ((lastKnownPartitionPath == null) || !lastKnownPartitionPath.equals(partitionPath) || !handle.canWrite()) {
         LOG.info("Creating new file for partition path " + partitionPath);
+        //todo 获取handle
         handle = getRowCreateHandle(partitionPath);
         lastKnownPartitionPath = partitionPath;
       }
@@ -116,6 +118,7 @@ public class BulkInsertWriterHelper {
       if (isInputSorted) {
         close();
       }
+      //todo 创建handle,每一次的fileid都是新的
       HoodieRowDataCreateHandle rowCreateHandle = new HoodieRowDataCreateHandle(hoodieTable, writeConfig, partitionPath, getNextFileId(),
           instantTime, taskPartitionId, taskId, taskEpochId, rowType);
       handles.put(partitionPath, rowCreateHandle);

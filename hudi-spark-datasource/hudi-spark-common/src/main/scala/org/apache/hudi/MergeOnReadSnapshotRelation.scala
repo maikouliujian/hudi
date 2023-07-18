@@ -138,7 +138,7 @@ class MergeOnReadSnapshotRelation(sqlContext: SQLContext,
     val fsView = new HoodieTableFileSystemView(metaClient, timeline, inMemoryFileIndex.allFiles.toArray)
 
     val queryTimestamp = this.queryTimestamp.get
-
+    //todo queryTimestamp time travel 快照读时间
     partitionPaths.flatMap { partitionPath =>
       val relativePath = getRelativePartitionPath(new Path(basePath), partitionPath)
       fsView.getLatestMergedFileSlicesBeforeOrOn(relativePath, queryTimestamp).iterator().asScala.toSeq
