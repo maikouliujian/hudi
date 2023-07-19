@@ -128,6 +128,7 @@ public class StreamWriteFunction<I> extends AbstractStreamWriteFunction<I> {
     // Based on the fact that the coordinator starts the checkpoint first,
     // it would check the validity.
     // wait for the buffer data flush out and request a new instant
+    //todo checkpoint时触发写数据
     flushRemaining(false);
   }
 
@@ -236,6 +237,7 @@ public class StreamWriteFunction<I> extends AbstractStreamWriteFunction<I> {
    * Data bucket.
    */
   private static class DataBucket {
+    //todo将要写入的数据
     private final List<DataItem> records;
     private final BufferSizeDetector detector;
     private final String partitionPath;

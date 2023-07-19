@@ -119,6 +119,7 @@ public abstract class BaseMergeHelper<T extends HoodieRecordPayload, I, K, O> {
 
     @Override
     protected void consumeOneRecord(GenericRecord record) {
+      //todo 写数据
       upsertHandle.write(record);
     }
 

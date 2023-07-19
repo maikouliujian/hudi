@@ -34,6 +34,7 @@ public abstract class BoundedInMemoryQueueConsumer<I, O> {
     Iterator<I> iterator = queue.iterator();
 
     while (iterator.hasNext()) {
+      //todo 写数据
       consumeOneRecord(iterator.next());
     }
 

@@ -541,6 +541,7 @@ public class HoodieFlinkWriteClient<T extends HoodieRecordPayload> extends
         HoodieWriteHandle<?, ?, ?, ?> writeHandle = insertClustering
             ? new FlinkConcatAndReplaceHandle<>(config, instantTime, table, recordItr, partitionPath, fileID,
                 table.getTaskContextSupplier(), lastHandle.getWritePath())
+                //todo recordItr 要写入的数据、lastHandle.getWritePath() 老文件
             : new FlinkMergeAndReplaceHandle<>(config, instantTime, table, recordItr, partitionPath, fileID,
                 table.getTaskContextSupplier(), lastHandle.getWritePath());
         this.bucketToHandles.put(fileID, writeHandle); // override with new replace handle

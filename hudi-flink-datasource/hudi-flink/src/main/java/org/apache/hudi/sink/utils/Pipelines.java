@@ -331,6 +331,7 @@ public class Pipelines {
    * @return the stream write data stream pipeline
    */
   public static DataStream<Object> hoodieStreamWrite(Configuration conf, int defaultParallelism, DataStream<HoodieRecord> dataStream) {
+    //todo bucket index
     if (OptionsResolver.isBucketIndexType(conf)) {
       WriteOperatorFactory<HoodieRecord> operatorFactory = BucketStreamWriteOperator.getFactory(conf);
       //todo bucketindex时的数据！！！

@@ -104,6 +104,7 @@ public class BoundedInMemoryExecutor<I, O, E> {
       return completionService.submit(() -> {
         try {
           preExecuteRunnable.run();
+          //todo 生产数据
           producer.produce(queue);
         } catch (Throwable e) {
           LOG.error("error producing records", e);
@@ -133,6 +134,7 @@ public class BoundedInMemoryExecutor<I, O, E> {
         LOG.info("starting consumer thread");
         preExecuteRunnable.run();
         try {
+          //todo 从队列里取数进行消费
           E result = consumer.consume(queue);
           LOG.info("Queue Consumption is done; notifying producer threads");
           return result;

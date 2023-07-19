@@ -69,7 +69,7 @@ public class FlinkWriteHelper<T extends HoodieRecordPayload, R> extends BaseWrit
     try {
       Instant lookupBegin = Instant.now();
       Duration indexLookupDuration = Duration.between(lookupBegin, Instant.now());
-
+      //todo 新数据inputRecords
       HoodieWriteMetadata<List<WriteStatus>> result = executor.execute(inputRecords);
       result.setIndexLookupDuration(indexLookupDuration);
       return result;

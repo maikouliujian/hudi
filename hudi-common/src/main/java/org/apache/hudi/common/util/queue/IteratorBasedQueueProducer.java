@@ -43,6 +43,7 @@ public class IteratorBasedQueueProducer<I> implements BoundedInMemoryQueueProduc
   public void produce(BoundedInMemoryQueue<I, ?> queue) throws Exception {
     LOG.info("starting to buffer records");
     while (inputIterator.hasNext()) {
+      //todo 生产数据
       queue.insertRecord(inputIterator.next());
     }
     LOG.info("finished buffering records");

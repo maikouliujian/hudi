@@ -59,6 +59,7 @@ public class AsyncCleanerService extends HoodieAsyncTableService {
 
   public static AsyncCleanerService startAsyncCleaningIfEnabled(BaseHoodieWriteClient writeClient) {
     HoodieWriteConfig config = writeClient.getConfig();
+    //todo 必须二者都为true才会开启clean
     if (!config.isAutoClean() || !config.isAsyncClean()) {
       LOG.info("The HoodieWriteClient is not configured to auto & async clean. Async clean service will not start.");
       return null;

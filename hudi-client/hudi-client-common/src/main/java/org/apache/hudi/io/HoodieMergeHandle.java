@@ -102,8 +102,9 @@ public class HoodieMergeHandle<T extends HoodieRecordPayload, I, K, O> extends H
   protected Set<String> writtenRecordKeys;
   protected HoodieFileWriter<IndexedRecord> fileWriter;
   private boolean preserveMetadata = false;
-
+  //todo 新文件
   protected Path newFilePath;
+  //todo 老文件
   protected Path oldFilePath;
   protected long recordsWritten = 0;
   protected long recordsDeleted = 0;
@@ -167,6 +168,7 @@ public class HoodieMergeHandle<T extends HoodieRecordPayload, I, K, O> extends H
     this.writtenRecordKeys = new HashSet<>();
     writeStatus.setStat(new HoodieWriteStat());
     try {
+      //todo 老文件
       String latestValidFilePath = baseFileToMerge.getFileName();
       writeStatus.getStat().setPrevCommit(FSUtils.getCommitTime(latestValidFilePath));
 
@@ -174,8 +176,9 @@ public class HoodieMergeHandle<T extends HoodieRecordPayload, I, K, O> extends H
           new Path(config.getBasePath()), FSUtils.getPartitionPath(config.getBasePath(), partitionPath),
           hoodieTable.getPartitionMetafileFormat());
       partitionMetadata.trySave(getPartitionId());
-
+      //todo 新文件全名【与老文件fileid相同】
       String newFileName = FSUtils.makeBaseFileName(instantTime, writeToken, fileId, hoodieTable.getBaseFileExtension());
+      //todo 标记新老文件
       makeOldAndNewFilePaths(partitionPath, latestValidFilePath, newFileName);
 
       LOG.info(String.format("Merging new data into oldPath %s, as newPath %s", oldFilePath.toString(),
@@ -238,6 +241,7 @@ public class HoodieMergeHandle<T extends HoodieRecordPayload, I, K, O> extends H
    * Load the new incoming records in a map and return partitionPath.
    */
   protected void init(String fileId, Iterator<HoodieRecord<T>> newRecordsItr) {
+    //todo
     initializeIncomingRecordsMap();
     while (newRecordsItr.hasNext()) {
       HoodieRecord<T> record = newRecordsItr.next();
@@ -302,6 +306,7 @@ public class HoodieMergeHandle<T extends HoodieRecordPayload, I, K, O> extends H
     }
     try {
       if (indexedRecord.isPresent() && !isDelete) {
+        //todo 写数据
         writeToFile(hoodieRecord.getKey(), (GenericRecord) indexedRecord.get(), preserveMetadata && useWriterSchemaForCompaction);
         recordsWritten++;
       } else {
@@ -322,17 +327,19 @@ public class HoodieMergeHandle<T extends HoodieRecordPayload, I, K, O> extends H
 
   /**
    * Go through an old record. Here if we detect a newer version shows up, we write the new one to the file.
-   * todo 按照recordkey进行数据merge合并
+   * todo 按照recordkey进行新老数据merge合并【update的核心逻辑！！！】
    */
   public void write(GenericRecord oldRecord) {
     String key = KeyGenUtils.getRecordKeyFromGenericRecord(oldRecord, keyGeneratorOpt);
     boolean copyOldRecord = true;
+    //todo 如果新数据中包含老数据的key，说明是update
     if (keyToNewRecords.containsKey(key)) {
       // If we have duplicate records that we are updating, then the hoodie record will be deflated after
       // writing the first record. So make a copy of the record to be merged
       HoodieRecord<T> hoodieRecord = keyToNewRecords.get(key).newInstance();
       try {
         //todo 如果是EmptyHoodieRecordPayload，则返回Option.empty()
+        //todo 在这里合并新老数据
         Option<IndexedRecord> combinedAvroRecord =
             hoodieRecord.getData().combineAndGetUpdateValue(oldRecord,
               useWriterSchemaForCompaction ? tableSchemaWithMetaFields : tableSchema,
@@ -341,6 +348,7 @@ public class HoodieMergeHandle<T extends HoodieRecordPayload, I, K, O> extends H
         if (combinedAvroRecord.isPresent() && combinedAvroRecord.get().equals(IGNORE_RECORD)) {
           // If it is an IGNORE_RECORD, just copy the old record, and do not update the new record.
           copyOldRecord = true;
+          //todo 写数据
         } else if (writeUpdateRecord(hoodieRecord, oldRecord, combinedAvroRecord)) {
           /*
            * ONLY WHEN 1) we have an update for this key AND 2) We are able to successfully

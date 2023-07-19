@@ -67,6 +67,7 @@ public class FlinkMergeHelper<T extends HoodieRecordPayload> extends BaseMergeHe
     Schema readSchema;
 
     final boolean externalSchemaTransformation = table.getConfig().shouldUseExternalSchemaTransformation();
+    //todo baseFile 老文件
     HoodieBaseFile baseFile = mergeHandle.baseFileForMerge();
     if (externalSchemaTransformation || baseFile.getBootstrapBaseFile().isPresent()) {
       readSchema = HoodieFileReaderFactory.getFileReader(table.getHadoopConf(), mergeHandle.getOldFilePath()).getSchema();
@@ -80,6 +81,7 @@ public class FlinkMergeHelper<T extends HoodieRecordPayload> extends BaseMergeHe
 
     BoundedInMemoryExecutor<GenericRecord, GenericRecord, Void> wrapper = null;
     Configuration cfgForHoodieFile = new Configuration(table.getHadoopConf());
+    //todo 读取老文件的reader
     HoodieFileReader<GenericRecord> reader = HoodieFileReaderFactory.<GenericRecord>getFileReader(cfgForHoodieFile, mergeHandle.getOldFilePath());
     try {
       final Iterator<GenericRecord> readerIterator;
@@ -91,6 +93,7 @@ public class FlinkMergeHelper<T extends HoodieRecordPayload> extends BaseMergeHe
 
       ThreadLocal<BinaryEncoder> encoderCache = new ThreadLocal<>();
       ThreadLocal<BinaryDecoder> decoderCache = new ThreadLocal<>();
+      //todo 写数据！！！ readerIterator 老数据
       wrapper = new BoundedInMemoryExecutor<>(table.getConfig().getWriteBufferLimitBytes(), new IteratorBasedQueueProducer<>(readerIterator),
           Option.of(new UpdateHandler(mergeHandle)), record -> {
         if (!externalSchemaTransformation) {
@@ -98,6 +101,7 @@ public class FlinkMergeHelper<T extends HoodieRecordPayload> extends BaseMergeHe
         }
         return transformRecordBasedOnNewSchema(gReader, gWriter, encoderCache, decoderCache, (GenericRecord) record);
       });
+      //todo 启动生产消费
       wrapper.execute();
     } catch (Exception e) {
       throw new HoodieException(e);

@@ -110,6 +110,7 @@ public abstract class BaseFlinkCommitActionExecutor<T extends HoodieRecordPayloa
         partitionPath,
         fileId,
         bucketType,
+        //todo 新数据
         inputRecords.iterator())
         .forEachRemaining(writeStatuses::addAll);
     setUpWriteMetadata(writeStatuses, result);
@@ -175,6 +176,7 @@ public abstract class BaseFlinkCommitActionExecutor<T extends HoodieRecordPayloa
       String partitionPath,
       String fileIdHint,
       BucketType bucketType,
+      //todo 本次新增数据
       Iterator recordItr) {
     try {
       if (this.writeHandle instanceof HoodieCreateHandle) {
@@ -218,6 +220,7 @@ public abstract class BaseFlinkCommitActionExecutor<T extends HoodieRecordPayloa
       return Collections.singletonList((List<WriteStatus>) Collections.EMPTY_LIST).iterator();
     }
     // these are updates
+    //todo 处理update
     HoodieMergeHandle<?, ?, ?, ?> upsertHandle = (HoodieMergeHandle<?, ?, ?, ?>) this.writeHandle;
     return handleUpdateInternal(upsertHandle, fileId);
   }

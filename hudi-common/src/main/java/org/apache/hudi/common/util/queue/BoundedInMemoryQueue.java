@@ -189,6 +189,7 @@ public class BoundedInMemoryQueue<I, O> implements Iterable<O> {
     // and record creation to it.
     final O payload = transformFunction.apply(t);
     adjustBufferSizeIfNeeded(payload);
+    //todo 将数据加入队列
     queue.put(Option.of(payload));
   }
 
