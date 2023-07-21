@@ -89,6 +89,7 @@ import java.util.stream.Collectors;
  * @param <I> Type of the input record
  * @see StreamWriteOperatorCoordinator
  */
+//todo for update
 public class StreamWriteFunction<I> extends AbstractStreamWriteFunction<I> {
 
   private static final long serialVersionUID = 1L;
@@ -205,9 +206,9 @@ public class StreamWriteFunction<I> extends AbstractStreamWriteFunction<I> {
    */
   private static class DataItem {
     private final String key; // record key
-    private final String instant; // 'U' or 'I'
+    private final String instant;
     private final HoodieRecordPayload<?> data; // record payload
-    private final HoodieOperation operation; // operation
+    private final HoodieOperation operation; // operation // 'U' or 'I'
 
     private DataItem(String key, String instant, HoodieRecordPayload<?> data, HoodieOperation operation) {
       this.key = key;
@@ -397,6 +398,7 @@ public class StreamWriteFunction<I> extends AbstractStreamWriteFunction<I> {
           .sorted((b1, b2) -> Long.compare(b2.detector.totalSize, b1.detector.totalSize))
           .collect(Collectors.toList());
       final DataBucket bucketToFlush = sortedBuckets.get(0);
+      //todo 找到最大的DataBucket，刷写出去！！！
       if (flushBucket(bucketToFlush)) {
         this.tracer.countDown(bucketToFlush.detector.totalSize);
         bucketToFlush.reset();

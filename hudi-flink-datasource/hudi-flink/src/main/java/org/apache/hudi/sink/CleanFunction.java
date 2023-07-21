@@ -91,7 +91,7 @@ public class CleanFunction<T> extends AbstractRichFunction
   public void snapshotState(FunctionSnapshotContext context) throws Exception {
     if (conf.getBoolean(FlinkOptions.CLEAN_ASYNC_ENABLED) && !isCleaning) {
       try {
-        //todo 启动clean
+        //todo ckp时 启动cleaner
         this.writeClient.startAsyncCleaning();
         this.isCleaning = true;
       } catch (Throwable throwable) {

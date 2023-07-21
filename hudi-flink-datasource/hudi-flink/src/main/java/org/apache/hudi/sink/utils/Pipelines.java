@@ -394,6 +394,7 @@ public class Pipelines {
             TypeInformation.of(CompactionCommitEvent.class),
             new ProcessOperator<>(new CompactFunction(conf)))
         .setParallelism(conf.getInteger(FlinkOptions.COMPACTION_TASKS))
+            //todo CompactionCommitSink中包含了cleaner
         .addSink(new CompactionCommitSink(conf))
         .name("compact_commit")
         .setParallelism(1); // compaction commit should be singleton

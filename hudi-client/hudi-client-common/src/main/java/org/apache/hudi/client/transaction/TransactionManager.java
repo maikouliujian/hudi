@@ -35,6 +35,7 @@ import java.io.Serializable;
 public class TransactionManager implements Serializable {
 
   private static final Logger LOG = LogManager.getLogger(TransactionManager.class);
+  //todo 分布式锁，zk
   private final LockManager lockManager;
   private final boolean isOptimisticConcurrencyControlEnabled;
   private Option<HoodieInstant> currentTxnOwnerInstant = Option.empty();

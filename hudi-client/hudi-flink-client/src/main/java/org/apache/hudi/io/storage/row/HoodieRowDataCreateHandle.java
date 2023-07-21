@@ -99,6 +99,7 @@ public class HoodieRowDataCreateHandle implements Serializable {
               table.getPartitionMetafileFormat());
       partitionMetadata.trySave(taskPartitionId);
       createMarkerFile(partitionPath, FSUtils.makeBaseFileName(this.instantTime, getWriteToken(), this.fileId, table.getBaseFileExtension()));
+      //todo 创建new writer
       this.fileWriter = createNewFileWriter(path, table, writeConfig, rowType);
     } catch (IOException e) {
       throw new HoodieInsertException("Failed to initialize file writer for path " + path, e);
@@ -182,7 +183,7 @@ public class HoodieRowDataCreateHandle implements Serializable {
       throw new HoodieIOException("Failed to make dir " + path, e);
     }
     HoodieTableConfig tableConfig = table.getMetaClient().getTableConfig();
-    //todo 新的path fileId不变
+
     return new Path(path.toString(), FSUtils.makeBaseFileName(instantTime, getWriteToken(), fileId,
         tableConfig.getBaseFileFormat().getFileExtension()));
   }

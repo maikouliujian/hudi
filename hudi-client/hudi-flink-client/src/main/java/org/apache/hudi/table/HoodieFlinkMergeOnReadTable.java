@@ -91,6 +91,7 @@ public class HoodieFlinkMergeOnReadTable<T extends HoodieRecordPayload>
       String instantTime,
       List<HoodieRecord<T>> hoodieRecords) {
     if (writeHandle instanceof FlinkAppendHandle) {
+      //todo mor表
       FlinkAppendHandle<?, ?, ?, ?> appendHandle = (FlinkAppendHandle<?, ?, ?, ?>) writeHandle;
       return new FlinkUpsertDeltaCommitActionExecutor<>(context, appendHandle, config, this, instantTime, hoodieRecords).execute();
     } else {

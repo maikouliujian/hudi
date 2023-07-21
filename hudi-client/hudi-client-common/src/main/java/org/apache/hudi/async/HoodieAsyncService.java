@@ -38,6 +38,7 @@ import java.util.function.Function;
 /**
  * Base Class for running archive/clean/delta-sync/compaction/clustering in separate thread and controlling their life-cycles.
  */
+//todo AsyncService
 public abstract class HoodieAsyncService implements Serializable {
 
   private static final Logger LOG = LogManager.getLogger(HoodieAsyncService.class);
@@ -139,11 +140,13 @@ public abstract class HoodieAsyncService implements Serializable {
    * 
    * @param onShutdownCallback
    */
+  //todo 启动各子服务
   public void start(Function<Boolean, Boolean> onShutdownCallback) {
     if (started) {
       LOG.warn("The async service already started.");
       return;
     }
+    //todo 统一由各子服务启动
     Pair<CompletableFuture, ExecutorService> res = startService();
     future = res.getKey();
     executor = res.getValue();
@@ -166,6 +169,7 @@ public abstract class HoodieAsyncService implements Serializable {
     if (future == null) {
       return;
     }
+    //todo 阻塞
     future.whenComplete((resp, error) -> {
       if (null != callback) {
         callback.apply(null != error);

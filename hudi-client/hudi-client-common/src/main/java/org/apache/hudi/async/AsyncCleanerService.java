@@ -49,9 +49,11 @@ public class AsyncCleanerService extends HoodieAsyncTableService {
 
   @Override
   protected Pair<CompletableFuture, ExecutorService> startService() {
+    //todo 新instantTime
     String instantTime = HoodieActiveTimeline.createNewInstantTime();
     LOG.info(String.format("Starting async clean service with instant time %s...", instantTime));
     return Pair.of(CompletableFuture.supplyAsync(() -> {
+      //todo 异步执行
       writeClient.clean(instantTime);
       return true;
     }, executor), executor);
@@ -65,6 +67,7 @@ public class AsyncCleanerService extends HoodieAsyncTableService {
       return null;
     }
     AsyncCleanerService asyncCleanerService = new AsyncCleanerService(writeClient);
+    //todo 启动
     asyncCleanerService.start(null);
     return asyncCleanerService;
   }

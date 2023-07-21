@@ -312,6 +312,7 @@ public class HoodieFlinkCopyOnWriteTable<T extends HoodieRecordPayload>
    * @param extraMetadata additional metadata to write into plan
    * @return
    */
+  //todo clean 执行计划
   @Override
   public Option<HoodieCleanerPlan> scheduleCleaning(HoodieEngineContext context, String instantTime, Option<Map<String, String>> extraMetadata) {
     return new CleanPlanActionExecutor(context, config, this, instantTime, extraMetadata).execute();
@@ -323,7 +324,7 @@ public class HoodieFlinkCopyOnWriteTable<T extends HoodieRecordPayload>
     return new BaseRollbackPlanActionExecutor(context, config, this, instantTime, instantToRollback, skipTimelinePublish,
         shouldRollbackUsingMarkers).execute();
   }
-
+  //todo clean 执行
   @Override
   public HoodieCleanMetadata clean(HoodieEngineContext context, String cleanInstantTime, boolean skipLocking) {
     return new CleanActionExecutor(context, config, this, cleanInstantTime).execute();

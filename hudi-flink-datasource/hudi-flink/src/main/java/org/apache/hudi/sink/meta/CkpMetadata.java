@@ -205,7 +205,7 @@ public class CkpMetadata implements Serializable {
   public static CkpMetadata getInstance(FileSystem fs, String basePath) {
     return new CkpMetadata(fs, basePath);
   }
-
+  //todo .aux目录下
   protected static String ckpMetaPath(String basePath) {
     return basePath + Path.SEPARATOR + HoodieTableMetaClient.AUXILIARYFOLDER_NAME + Path.SEPARATOR + CKP_META;
   }

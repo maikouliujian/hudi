@@ -45,6 +45,7 @@ import java.util.List;
  * @param <I> Type of the input record
  * @see StreamWriteOperatorCoordinator
  */
+//todo for append
 public class AppendWriteFunction<I> extends AbstractStreamWriteFunction<I> {
   private static final Logger LOG = LoggerFactory.getLogger(AppendWriteFunction.class);
 
@@ -75,6 +76,7 @@ public class AppendWriteFunction<I> extends AbstractStreamWriteFunction<I> {
     // Based on the fact that the coordinator starts the checkpoint first,
     // it would check the validity.
     // wait for the buffer data flush out and request a new instant
+    //todo ckp
     flushData(false);
   }
 
@@ -121,6 +123,7 @@ public class AppendWriteFunction<I> extends AbstractStreamWriteFunction<I> {
     final List<WriteStatus> writeStatus;
     final String instant;
     if (this.writerHelper != null) {
+      //todo ckp时，关闭写数据的文件句柄，此时数据停止写入！！！
       writeStatus = this.writerHelper.getWriteStatuses(this.taskID);
       instant = this.writerHelper.getInstantTime();
     } else {
@@ -138,6 +141,7 @@ public class AppendWriteFunction<I> extends AbstractStreamWriteFunction<I> {
     //todo 最终会调用StreamWriteOperatorCoordinator::handleEventFromOperator
     this.eventGateway.sendEventToCoordinator(event);
     // nullify the write helper for next ckp
+    //todo 清空writerHelper
     this.writerHelper = null;
     this.writeStatuses.addAll(writeStatus);
     // blocks flushing until the coordinator starts a new instant

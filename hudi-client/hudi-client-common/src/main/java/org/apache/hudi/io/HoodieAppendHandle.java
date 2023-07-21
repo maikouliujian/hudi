@@ -510,6 +510,7 @@ public class HoodieAppendHandle<T extends HoodieRecordPayload, I, K, O> extends 
     if (indexedRecord.isPresent()) {
       // Skip the ignored record.
       if (!indexedRecord.get().equals(IGNORE_RECORD)) {
+        //todo 加入recordList
         recordList.add(indexedRecord.get());
       }
     } else {
@@ -528,6 +529,7 @@ public class HoodieAppendHandle<T extends HoodieRecordPayload, I, K, O> extends 
       // avg of new and old
       LOG.info("AvgRecordSize => " + averageRecordSize);
       averageRecordSize = (averageRecordSize + sizeEstimator.sizeEstimate(record)) / 2;
+      //todo 刷写数据！！！
       appendDataAndDeleteBlocks(header);
       estimatedNumberOfBytesWritten += averageRecordSize * numberOfRecords;
       numberOfRecords = 0;

@@ -151,6 +151,7 @@ public class CleanPlanner<T extends HoodieRecordPayload, I, K, O> implements Ser
     }
 
     if (config.incrementalCleanerModeEnabled()) {
+      //todo 上次clean 完成的HoodieInstant
       Option<HoodieInstant> lastClean = hoodieTable.getCleanTimeline().filterCompletedInstants().lastInstant();
       if (lastClean.isPresent()) {
         if (hoodieTable.getActiveTimeline().isEmpty(lastClean.get())) {
@@ -160,6 +161,7 @@ public class CleanPlanner<T extends HoodieRecordPayload, I, K, O> implements Ser
                   .deserializeHoodieCleanMetadata(hoodieTable.getActiveTimeline().getInstantDetails(lastClean.get()).get());
           if ((cleanMetadata.getEarliestCommitToRetain() != null)
                   && (cleanMetadata.getEarliestCommitToRetain().length() > 0)) {
+            //todo
             return getPartitionPathsForIncrementalCleaning(cleanMetadata, instantToRetain);
           }
         }
@@ -171,9 +173,10 @@ public class CleanPlanner<T extends HoodieRecordPayload, I, K, O> implements Ser
   /**
    * Use Incremental Mode for finding partition paths.
    * @param cleanMetadata
-   * @param newInstantToRetain
+   * @param newInstantToRetain todo 本次timeline上要 clean的earliest instant
    * @return
    */
+  //todo 获取在【上次清理time，本地清理time】之间的timeline commit的HoodieInstant对应的分区path
   private List<String> getPartitionPathsForIncrementalCleaning(HoodieCleanMetadata cleanMetadata,
       Option<HoodieInstant> newInstantToRetain) {
     LOG.info("Incremental Cleaning mode is enabled. Looking up partition-paths that have since changed "
@@ -302,6 +305,7 @@ public class CleanPlanner<T extends HoodieRecordPayload, I, K, O> implements Ser
     // determine if we have enough commits, to start cleaning.
     boolean toDeletePartition = false;
     if (commitTimeline.countInstants() > commitsRetained) {
+      //todo 清理小于earliestCommitToRetainOption的文件
       Option<HoodieInstant> earliestCommitToRetainOption = getEarliestCommitToRetain();
       HoodieInstant earliestCommitToRetain = earliestCommitToRetainOption.get();
       // all replaced file groups before earliestCommitToRetain are eligible to clean
@@ -314,8 +318,9 @@ public class CleanPlanner<T extends HoodieRecordPayload, I, K, O> implements Ser
         if (fileSliceList.isEmpty()) {
           continue;
         }
-
+        //todo 取最新版本commit time
         String lastVersion = fileSliceList.get(0).getBaseInstantTime();
+        //todo 取比earliestCommitToRetain大的最小commit time
         String lastVersionBeforeEarliestCommitToRetain =
             getLatestVersionBeforeCommit(fileSliceList, earliestCommitToRetain);
 
@@ -353,6 +358,7 @@ public class CleanPlanner<T extends HoodieRecordPayload, I, K, O> implements Ser
               .compareTimestamps(earliestCommitToRetain.getTimestamp(), HoodieTimeline.GREATER_THAN, fileCommitTime)) {
             // this is a commit, that should be cleaned.
             aFile.ifPresent(hoodieDataFile -> {
+              //todo 清理basefile
               deletePaths.add(new CleanFileInfo(hoodieDataFile.getPath(), false));
               if (hoodieDataFile.getBootstrapBaseFile().isPresent() && config.shouldCleanBootstrapBaseFile()) {
                 deletePaths.add(new CleanFileInfo(hoodieDataFile.getBootstrapBaseFile().get().getPath(), true));
@@ -360,6 +366,7 @@ public class CleanPlanner<T extends HoodieRecordPayload, I, K, O> implements Ser
             });
             if (hoodieTable.getMetaClient().getTableType() == HoodieTableType.MERGE_ON_READ) {
               // If merge on read, then clean the log files for the commits as well
+              //todo 清理logfiles
               deletePaths.addAll(aSlice.getLogFiles().map(lf -> new CleanFileInfo(lf.getPath().toString(), false))
                   .collect(Collectors.toList()));
             }
@@ -436,9 +443,11 @@ public class CleanPlanner<T extends HoodieRecordPayload, I, K, O> implements Ser
   /**
    * Returns files to be cleaned for the given partitionPath based on cleaning policy.
    */
+  //todo 获取要清理的文件
   public Pair<Boolean, List<CleanFileInfo>> getDeletePaths(String partitionPath) {
     HoodieCleaningPolicy policy = config.getCleanerPolicy();
     Pair<Boolean, List<CleanFileInfo>> deletePaths;
+    //todo
     if (policy == HoodieCleaningPolicy.KEEP_LATEST_COMMITS) {
       deletePaths = getFilesToCleanKeepingLatestCommits(partitionPath);
     } else if (policy == HoodieCleaningPolicy.KEEP_LATEST_FILE_VERSIONS) {
@@ -460,10 +469,12 @@ public class CleanPlanner<T extends HoodieRecordPayload, I, K, O> implements Ser
    */
   public Option<HoodieInstant> getEarliestCommitToRetain() {
     Option<HoodieInstant> earliestCommitToRetain = Option.empty();
+    //todo commitsRetained
     int commitsRetained = config.getCleanerCommitsRetained();
     int hoursRetained = config.getCleanerHoursRetained();
     if (config.getCleanerPolicy() == HoodieCleaningPolicy.KEEP_LATEST_COMMITS
         && commitTimeline.countInstants() > commitsRetained) {
+      //todo 计算timeline上要clean的终止 instant
       earliestCommitToRetain = commitTimeline.nthInstant(commitTimeline.countInstants() - commitsRetained); //15 instants total, 10 commits to retain, this gives 6th instant in the list
     } else if (config.getCleanerPolicy() == HoodieCleaningPolicy.KEEP_LATEST_BY_HOURS) {
       Instant instant = Instant.now();

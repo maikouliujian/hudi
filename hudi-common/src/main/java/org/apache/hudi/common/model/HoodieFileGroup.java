@@ -45,7 +45,8 @@ public class HoodieFileGroup implements Serializable {
 
   /**
    * Slices of files in this group, sorted with greater commit first.
-   * //todo 一个filegroup下面有多个fileSlices，用treemap维护，map的key为commit time，value为FileSlice
+   * //todo 一个filegroup下面有多个fileSlices，用treemap维护，map的key为commit time，value为FileSlice，代表数据的不同版本的快照
+   * //todo 按照commit time倒叙排列
    */
   private final TreeMap<String, FileSlice> fileSlices;
 

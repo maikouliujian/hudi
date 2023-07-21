@@ -868,10 +868,11 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
       LOG.info("Cleaner started");
       // proceed only if multiple clean schedules are enabled or if there are no pending cleans.
       if (scheduleInline) {
+        //todo 生成clean 计划
         scheduleTableServiceInternal(cleanInstantTime, Option.empty(), TableServiceType.CLEAN);
         table.getMetaClient().reloadActiveTimeline();
       }
-
+      //todo 执行清理
       metadata = table.clean(context, cleanInstantTime, skipLocking);
       if (timerContext != null && metadata != null) {
         long durationMs = metrics.getDurationInMs(timerContext.stop());
@@ -1336,7 +1337,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
       this.txnManager.endTransaction(inflightInstant);
     }
   }
-
+  //todo 生成执行计划，即把将要操作的事情内容记录到timeline上的对应文件中
   private Option<String> scheduleTableServiceInternal(String instantTime, Option<Map<String, String>> extraMetadata,
                                                       TableServiceType tableServiceType) {
     if (!tableServicesEnabled(config)) {
@@ -1358,6 +1359,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
             .scheduleCompaction(context, instantTime, extraMetadata);
         return compactionPlan.isPresent() ? Option.of(instantTime) : Option.empty();
       case CLEAN:
+        //todo CLEAN
         LOG.info("Scheduling cleaning at instant time :" + instantTime);
         Option<HoodieCleanerPlan> cleanerPlan = createTable(config, hadoopConf)
             .scheduleCleaning(context, instantTime, extraMetadata);

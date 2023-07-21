@@ -95,8 +95,10 @@ public class CleanPlanActionExecutor<T extends HoodieRecordPayload, I, K, O> ext
   HoodieCleanerPlan requestClean(HoodieEngineContext context) {
     try {
       CleanPlanner<T, I, K, O> planner = new CleanPlanner<>(context, table, config);
+      //todo timeline上要clean的earliest instant
       Option<HoodieInstant> earliestInstant = planner.getEarliestCommitToRetain();
       context.setJobStatus(this.getClass().getSimpleName(), "Obtaining list of partitions to be cleaned: " + config.getTableName());
+      //todo 获取在【上次清理time，本地清理time】之间的timeline commit的HoodieInstant对应的分区path
       List<String> partitionsToClean = planner.getPartitionPathsToClean(earliestInstant);
 
       if (partitionsToClean.isEmpty()) {
@@ -110,6 +112,7 @@ public class CleanPlanActionExecutor<T extends HoodieRecordPayload, I, K, O> ext
       context.setJobStatus(this.getClass().getSimpleName(), "Generating list of file slices to be cleaned: " + config.getTableName());
 
       Map<String, Pair<Boolean, List<CleanFileInfo>>> cleanOpsWithPartitionMeta = context
+              //todo 获取要清理的文件 planner.getDeletePaths(partitionPathToClean)
           .map(partitionsToClean, partitionPathToClean -> Pair.of(partitionPathToClean, planner.getDeletePaths(partitionPathToClean)), cleanerParallelism)
           .stream()
           .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
@@ -117,7 +120,7 @@ public class CleanPlanActionExecutor<T extends HoodieRecordPayload, I, K, O> ext
       Map<String, List<HoodieCleanFileInfo>> cleanOps = cleanOpsWithPartitionMeta.entrySet().stream()
           .collect(Collectors.toMap(Map.Entry::getKey,
               e -> CleanerUtils.convertToHoodieCleanFileInfoList(e.getValue().getValue())));
-
+      //todo 已经被删除的分区
       List<String> partitionsToDelete = cleanOpsWithPartitionMeta.entrySet().stream().filter(entry -> entry.getValue().getKey()).map(Map.Entry::getKey)
           .collect(Collectors.toList());
 
@@ -138,6 +141,7 @@ public class CleanPlanActionExecutor<T extends HoodieRecordPayload, I, K, O> ext
    * @return Cleaner Plan if generated
    */
   protected Option<HoodieCleanerPlan> requestClean(String startCleanTime) {
+    //todo
     final HoodieCleanerPlan cleanerPlan = requestClean(context);
     if ((cleanerPlan.getFilePathsToBeDeletedPerPartition() != null)
         && !cleanerPlan.getFilePathsToBeDeletedPerPartition().isEmpty()
@@ -146,6 +150,7 @@ public class CleanPlanActionExecutor<T extends HoodieRecordPayload, I, K, O> ext
       final HoodieInstant cleanInstant = new HoodieInstant(HoodieInstant.State.REQUESTED, HoodieTimeline.CLEAN_ACTION, startCleanTime);
       // Save to both aux and timeline folder
       try {
+        //todo 在timeline上保存clean plan，将cleanerPlan信息序列化写入文件
         table.getActiveTimeline().saveToCleanRequested(cleanInstant, TimelineMetadataUtils.serializeCleanerPlan(cleanerPlan));
         LOG.info("Requesting Cleaning with instant time " + cleanInstant);
       } catch (IOException e) {
@@ -163,6 +168,7 @@ public class CleanPlanActionExecutor<T extends HoodieRecordPayload, I, K, O> ext
       return Option.empty();
     }
     // Plan a new clean action
+    //todo clean plan
     return requestClean(instantTime);
   }
 

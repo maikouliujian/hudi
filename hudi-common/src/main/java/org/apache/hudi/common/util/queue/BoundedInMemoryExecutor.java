@@ -152,7 +152,9 @@ public class BoundedInMemoryExecutor<I, O, E> {
    */
   public E execute() {
     try {
+      //todo 启动生产者
       startProducers();
+      //todo 启动消费者
       Future<E> future = startConsumer();
       // Wait for consumer to be done
       return future.get();

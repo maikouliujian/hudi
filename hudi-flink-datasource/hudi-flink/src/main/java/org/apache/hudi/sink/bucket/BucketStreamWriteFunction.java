@@ -169,6 +169,7 @@ public class BucketStreamWriteFunction<I> extends StreamWriteFunction<I> {
     Map<Integer, String> bucketToFileIDMap = new HashMap<>();
     this.writeClient.getHoodieTable().getFileSystemView().getAllFileGroups(partition).forEach(fileGroup -> {
       String fileID = fileGroup.getFileGroupId().getFileId();
+      //todo 通过fileid获取bucketid
       int bucketNumber = BucketIdentifier.bucketIdFromFileId(fileID);
       if (bucketToLoad.contains(bucketNumber)) {
         LOG.info(String.format("Should load this partition bucket %s with fileID %s", bucketNumber, fileID));

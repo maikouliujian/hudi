@@ -71,6 +71,7 @@ public class HoodieTableFileSystemView extends IncrementalTimelineSyncFileSystem
   /**
    * Track replace time for replaced file groups.
    */
+  //todo 记录fg被replace的HoodieInstant
   protected Map<HoodieFileGroupId, HoodieInstant> fgIdToReplaceInstants;
 
   /**

@@ -506,6 +506,7 @@ public class StreamWriteOperatorCoordinator
       sendCommitAckEvents(checkpointId);
       return false;
     }
+    //todo 真正提交
     doCommit(instant, writeResults);
     return true;
   }
@@ -530,10 +531,12 @@ public class StreamWriteOperatorCoordinator
       final Map<String, List<String>> partitionToReplacedFileIds = tableState.isOverwrite
           ? writeClient.getPartitionToReplacedFileIds(tableState.operationType, writeResults)
           : Collections.emptyMap();
+      //todo 提交
       boolean success = writeClient.commit(instant, writeResults, Option.of(checkpointCommitMetadata),
           tableState.commitAction, partitionToReplacedFileIds);
       if (success) {
         reset();
+        //todo commit完成
         this.ckpMetadata.commitInstant(instant);
         LOG.info("Commit instant [{}] success!", instant);
       } else {

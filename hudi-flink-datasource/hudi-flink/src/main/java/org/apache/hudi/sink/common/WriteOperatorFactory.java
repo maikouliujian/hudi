@@ -65,7 +65,7 @@ public class WriteOperatorFactory<I>
     eventDispatcher.registerEventHandler(operatorID, operator);
     return (T) operator;
   }
-
+  //todo 获取StreamWriteOperatorCoordinator Provider
   @Override
   public OperatorCoordinator.Provider getCoordinatorProvider(String s, OperatorID operatorID) {
     return new StreamWriteOperatorCoordinator.Provider(operatorID, this.conf);

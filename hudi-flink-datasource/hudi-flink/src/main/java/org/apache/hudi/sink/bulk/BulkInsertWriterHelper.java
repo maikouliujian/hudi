@@ -95,7 +95,7 @@ public class BulkInsertWriterHelper {
 
       if ((lastKnownPartitionPath == null) || !lastKnownPartitionPath.equals(partitionPath) || !handle.canWrite()) {
         LOG.info("Creating new file for partition path " + partitionPath);
-        //todo 获取handle
+        //todo 新建handle
         handle = getRowCreateHandle(partitionPath);
         lastKnownPartitionPath = partitionPath;
       }
@@ -108,6 +108,7 @@ public class BulkInsertWriterHelper {
   }
 
   public List<HoodieInternalWriteStatus> getHoodieWriteStatuses() throws IOException {
+    //todo ckp时，关闭写数据的文件句柄
     close();
     return writeStatusList;
   }
@@ -182,6 +183,7 @@ public class BulkInsertWriterHelper {
 
   public List<WriteStatus> getWriteStatuses(int taskID) {
     try {
+      //todo ckp时，关闭写数据的文件句柄
       return getHoodieWriteStatuses().stream()
           .map(BulkInsertWriterHelper::toWriteStatus).collect(Collectors.toList());
     } catch (IOException e) {

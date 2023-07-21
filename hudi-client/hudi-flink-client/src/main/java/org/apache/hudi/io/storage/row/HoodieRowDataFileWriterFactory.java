@@ -51,6 +51,7 @@ public class HoodieRowDataFileWriterFactory {
       throws IOException {
     final String extension = FSUtils.getFileExtension(path.getName());
     if (PARQUET.getFileExtension().equals(extension)) {
+      //todo ParquetInternalRowFileWriter
       return newParquetInternalRowFileWriter(path, config, schema, hoodieTable);
     }
     throw new UnsupportedOperationException(extension + " format not supported yet.");

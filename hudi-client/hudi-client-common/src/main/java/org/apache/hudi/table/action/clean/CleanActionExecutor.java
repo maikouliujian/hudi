@@ -99,6 +99,7 @@ public class CleanActionExecutor<T extends HoodieRecordPayload, I, K, O> extends
       String deletePathStr = deletePath.toString();
       Boolean deletedFileResult = null;
       try {
+        //todo 删除
         deletedFileResult = deleteFileAndGetResult(fs, deletePathStr);
 
       } catch (IOException e) {
@@ -141,6 +142,7 @@ public class CleanActionExecutor<T extends HoodieRecordPayload, I, K, O> extends
 
     Stream<ImmutablePair<String, PartitionCleanStat>> partitionCleanStats =
         context.mapPartitionsToPairAndReduceByKey(filesToBeDeletedPerPartition,
+            //todo 删除！！！！！！！！！！！
             iterator -> deleteFilesFunc(iterator, table), PartitionCleanStat::merge, cleanerParallelism);
 
     Map<String, PartitionCleanStat> partitionCleanStatsMap = partitionCleanStats
@@ -184,7 +186,9 @@ public class CleanActionExecutor<T extends HoodieRecordPayload, I, K, O> extends
    */
   HoodieCleanMetadata runPendingClean(HoodieTable<T, I, K, O> table, HoodieInstant cleanInstant) {
     try {
+      //todo 执行计划
       HoodieCleanerPlan cleanerPlan = CleanerUtils.getCleanerPlan(table.getMetaClient(), cleanInstant);
+      //todo 执行
       return runClean(table, cleanInstant, cleanerPlan);
     } catch (IOException e) {
       throw new HoodieIOException(e.getMessage(), e);
@@ -200,12 +204,13 @@ public class CleanActionExecutor<T extends HoodieRecordPayload, I, K, O> extends
       final HoodieTimer timer = new HoodieTimer();
       timer.startTimer();
       if (cleanInstant.isRequested()) {
+        //todo Requested--->Inflight
         inflightInstant = table.getActiveTimeline().transitionCleanRequestedToInflight(cleanInstant,
             TimelineMetadataUtils.serializeCleanerPlan(cleanerPlan));
       } else {
         inflightInstant = cleanInstant;
       }
-
+      //todo clean操作！！！！！！！！！
       List<HoodieCleanStat> cleanStats = clean(context, cleanerPlan);
       if (cleanStats.isEmpty()) {
         return HoodieCleanMetadata.newBuilder().build();
@@ -221,6 +226,7 @@ public class CleanActionExecutor<T extends HoodieRecordPayload, I, K, O> extends
         this.txnManager.beginTransaction(Option.empty(), Option.empty());
       }
       writeTableMetadata(metadata, inflightInstant.getTimestamp());
+      //todo Inflight--->Complete
       table.getActiveTimeline().transitionCleanInflightToComplete(inflightInstant,
           TimelineMetadataUtils.serializeCleanMetadata(metadata));
       LOG.info("Marked clean started on " + inflightInstant.getTimestamp() + " as complete");
@@ -233,16 +239,18 @@ public class CleanActionExecutor<T extends HoodieRecordPayload, I, K, O> extends
       }
     }
   }
-
+  //todo 执行清理的逻辑
   @Override
   public HoodieCleanMetadata execute() {
     List<HoodieCleanMetadata> cleanMetadataList = new ArrayList<>();
     // If there are inflight(failed) or previously requested clean operation, first perform them
+    //todo 读取清理计划
     List<HoodieInstant> pendingCleanInstants = table.getCleanTimeline()
         .filterInflightsAndRequested().getInstants().collect(Collectors.toList());
     if (pendingCleanInstants.size() > 0) {
       // try to clean old history schema.
       try {
+        //todo 删除老schema
         FileBasedInternalSchemaStorageManager fss = new FileBasedInternalSchemaStorageManager(table.getMetaClient());
         fss.cleanOldFiles(pendingCleanInstants.stream().map(is -> is.getTimestamp()).collect(Collectors.toList()));
       } catch (Exception e) {
@@ -251,10 +259,12 @@ public class CleanActionExecutor<T extends HoodieRecordPayload, I, K, O> extends
       }
       pendingCleanInstants.forEach(hoodieInstant -> {
         if (table.getCleanTimeline().isEmpty(hoodieInstant)) {
+          //todo 删除timeline上文件
           table.getActiveTimeline().deleteEmptyInstantIfExists(hoodieInstant);
         } else {
           LOG.info("Finishing previously unfinished cleaner instant=" + hoodieInstant);
           try {
+            //todo 删除数据
             cleanMetadataList.add(runPendingClean(table, hoodieInstant));
           } catch (Exception e) {
             LOG.warn("Failed to perform previous clean operation, instant: " + hoodieInstant, e);
