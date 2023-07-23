@@ -78,6 +78,7 @@ public class CleanFunction<T> extends AbstractRichFunction
     if (conf.getBoolean(FlinkOptions.CLEAN_ASYNC_ENABLED) && isCleaning) {
       executor.execute(() -> {
         try {
+          //todo 阻塞等待clean服务完成
           this.writeClient.waitForCleaningFinish();
         } finally {
           // ensure to switch the isCleaning flag

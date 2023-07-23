@@ -33,7 +33,7 @@ import org.apache.avro.Schema;
 
 import java.util.Iterator;
 import java.util.List;
-
+//todo for spark insert
 public class SparkLazyInsertIterable<T extends HoodieRecordPayload> extends HoodieLazyInsertIterable<T> {
 
   private boolean useWriterSchema;
@@ -87,6 +87,7 @@ public class SparkLazyInsertIterable<T extends HoodieRecordPayload> extends Hood
       bufferedIteratorExecutor =
           new BoundedInMemoryExecutor<>(hoodieConfig.getWriteBufferLimitBytes(), inputItr, getInsertHandler(),
               getTransformFunction(schema, hoodieConfig), hoodieTable.getPreExecuteRunnable());
+      //todo 执行数据写入
       final List<WriteStatus> result = bufferedIteratorExecutor.execute();
       assert result != null && !result.isEmpty() && !bufferedIteratorExecutor.isRemaining();
       return result;

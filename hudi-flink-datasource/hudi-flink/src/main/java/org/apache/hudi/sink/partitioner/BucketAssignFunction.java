@@ -130,6 +130,7 @@ public class BucketAssignFunction<K, I, O extends HoodieRecord<?>>
         HoodieTableType.valueOf(conf.getString(FlinkOptions.TABLE_TYPE)),
         context,
         writeConfig);
+    //todo payload
     this.payloadCreation = PayloadCreation.instance(this.conf);
   }
 
@@ -204,17 +205,20 @@ public class BucketAssignFunction<K, I, O extends HoodieRecord<?>>
         this.bucketAssigner.addUpdate(partitionPath, location.getFileId());
       }
     } else {
+      //todo 寻找要写入的文件路径
       location = getNewRecordLocation(partitionPath);
     }
     // always refresh the index
     if (isChangingRecords) {
       updateIndexState(partitionPath, location);
     }
+    //todo 设置location，比如直接写入小文件！！！
     record.setCurrentLocation(location);
     out.collect((O) record);
   }
 
   private HoodieRecordLocation getNewRecordLocation(String partitionPath) {
+    //todo 寻找小文件写入的逻辑！！！
     final BucketInfo bucketInfo = this.bucketAssigner.addInsert(partitionPath);
     final HoodieRecordLocation location;
     switch (bucketInfo.getBucketType()) {
@@ -225,6 +229,7 @@ public class BucketAssignFunction<K, I, O extends HoodieRecord<?>>
         location = new HoodieRecordLocation("I", bucketInfo.getFileIdPrefix());
         break;
       case UPDATE:
+        //todo 置为update
         location = new HoodieRecordLocation("U", bucketInfo.getFileIdPrefix());
         break;
       default:

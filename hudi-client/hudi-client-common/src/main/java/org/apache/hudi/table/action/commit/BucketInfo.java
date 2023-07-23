@@ -29,7 +29,7 @@ public class BucketInfo implements Serializable {
   BucketType bucketType;
   String fileIdPrefix;
   String partitionPath;
-
+  //todo
   public BucketInfo(BucketType bucketType, String fileIdPrefix, String partitionPath) {
     this.bucketType = bucketType;
     this.fileIdPrefix = fileIdPrefix;

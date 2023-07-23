@@ -133,6 +133,7 @@ public class BucketAssigner implements AutoCloseable {
     return bucketInfoMap.get(key);
   }
 
+  //todo BucketAssigner 算子对小文件进行优化！！！
   public BucketInfo addInsert(String partitionPath) {
     // for new inserts, compute buckets depending on how many records we have for each partition
     //todo 获取分区下的小文件
@@ -179,6 +180,7 @@ public class BucketAssigner implements AutoCloseable {
     if (smallFileAssignMap.containsKey(partitionPath)) {
       return smallFileAssignMap.get(partitionPath);
     }
+    //todo 获取partitionPath下的小文件
     List<SmallFile> smallFiles = smallFilesOfThisTask(writeProfile.getSmallFiles(partitionPath));
     if (smallFiles.size() > 0) {
       LOG.info("For partitionPath : " + partitionPath + " Small Files => " + smallFiles);
@@ -283,7 +285,7 @@ public class BucketAssigner implements AutoCloseable {
       state.assign();
       return true;
     }
-
+    //todo 轮训取小文件
     public String getFileId() {
       return states[assignIdx].fileId;
     }

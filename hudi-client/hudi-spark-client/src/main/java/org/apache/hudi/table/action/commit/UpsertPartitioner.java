@@ -72,6 +72,7 @@ public class UpsertPartitioner<T extends HoodieRecordPayload<T>> extends SparkHo
   /**
    * Helps decide which bucket an incoming update should go to.
    */
+  //todo <fileid,bucketid> for update records
   private HashMap<String, Integer> updateLocationToBucket;
   /**
    * Helps us pack inserts into 1 or more buckets depending on number of incoming records.
@@ -80,6 +81,7 @@ public class UpsertPartitioner<T extends HoodieRecordPayload<T>> extends SparkHo
   /**
    * Remembers what type each bucket is for later.
    */
+  //todo <bucketid,bucketinfo>【如果是update的数据 或者 写入小文件的数据，则BucketType为update；如果小文件不够写，写入新文件，则BucketType为insert】
   private HashMap<Integer, BucketInfo> bucketInfoMap;
 
   protected final HoodieWriteConfig config;
@@ -91,7 +93,9 @@ public class UpsertPartitioner<T extends HoodieRecordPayload<T>> extends SparkHo
     partitionPathToInsertBucketInfos = new HashMap<>();
     bucketInfoMap = new HashMap<>();
     this.config = config;
+    //todo 计算update数据要写入的fileid
     assignUpdates(profile);
+    //todo 为insert数据分配写入的fileid，如果有小文件，则写入小文件；如果小文件不够写，则新建写入文件
     assignInserts(profile, context);
 
     LOG.info("Total Buckets :" + totalBuckets + ", buckets info => " + bucketInfoMap + ", \n"
@@ -106,6 +110,8 @@ public class UpsertPartitioner<T extends HoodieRecordPayload<T>> extends SparkHo
       WorkloadStat outputWorkloadStats = profile.getOutputPartitionPathStatMap().getOrDefault(partitionStat.getKey(), new WorkloadStat());
       for (Map.Entry<String, Pair<String, Long>> updateLocEntry :
           partitionStat.getValue().getUpdateLocationToCount().entrySet()) {
+        //todo partitionStat.getKey():partitionpath
+        //todo updateLocEntry.getKey():fileid
         addUpdateBucket(partitionStat.getKey(), updateLocEntry.getKey());
         if (profile.hasOutputWorkLoadStats()) {
           HoodieRecordLocation hoodieRecordLocation = new HoodieRecordLocation(updateLocEntry.getValue().getKey(), updateLocEntry.getKey());
@@ -154,15 +160,16 @@ public class UpsertPartitioner<T extends HoodieRecordPayload<T>> extends SparkHo
       return smallFiles;
     }
   }
-
+  //todo 为insert数据分配写入的fileid，如果有小文件，则写入小文件；如果小文件不够写，则新建写入文件
   private void assignInserts(WorkloadProfile profile, HoodieEngineContext context) {
     // for new inserts, compute buckets depending on how many records we have for each partition
+    //todo 所有partitionPaths
     Set<String> partitionPaths = profile.getPartitionPaths();
     long averageRecordSize =
         averageBytesPerRecord(table.getMetaClient().getActiveTimeline().getCommitTimeline().filterCompletedInstants(),
             config);
     LOG.info("AvgRecordSize => " + averageRecordSize);
-
+    //todo 计算每个分区对应的小文件！！！
     Map<String, List<SmallFile>> partitionSmallFilesMap =
         getSmallFilesForPartitions(new ArrayList<String>(partitionPaths), context);
 
@@ -187,6 +194,7 @@ public class UpsertPartitioner<T extends HoodieRecordPayload<T>> extends SparkHo
 
         // first try packing this into one of the smallFiles
         for (SmallFile smallFile : smallFiles) {
+          //todo 计算小文件中可以继续写入的数据条数
           long recordsToAppend = Math.min((config.getParquetMaxFileSize() - smallFile.sizeBytes) / averageRecordSize,
               totalUnassignedInserts);
           if (recordsToAppend > 0) {
@@ -196,6 +204,7 @@ public class UpsertPartitioner<T extends HoodieRecordPayload<T>> extends SparkHo
               bucket = updateLocationToBucket.get(smallFile.location.getFileId());
               LOG.info("Assigning " + recordsToAppend + " inserts to existing update bucket " + bucket);
             } else {
+              //todo 将小文件的fileid也记录为要update
               bucket = addUpdateBucket(partitionPath, smallFile.location.getFileId());
               LOG.info("Assigning " + recordsToAppend + " inserts to new update bucket " + bucket);
             }
@@ -205,6 +214,7 @@ public class UpsertPartitioner<T extends HoodieRecordPayload<T>> extends SparkHo
             bucketNumbers.add(bucket);
             recordsPerBucket.add(recordsToAppend);
             totalUnassignedInserts -= recordsToAppend;
+            //todo 小文件够写！！！
             if (totalUnassignedInserts <= 0) {
               // stop the loop when all the inserts are assigned
               break;
@@ -213,6 +223,7 @@ public class UpsertPartitioner<T extends HoodieRecordPayload<T>> extends SparkHo
         }
 
         // if we have anything more, create new insert buckets, like normal
+        //todo 小文件不够写！！！
         if (totalUnassignedInserts > 0) {
           long insertRecordsPerBucket = config.getCopyOnWriteInsertSplitSize();
           if (config.shouldAutoTuneInsertSplits()) {
@@ -229,6 +240,7 @@ public class UpsertPartitioner<T extends HoodieRecordPayload<T>> extends SparkHo
             } else {
               recordsPerBucket.add(totalUnassignedInserts - (insertBuckets - 1) * insertRecordsPerBucket);
             }
+            //todo 新建bucket文件
             BucketInfo bucketInfo = new BucketInfo(BucketType.INSERT, FSUtils.createNewFileIdPfx(), partitionPath);
             bucketInfoMap.put(totalBuckets, bucketInfo);
             if (profile.hasOutputWorkLoadStats()) {
@@ -256,7 +268,7 @@ public class UpsertPartitioner<T extends HoodieRecordPayload<T>> extends SparkHo
       }
     }
   }
-
+  //todo 计算分区的小文件
   private Map<String, List<SmallFile>> getSmallFilesForPartitions(List<String> partitionPaths, HoodieEngineContext context) {
     JavaSparkContext jsc = HoodieSparkEngineContext.getSparkContext(context);
     Map<String, List<SmallFile>> partitionSmallFilesMap = new HashMap<>();
@@ -269,6 +281,7 @@ public class UpsertPartitioner<T extends HoodieRecordPayload<T>> extends SparkHo
       context.setJobStatus(this.getClass().getSimpleName(), "Getting small files from partitions: " + config.getTableName());
       JavaRDD<String> partitionPathRdds = jsc.parallelize(partitionPaths, partitionPaths.size());
       partitionSmallFilesMap = partitionPathRdds.mapToPair((PairFunction<String, String, List<SmallFile>>)
+              //todo 获取小文件getSmallFiles
           partitionPath -> new Tuple2<>(partitionPath, getSmallFiles(partitionPath))).collectAsMap();
     }
 
@@ -278,6 +291,7 @@ public class UpsertPartitioner<T extends HoodieRecordPayload<T>> extends SparkHo
   /**
    * Returns a list of small files in the given partition path.
    */
+  //todo 计算小文件
   protected List<SmallFile> getSmallFiles(String partitionPath) {
 
     // smallFiles only for partitionPath

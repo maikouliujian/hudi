@@ -175,6 +175,7 @@ public class WriteProfile {
    *
    * <p>Note: This method should be thread safe.
    */
+  //todo 获取分区下的小文件
   public synchronized List<SmallFile> getSmallFiles(String partitionPath) {
     // lookup the cache first
     if (smallFilesMap.containsKey(partitionPath)) {
@@ -195,6 +196,7 @@ public class WriteProfile {
   /**
    * Returns a list of small files in the given partition path from the latest filesystem view.
    */
+  //todo 寻找分区下的小文件
   protected List<SmallFile> smallFilesProfile(String partitionPath) {
     // smallFiles only for partitionPath
     List<SmallFile> smallFileLocations = new ArrayList<>();

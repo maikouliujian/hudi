@@ -24,6 +24,7 @@ import java.util.Objects;
 /**
  * Location of a HoodieRecord within the partition it belongs to. Ultimately, this points to an actual file on disk
  */
+//todo fileId + instantTime 可以唯一决定具体文件
 public class HoodieRecordLocation implements Serializable {
 
   protected String instantTime;

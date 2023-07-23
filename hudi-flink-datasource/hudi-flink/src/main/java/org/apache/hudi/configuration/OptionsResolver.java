@@ -42,6 +42,7 @@ public class OptionsResolver {
   /**
    * Returns whether the insert is clustering disabled with given configuration {@code conf}.
    */
+  //todo write.insert.cluster为true后，就不是append mode了
   public static boolean isAppendMode(Configuration conf) {
     return isCowTable(conf) && isInsertOperation(conf) && !conf.getBoolean(FlinkOptions.INSERT_CLUSTER);
   }

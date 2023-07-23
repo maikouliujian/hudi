@@ -155,7 +155,7 @@ class DefaultSource extends RelationProvider
     * @param df Spark DataFrame to be written
     * @return Spark Relation
     */
-  //todo spark hudi写入的入口
+  //todo spark hudi写入的入口,将df数据写出去！！！
   override def createRelation(sqlContext: SQLContext,
                               mode: SaveMode,
                               optParams: Map[String, String],

@@ -151,9 +151,9 @@ public class SparkRDDWriteClient<T extends HoodieRecordPayload> extends
     HoodieTable<T, HoodieData<HoodieRecord<T>>, HoodieData<HoodieKey>, HoodieData<WriteStatus>> table =
         initTable(WriteOperationType.UPSERT, Option.ofNullable(instantTime));
     table.validateUpsertSchema();
-    //todo 写前
+    //todo 写前【启动一些服务】
     preWrite(instantTime, WriteOperationType.UPSERT, table.getMetaClient());
-    //todo 写
+    //todo 写数据
     HoodieWriteMetadata<HoodieData<WriteStatus>> result = table.upsert(context, instantTime, HoodieJavaRDD.of(records));
     HoodieWriteMetadata<JavaRDD<WriteStatus>> resultRDD = result.clone(HoodieJavaRDD.getJavaRDD(result.getWriteStatuses()));
     if (result.getIndexLookupDuration().isPresent()) {
@@ -429,7 +429,7 @@ public class SparkRDDWriteClient<T extends HoodieRecordPayload> extends
     table.getMetadataWriter(hoodieInstant.getTimestamp())
         .ifPresent(writer -> ((HoodieTableMetadataWriter) writer).update(commitMetadata, hoodieInstant.getTimestamp(), isTableServiceAction));
   }
-
+  //todo 创建表
   @Override
   protected HoodieTable doInitTable(HoodieTableMetaClient metaClient, Option<String> instantTime, boolean initialMetadataTableIfNecessary) {
     if (initialMetadataTableIfNecessary) {

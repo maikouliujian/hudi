@@ -78,6 +78,7 @@ public class HoodieBloomIndex extends HoodieIndex<Object, Object> {
       HoodieTable hoodieTable) {
     // Step 0: cache the input records if needed
     if (config.getBloomIndexUseCaching()) {
+      //todo rdd持久化
       records.persist(new HoodieConfig(config.getProps())
           .getString(HoodieIndexConfig.BLOOM_INDEX_INPUT_STORAGE_LEVEL_VALUE));
     }

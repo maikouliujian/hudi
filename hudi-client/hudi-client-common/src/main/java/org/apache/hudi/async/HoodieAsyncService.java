@@ -101,6 +101,7 @@ public abstract class HoodieAsyncService implements Serializable {
       return;
     }
     try {
+      //todo 阻塞等待完成！！！
       future.get();
     } catch (ExecutionException ex) {
       LOG.error("Service shutdown with error", ex);
@@ -169,7 +170,7 @@ public abstract class HoodieAsyncService implements Serializable {
     if (future == null) {
       return;
     }
-    //todo 阻塞
+    //todo 定义
     future.whenComplete((resp, error) -> {
       if (null != callback) {
         callback.apply(null != error);

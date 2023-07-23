@@ -77,10 +77,12 @@ object HoodieSparkSqlWriter {
     SparkRDDWriteClient[HoodieRecordPayload[Nothing]], HoodieTableConfig) = {
 
     assert(optParams.get("path").exists(!StringUtils.isNullOrEmpty(_)), "'path' must be set")
+    //todo hudi表的根目录
     val path = optParams("path")
     val basePath = new Path(path)
     val sparkContext = sqlContext.sparkContext
     val fs = basePath.getFileSystem(sparkContext.hadoopConfiguration)
+    //todo 判断表是否存在
     tableExists = fs.exists(new Path(basePath, HoodieTableMetaClient.METAFOLDER_NAME))
     var tableConfig = getHoodieTableConfig(sparkContext, path, hoodieTableConfigOpt)
     validateTableConfig(sqlContext.sparkSession, optParams, tableConfig)
@@ -92,6 +94,7 @@ object HoodieSparkSqlWriter {
     //validate datasource and tableconfig keygen are the same
     validateKeyGeneratorConfig(originKeyGeneratorClassName, tableConfig);
     val databaseName = hoodieConfig.getStringOrDefault(HoodieTableConfig.DATABASE_NAME, "")
+    //todo 表名
     val tblName = hoodieConfig.getStringOrThrow(HoodieWriteConfig.TBL_NAME,
       s"'${HoodieWriteConfig.TBL_NAME.key}' must be set.").trim
     assert(!StringUtils.isNullOrEmpty(hoodieConfig.getString(HoodieWriteConfig.TBL_NAME)),
@@ -103,12 +106,14 @@ object HoodieSparkSqlWriter {
       case Some(ser) if ser.equals("org.apache.spark.serializer.KryoSerializer") =>
       case _ => throw new HoodieException("hoodie only support org.apache.spark.serializer.KryoSerializer as spark.serializer")
     }
+    //todo 表类型
     val tableType = HoodieTableType.valueOf(hoodieConfig.getString(TABLE_TYPE))
     //todo 写入操作类型
     var operation = WriteOperationType.fromValue(hoodieConfig.getString(OPERATION))
     // It does not make sense to allow upsert() operation if INSERT_DROP_DUPS is true
     // Auto-correct the operation to "insert" if OPERATION is set to "upsert" wrongly
     // or not set (in which case it will be set as "upsert" by parametersWithWriteDefaults()) .
+    //todo 设置为true，会修改upsert为insert
     if (hoodieConfig.getBoolean(INSERT_DROP_DUPS) &&
       operation == WriteOperationType.UPSERT) {
 
@@ -125,6 +130,7 @@ object HoodieSparkSqlWriter {
         jsc.setLocalProperty("spark.scheduler.pool", SparkConfigs.SPARK_DATASOURCE_WRITER_POOL_NAME)
       }
     }
+    //todo 新的 instantTime
     val instantTime = HoodieActiveTimeline.createNewInstantTime()
     val keyGenerator = HoodieSparkKeyGeneratorFactory.createKeyGenerator(new TypedProperties(hoodieConfig.getProps))
 
@@ -136,6 +142,7 @@ object HoodieSparkSqlWriter {
       handleSaveModes(sqlContext.sparkSession, mode, basePath, tableConfig, tblName, operation, fs)
       val partitionColumns = HoodieSparkUtils.getPartitionColumns(keyGenerator, toProperties(parameters))
       // Create the table if not present
+      //todo 表不存在会新建表
       if (!tableExists) {
         val baseFileFormat = hoodieConfig.getStringOrDefault(HoodieTableConfig.BASE_FILE_FORMAT)
         val archiveLogFolder = hoodieConfig.getStringOrDefault(HoodieTableConfig.ARCHIVELOG_FOLDER)
@@ -241,6 +248,7 @@ object HoodieSparkSqlWriter {
             sparkContext.getConf.registerKryoClasses(
               Array(classOf[org.apache.avro.generic.GenericData],
                 classOf[org.apache.avro.Schema]))
+            //todo schema
             var schema = AvroConversionUtils.convertStructTypeToAvroSchema(df.schema, structName, nameSpace)
             val lastestSchema = getLatestTableSchema(fs, basePath, sparkContext, schema)
             val internalSchemaOpt = getLatestTableInternalSchema(fs, basePath, sparkContext)
@@ -262,6 +270,7 @@ object HoodieSparkSqlWriter {
             //todo df===>rdd
             val genericRecords: RDD[GenericRecord] = HoodieSparkUtils.createRdd(df, structName, nameSpace, reconcileSchema,
               org.apache.hudi.common.util.Option.of(schema))
+            //todo false
             val shouldCombine = parameters(INSERT_DROP_DUPS.key()).toBoolean ||
               operation.equals(WriteOperationType.UPSERT) ||
               parameters.getOrElse(HoodieWriteConfig.COMBINE_BEFORE_INSERT.key(),
@@ -279,6 +288,7 @@ object HoodieSparkSqlWriter {
                   keyGenerator.getKey(gr),
                   hoodieConfig.getString(PAYLOAD_CLASS_NAME))
               } else {
+                //todo
                 DataSourceUtils.createHoodieRecord(processedRecord, keyGenerator.getKey(gr), hoodieConfig.getString(PAYLOAD_CLASS_NAME))
               }
               hoodieRecord
@@ -286,7 +296,7 @@ object HoodieSparkSqlWriter {
 
             val writeSchema = if (dropPartitionColumns) generateSchemaWithoutPartitionColumns(partitionColumns, schema) else schema
             // Create a HoodieWriteClient & issue the write.
-            //todo 获取hoodieWriteClient
+            //todo 获取hoodieWriteClient【SparkRDDWriteClient】
             val client = hoodieWriteClient.getOrElse(DataSourceUtils.createHoodieClient(jsc, writeSchema.toString, path,
               tblName, mapAsJavaMap(addSchemaEvolutionParameters(parameters, internalSchemaOpt) - HoodieWriteConfig.AUTO_COMMIT_ENABLE.key)
             )).asInstanceOf[SparkRDDWriteClient[HoodieRecordPayload[Nothing]]]
@@ -305,8 +315,10 @@ object HoodieSparkSqlWriter {
               } else {
                 hoodieAllIncomingRecords
               }
+
+            //todo 启动commit plan
             client.startCommitWithTime(instantTime, commitActionType)
-            //todo 写操作
+            //todo 写操作！！！！！！
             val writeResult = DataSourceUtils.doWriteOperation(client, hoodieRecords, instantTime, operation)
             (writeResult, client)
           }

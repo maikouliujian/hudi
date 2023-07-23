@@ -93,11 +93,12 @@ import java.util.Set;
  *
  * </p>
  */
+//todo for update
 @NotThreadSafe
 public class HoodieMergeHandle<T extends HoodieRecordPayload, I, K, O> extends HoodieWriteHandle<T, I, K, O> {
 
   private static final Logger LOG = LogManager.getLogger(HoodieMergeHandle.class);
-
+  //todo 本次写入的新数据
   protected Map<String, HoodieRecord<T>> keyToNewRecords;
   protected Set<String> writtenRecordKeys;
   protected HoodieFileWriter<IndexedRecord> fileWriter;

@@ -72,6 +72,7 @@ public class BoundedInMemoryQueue<I, O> implements Iterable<O> {
   public final AtomicLong samplingRecordCounter = new AtomicLong(-1);
 
   /** Internal queue for records. **/
+  //todo 存放数据的队列！！！
   private final LinkedBlockingQueue<Option<O>> queue = new LinkedBlockingQueue<>();
 
   /** Maximum amount of memory to be used for queueing records. **/

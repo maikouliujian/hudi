@@ -91,6 +91,7 @@ public class CompactionPlanOperator extends AbstractStreamOperator<CompactionPla
 
       // comment out: do we really need the timeout rollback ?
       // CompactionUtil.rollbackEarliestCompaction(table, conf);
+      //todo ckp完成时，生成compaction执行计划
       scheduleCompaction(table, checkpointId);
     } catch (Throwable throwable) {
       // make it fail-safe

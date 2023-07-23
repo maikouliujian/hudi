@@ -35,6 +35,7 @@ public class WorkloadProfile implements Serializable {
   /**
    * Computed workload stats.
    */
+  //todo 所有数据的<partitionpath,WorkloadStat>，包括update和insert
   protected final HashMap<String, WorkloadStat> inputPartitionPathStatMap;
 
   /**
@@ -67,6 +68,7 @@ public class WorkloadProfile implements Serializable {
 
   public WorkloadProfile(Pair<HashMap<String, WorkloadStat>, WorkloadStat> profile, WriteOperationType operationType, boolean hasOutputWorkLoadStats) {
     this(profile, hasOutputWorkLoadStats);
+    //todo
     this.operationType = operationType;
   }
 

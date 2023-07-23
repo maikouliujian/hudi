@@ -42,7 +42,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class HoodieInMemoryHashIndex
     extends HoodieIndex<Object, Object> {
-
+  //todo key和key所在文件的映射关系
   private static ConcurrentMap<HoodieKey, HoodieRecordLocation> recordLocationMap;
 
   public HoodieInMemoryHashIndex(HoodieWriteConfig config) {
@@ -64,6 +64,7 @@ public class HoodieInMemoryHashIndex
         HoodieRecord<R> record = hoodieRecordIterator.next();
         if (recordLocationMap.containsKey(record.getKey())) {
           record.unseal();
+          //todo 将新数据要写入的文件指向老文件
           record.setCurrentLocation(recordLocationMap.get(record.getKey()));
           record.seal();
         }

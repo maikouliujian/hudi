@@ -71,6 +71,7 @@ public class CopyOnWriteInsertHandler<T extends HoodieRecordPayload>
   public void consumeOneRecord(HoodieInsertValueGenResult<HoodieRecord> payload) {
     final HoodieRecord insertPayload = payload.record;
     String partitionPath = insertPayload.getPartitionPath();
+    //todo 一个分区一个handle
     HoodieWriteHandle<?,?,?,?> handle = handles.get(partitionPath);
     if (handle == null) {
       // If the records are sorted, this means that we encounter a new partition path
@@ -80,6 +81,7 @@ public class CopyOnWriteInsertHandler<T extends HoodieRecordPayload>
         closeOpenHandles();
       }
       // Lazily initialize the handle, for the first time
+      //todo 返回HoodieCreateHandle
       handle = writeHandleFactory.create(config, instantTime, hoodieTable,
           insertPayload.getPartitionPath(), idPrefix, taskContextSupplier);
       handles.put(partitionPath, handle);
@@ -93,6 +95,7 @@ public class CopyOnWriteInsertHandler<T extends HoodieRecordPayload>
           insertPayload.getPartitionPath(), idPrefix, taskContextSupplier);
       handles.put(partitionPath, handle);
     }
+    //todo insert数据
     handle.write(insertPayload, payload.insertValue, payload.exception);
   }
 

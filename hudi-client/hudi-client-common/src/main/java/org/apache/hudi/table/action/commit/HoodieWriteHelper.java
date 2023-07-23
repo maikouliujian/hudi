@@ -47,7 +47,7 @@ public class HoodieWriteHelper<T extends HoodieRecordPayload, R> extends BaseWri
   @Override
   protected HoodieData<HoodieRecord<T>> tag(HoodieData<HoodieRecord<T>> dedupedRecords, HoodieEngineContext context,
                                             HoodieTable<T, HoodieData<HoodieRecord<T>>, HoodieData<HoodieKey>, HoodieData<WriteStatus>> table) {
-    //todo 1、如果是insert，则返回新日志本身
+    //todo 1、如果是insert，则返回新日志本身，此时写入的location还未确定
     // 2、如果是update，那么将新日志的location设置为老日志的location，方便新日志去更新老日志
     return table.getIndex().tagLocation(dedupedRecords, context, table);
   }

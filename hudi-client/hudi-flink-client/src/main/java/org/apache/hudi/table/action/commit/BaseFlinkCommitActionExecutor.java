@@ -195,6 +195,7 @@ public abstract class BaseFlinkCommitActionExecutor<T extends HoodieRecordPayloa
           case INSERT:
 
             return handleInsert(fileIdHint, recordItr);
+            //todo
           case UPDATE:
 
             return handleUpdate(partitionPath, fileIdHint, recordItr);

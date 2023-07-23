@@ -139,7 +139,7 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
     }
     return recordsAndPendingClusteringFileGroups.getLeft();
   }
-
+   //todo spark table 写数据！！！
   @Override
   public HoodieWriteMetadata<HoodieData<WriteStatus>> execute(HoodieData<HoodieRecord<T>> inputRecords) {
     // Cache the tagged records, so we don't end up computing both
@@ -154,12 +154,13 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
     WorkloadProfile workloadProfile = null;
     if (isWorkloadProfileNeeded()) {
       context.setJobStatus(this.getClass().getSimpleName(), "Building workload profile: " + config.getTableName());
-      //todo
+      //todo 记录本次写入数据的写入状态
       workloadProfile = new WorkloadProfile(buildProfile(inputRecords), operationType, table.getIndex().canIndexLogFiles());
       LOG.info("Input workload profile :" + workloadProfile);
     }
 
     // partition using the insert partitioner
+    //todo 获取写入数据分区器【重点！！！】
     final Partitioner partitioner = getPartitioner(workloadProfile);
     if (isWorkloadProfileNeeded()) {
       saveWorkloadProfileMetadataToInflight(workloadProfile, instantTime);
@@ -177,13 +178,16 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
     updateIndexAndCommitIfNeeded(writeStatuses, result);
     return result;
   }
-
+  //todo 构建本次写入数据的写入状态
   private Pair<HashMap<String, WorkloadStat>, WorkloadStat> buildProfile(HoodieData<HoodieRecord<T>> inputRecords) {
+    //todo 记录inputRecords中不同分区下的写入状态
     HashMap<String, WorkloadStat> partitionPathStatMap = new HashMap<>();
+    //todo 记录inputRecords中所有的写入状态
     WorkloadStat globalStat = new WorkloadStat();
 
     // group the records by partitionPath + currentLocation combination, count the number of
     // records in each partition
+    //todo 计算<partitionPath,currentLocation>相同的record有多少
     Map<Tuple2<String, Option<HoodieRecordLocation>>, Long> partitionLocationCounts = inputRecords
         .mapToPair(record -> Pair.of(
             new Tuple2<>(record.getPartitionPath(), Option.ofNullable(record.getCurrentLocation())), record))
@@ -196,9 +200,10 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
       Option<HoodieRecordLocation> locOption = e.getKey()._2();
 
       if (!partitionPathStatMap.containsKey(partitionPath)) {
+        //todo partitionPath->WorkloadStat
         partitionPathStatMap.put(partitionPath, new WorkloadStat());
       }
-
+      //todo 如果locOption存在，说明已经在tag阶段进行了赋值，属于update数据
       if (locOption.isPresent()) {
         // update
         partitionPathStatMap.get(partitionPath).addUpdates(locOption.get(), count);
@@ -211,12 +216,13 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
     }
     return Pair.of(partitionPathStatMap, globalStat);
   }
-
+  //todo 获取分区器
   protected Partitioner getPartitioner(WorkloadProfile profile) {
     Option<String> layoutPartitionerClass = table.getStorageLayout().layoutPartitionerClass();
     if (layoutPartitionerClass.isPresent()) {
       return getLayoutPartitioner(profile, layoutPartitionerClass.get());
     } else if (WriteOperationType.isChangingRecords(operationType)) {
+      //todo
       return getUpsertPartitioner(profile);
     } else {
       return getInsertPartitioner(profile);
@@ -241,6 +247,7 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
       partitionedRDD = mappedRDD.repartitionAndSortWithinPartitions(partitioner, comparator);
     } else {
       // Partition only
+      //todo
       partitionedRDD = mappedRDD.partitionBy(partitioner);
     }
     return HoodieJavaRDD.of(partitionedRDD.map(Tuple2::_2).mapPartitionsWithIndex((partition, recordItr) -> {
@@ -250,6 +257,7 @@ public abstract class BaseSparkCommitActionExecutor<T extends HoodieRecordPayloa
       } else {
         return handleInsertPartition(instantTime, partition, recordItr, partitioner);
       }
+      //todo List::iterator会执行iterator中的next方法！！！
     }, true).flatMap(List::iterator));
   }
 

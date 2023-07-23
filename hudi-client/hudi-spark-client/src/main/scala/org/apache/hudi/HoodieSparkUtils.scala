@@ -129,6 +129,7 @@ object HoodieSparkUtils extends SparkAdapterSupport {
   /**
    * @deprecated please use other overload [[createRdd]]
    */
+    //todo df->rdd
   def createRdd(df: DataFrame, structName: String, recordNamespace: String, reconcileToLatestSchema: Boolean,
                 latestTableSchema: org.apache.hudi.common.util.Option[Schema] = org.apache.hudi.common.util.Option.empty()): RDD[GenericRecord] = {
     var latestTableSchemaConverted : Option[Schema] = None
@@ -140,6 +141,7 @@ object HoodieSparkUtils extends SparkAdapterSupport {
       // for example, when using a Transformer implementation to transform source RDD to target RDD
       latestTableSchemaConverted = if (latestTableSchema.isPresent) Some(latestTableSchema.get()) else None
     }
+      //todo
     createRdd(df, structName, recordNamespace, latestTableSchemaConverted)
   }
 

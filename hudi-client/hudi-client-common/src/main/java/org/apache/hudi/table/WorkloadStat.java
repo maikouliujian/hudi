@@ -27,14 +27,15 @@ import java.util.HashMap;
 /**
  * Wraps stats about a single partition path.
  */
+//todo 记录写入状态
 public class WorkloadStat implements Serializable {
 
   private long numInserts = 0L;
 
   private long numUpdates = 0L;
-
+  //todo <fileid,pair<instant,nums>> for insert
   private HashMap<String, Pair<String, Long>> insertLocationToCount;
-
+  //todo <fileid,pair<instant,nums>> for update
   private HashMap<String, Pair<String, Long>> updateLocationToCount;
 
   public WorkloadStat() {

@@ -37,7 +37,7 @@ public abstract class BaseActionExecutor<T extends HoodieRecordPayload, I, K, O,
   protected final transient Configuration hadoopConf;
 
   protected final HoodieWriteConfig config;
-
+  //todo 表！！！！！！
   protected final HoodieTable<T, I, K, O> table;
 
   protected final String instantTime;

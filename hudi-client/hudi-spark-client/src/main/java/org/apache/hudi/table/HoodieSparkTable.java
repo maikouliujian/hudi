@@ -62,7 +62,7 @@ public abstract class HoodieSparkTable<T extends HoodieRecordPayload>
             .setProperties(config.getProps()).build();
     return HoodieSparkTable.create(config, (HoodieSparkEngineContext) context, metaClient);
   }
-
+  //todo 创建表
   public static <T extends HoodieRecordPayload> HoodieSparkTable<T> create(HoodieWriteConfig config,
                                                                            HoodieSparkEngineContext context,
                                                                            HoodieTableMetaClient metaClient) {

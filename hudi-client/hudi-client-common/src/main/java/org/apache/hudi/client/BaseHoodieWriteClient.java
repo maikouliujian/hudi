@@ -497,11 +497,13 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
     this.pendingInflightAndRequestedInstants = TransactionUtils.getInflightAndRequestedInstants(metaClient);
     this.pendingInflightAndRequestedInstants.remove(instantTime);
     if (null == this.asyncCleanerService) {
+      //todo 启动cleaner服务
       this.asyncCleanerService = AsyncCleanerService.startAsyncCleaningIfEnabled(this);
     } else {
       this.asyncCleanerService.start(null);
     }
     if (null == this.asyncArchiveService) {
+      //todo 启动Archive服务
       this.asyncArchiveService = AsyncArchiveService.startAsyncArchiveIfEnabled(this);
     } else {
       this.asyncArchiveService.start(null);
@@ -1471,6 +1473,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
     this.txnManager.beginTransaction(ownerInstant, Option.empty());
     try {
       tryUpgrade(metaClient, instantTime);
+      //todo 初始化表
       table = doInitTable(metaClient, instantTime, initialMetadataTableIfNecessary);
     } finally {
       this.txnManager.endTransaction(ownerInstant);

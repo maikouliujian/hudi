@@ -76,6 +76,7 @@ public class AsyncCleanerService extends HoodieAsyncTableService {
     if (asyncCleanerService != null) {
       LOG.info("Waiting for async clean service to finish");
       try {
+        //todo 等待future完成
         asyncCleanerService.waitForShutdown();
       } catch (Exception e) {
         throw new HoodieException("Error waiting for async clean service to finish", e);

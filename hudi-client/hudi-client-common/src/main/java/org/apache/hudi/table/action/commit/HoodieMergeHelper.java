@@ -71,7 +71,7 @@ public class HoodieMergeHelper<T extends HoodieRecordPayload> extends
   public static HoodieMergeHelper newInstance() {
     return MergeHelperHolder.HOODIE_MERGE_HELPER;
   }
-
+  //todo update的逻辑
   @Override
   public void runMerge(HoodieTable<T, HoodieData<HoodieRecord<T>>, HoodieData<HoodieKey>, HoodieData<WriteStatus>> table,
                        HoodieMergeHandle<T, HoodieData<HoodieRecord<T>>, HoodieData<HoodieKey>, HoodieData<WriteStatus>> mergeHandle) throws IOException {
@@ -87,12 +87,14 @@ public class HoodieMergeHelper<T extends HoodieRecordPayload> extends
       gWriter = new GenericDatumWriter<>(readSchema);
       gReader = new GenericDatumReader<>(readSchema, mergeHandle.getWriterSchemaWithMetaFields());
     } else {
+      //todo
       gReader = null;
       gWriter = null;
       readSchema = mergeHandle.getWriterSchemaWithMetaFields();
     }
 
     BoundedInMemoryExecutor<GenericRecord, GenericRecord, Void> wrapper = null;
+    //todo 读取老文件数据的reader！！！！！！
     HoodieFileReader<GenericRecord> reader = HoodieFileReaderFactory.getFileReader(cfgForHoodieFile, mergeHandle.getOldFilePath());
 
     Option<InternalSchema> querySchemaOpt = SerDeHelper.fromJson(table.getConfig().getInternalSchema());
@@ -133,6 +135,7 @@ public class HoodieMergeHelper<T extends HoodieRecordPayload> extends
         if (needToReWriteRecord) {
           readerIterator = HoodieAvroUtils.rewriteRecordWithNewSchema(reader.getRecordIterator(), readSchema, renameCols);
         } else {
+          //todo 老文件的数据
           readerIterator = reader.getRecordIterator(readSchema);
         }
       }

@@ -116,6 +116,7 @@ public abstract class LazyIterableIterator<I, O> implements Iterable<O>, Iterato
   @Override
   public O next() {
     try {
+      //todo 获取next
       return computeNext();
     } catch (Exception ex) {
       throw new RuntimeException(ex);
