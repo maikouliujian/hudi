@@ -214,6 +214,7 @@ public class CompactionUtils {
    */
   public static Option<Pair<HoodieTimeline, HoodieInstant>> getDeltaCommitsSinceLatestCompaction(
       HoodieActiveTimeline activeTimeline) {
+    //todo 获取上一次commit Instant
     Option<HoodieInstant> lastCompaction = activeTimeline.getCommitTimeline()
         .filterCompletedInstants().lastInstant();
     HoodieTimeline deltaCommits = activeTimeline.getDeltaCommitTimeline();
@@ -223,6 +224,7 @@ public class CompactionUtils {
       latestInstant = lastCompaction.get();
       // timeline containing the delta commits after the latest completed compaction commit,
       // and the completed compaction commit instant
+      //todo 过滤出大于latestInstant的deltacommit instants Timeline
       return Option.of(Pair.of(deltaCommits.findInstantsAfter(
           latestInstant.getTimestamp(), Integer.MAX_VALUE), lastCompaction.get()));
     } else {

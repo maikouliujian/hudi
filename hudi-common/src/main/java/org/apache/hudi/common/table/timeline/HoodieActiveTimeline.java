@@ -121,6 +121,7 @@ public class HoodieActiveTimeline extends HoodieDefaultTimeline {
     // Filter all the filter in the metapath and include only the extensions passed and
     // convert them into HoodieInstant
     try {
+      //todo 获取timeline上的instants
       this.setInstants(metaClient.scanHoodieInstantsFromFileSystem(includedExtensions, applyLayoutFilters));
     } catch (IOException e) {
       throw new HoodieIOException("Failed to scan metadata", e);

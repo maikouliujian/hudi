@@ -61,11 +61,13 @@ public class HoodieTableFileSystemView extends IncrementalTimelineSyncFileSystem
   /**
    * PartitionPath + File-Id to pending compaction instant time.
    */
+  //todo
   protected Map<HoodieFileGroupId, Pair<String, CompactionOperation>> fgIdToPendingCompaction;
 
   /**
    * PartitionPath + File-Id to bootstrap base File (Index Only bootstrapped).
    */
+  //todo
   protected Map<HoodieFileGroupId, BootstrapBaseFileMapping> fgIdToBootstrapBaseFile;
 
   /**

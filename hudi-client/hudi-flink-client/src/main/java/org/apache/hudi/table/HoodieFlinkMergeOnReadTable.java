@@ -98,7 +98,7 @@ public class HoodieFlinkMergeOnReadTable<T extends HoodieRecordPayload>
       return super.insert(context, writeHandle, instantTime, hoodieRecords);
     }
   }
-
+  //todo 生成Compaction执行计划
   @Override
   public Option<HoodieCompactionPlan> scheduleCompaction(
       HoodieEngineContext context,
@@ -107,6 +107,7 @@ public class HoodieFlinkMergeOnReadTable<T extends HoodieRecordPayload>
     ScheduleCompactionActionExecutor scheduleCompactionExecutor = new ScheduleCompactionActionExecutor(
         context, config, this, instantTime, extraMetadata,
         new HoodieFlinkMergeOnReadTableCompactor());
+    //todo
     return scheduleCompactionExecutor.execute();
   }
 

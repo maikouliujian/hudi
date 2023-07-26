@@ -305,7 +305,7 @@ public class FSUtils {
       throw new HoodieException("Error fetching partition paths from metadata table", e);
     }
   }
-
+  //todo 获取所有PartitionPaths
   public static List<String> getAllPartitionPaths(HoodieEngineContext engineContext, HoodieMetadataConfig metadataConfig,
                                                   String basePathStr) {
     try (HoodieTableMetadata tableMetadata = HoodieTableMetadata.create(engineContext, metadataConfig, basePathStr,

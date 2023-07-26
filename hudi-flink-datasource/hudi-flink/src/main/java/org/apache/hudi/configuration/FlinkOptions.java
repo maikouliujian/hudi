@@ -487,13 +487,13 @@ public class FlinkOptions extends HoodieConfig {
   // ------------------------------------------------------------------------
   //  Compaction Options
   // ------------------------------------------------------------------------
-
+  //todo compaction的执行计划
   public static final ConfigOption<Boolean> COMPACTION_SCHEDULE_ENABLED = ConfigOptions
       .key("compaction.schedule.enabled")
       .booleanType()
       .defaultValue(true) // default true for MOR write
       .withDescription("Schedule the compaction plan, enabled by default for MOR");
-
+  //todo compaction的执行
   public static final ConfigOption<Boolean> COMPACTION_ASYNC_ENABLED = ConfigOptions
       .key("compaction.async.enabled")
       .booleanType()

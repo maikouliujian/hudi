@@ -24,6 +24,7 @@ import java.util.Objects;
 /**
  * Unique ID to identify a file-group in a data-set.
  */
+//todo partitionPath + fileId
 public class HoodieFileGroupId implements Serializable, Comparable<HoodieFileGroupId> {
 
   private final String partitionPath;

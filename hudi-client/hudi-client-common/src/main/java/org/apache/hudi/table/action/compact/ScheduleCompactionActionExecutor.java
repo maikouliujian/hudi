@@ -90,7 +90,7 @@ public class ScheduleCompactionActionExecutor<T extends HoodieRecordPayload, I, 
           "Following instants have timestamps >= compactionInstant (" + instantTime + ") Instants :"
               + conflictingInstants);
     }
-
+    //todo Compaction执行计划
     HoodieCompactionPlan plan = scheduleCompaction();
     if (plan != null && (plan.getOperations() != null) && (!plan.getOperations().isEmpty())) {
       extraMetadata.ifPresent(plan::setExtraMetadata);
@@ -110,17 +110,21 @@ public class ScheduleCompactionActionExecutor<T extends HoodieRecordPayload, I, 
   private HoodieCompactionPlan scheduleCompaction() {
     LOG.info("Checking if compaction needs to be run on " + config.getBasePath());
     // judge if we need to compact according to num delta commits and time elapsed
+    //todo 判断是否需要compactable
     boolean compactable = needCompact(config.getInlineCompactTriggerStrategy());
     if (compactable) {
       LOG.info("Generating compaction plan for merge on read table " + config.getBasePath());
       try {
+        //todo 获取fileSystemView
         SyncableFileSystemView fileSystemView = (SyncableFileSystemView) table.getSliceView();
+        //todo 获取需要Compaction的FileGroupId
         Set<HoodieFileGroupId> fgInPendingCompactionAndClustering = fileSystemView.getPendingCompactionOperations()
             .map(instantTimeOpPair -> instantTimeOpPair.getValue().getFileGroupId())
             .collect(Collectors.toSet());
         // exclude files in pending clustering from compaction.
         fgInPendingCompactionAndClustering.addAll(fileSystemView.getFileGroupsInPendingClustering().map(Pair::getLeft).collect(Collectors.toSet()));
         context.setJobStatus(this.getClass().getSimpleName(), "Compaction: generating compaction plan: " + config.getTableName());
+        //todo
         return compactor.generateCompactionPlan(context, table, config, instantTime, fgInPendingCompactionAndClustering);
       } catch (IOException e) {
         throw new HoodieCompactionException("Could not schedule compaction " + config.getBasePath(), e);
@@ -131,6 +135,7 @@ public class ScheduleCompactionActionExecutor<T extends HoodieRecordPayload, I, 
   }
 
   private Option<Pair<Integer, String>> getLatestDeltaCommitInfo() {
+    //todo 过滤出大于latestInstant的deltacommit instants Timeline
     Option<Pair<HoodieTimeline, HoodieInstant>> deltaCommitsInfo =
         CompactionUtils.getDeltaCommitsSinceLatestCompaction(table.getActiveTimeline());
     if (deltaCommitsInfo.isPresent()) {
@@ -144,6 +149,7 @@ public class ScheduleCompactionActionExecutor<T extends HoodieRecordPayload, I, 
   private boolean needCompact(CompactionTriggerStrategy compactionTriggerStrategy) {
     boolean compactable;
     // get deltaCommitsSinceLastCompaction and lastCompactionTs
+    //todo 过滤出<大于上次commit的timestamp的deltacommit数量,上次commit的timestamp>
     Option<Pair<Integer, String>> latestDeltaCommitInfoOption = getLatestDeltaCommitInfo();
     if (!latestDeltaCommitInfoOption.isPresent()) {
       return false;

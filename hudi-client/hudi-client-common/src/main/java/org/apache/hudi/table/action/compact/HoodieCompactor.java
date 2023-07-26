@@ -261,6 +261,7 @@ public abstract class HoodieCompactor<T extends HoodieRecordPayload, I, K, O> im
    * @return Compaction Plan
    * @throws IOException when encountering errors
    */
+
   HoodieCompactionPlan generateCompactionPlan(
       HoodieEngineContext context, HoodieTable<T, I, K, O> hoodieTable, HoodieWriteConfig config,
       String compactionCommitTime, Set<HoodieFileGroupId> fgIdsInPendingCompactionAndClustering) throws IOException {
@@ -277,6 +278,7 @@ public abstract class HoodieCompactor<T extends HoodieRecordPayload, I, K, O> im
     // TODO - rollback any compactions in flight
     HoodieTableMetaClient metaClient = hoodieTable.getMetaClient();
     LOG.info("Compacting " + metaClient.getBasePath() + " with commit " + compactionCommitTime);
+    //todo  获取所有partitionPaths
     List<String> partitionPaths = FSUtils.getAllPartitionPaths(context, config.getMetadataConfig(), metaClient.getBasePath());
 
     // filter the partition paths if needed to reduce list status

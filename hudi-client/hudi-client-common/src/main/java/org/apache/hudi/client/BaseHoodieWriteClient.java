@@ -999,6 +999,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
    * Schedules a new compaction instant.
    * @param extraMetadata Extra Metadata to be stored
    */
+  //todo 执行compaction
   public Option<String> scheduleCompaction(Option<Map<String, String>> extraMetadata) throws HoodieIOException {
     String instantTime = HoodieActiveTimeline.createNewInstantTime();
     return scheduleCompactionAtInstant(instantTime, extraMetadata) ? Option.of(instantTime) : Option.empty();
@@ -1356,6 +1357,7 @@ public abstract class BaseHoodieWriteClient<T extends HoodieRecordPayload, I, K,
             .scheduleClustering(context, instantTime, extraMetadata);
         return clusteringPlan.isPresent() ? Option.of(instantTime) : Option.empty();
       case COMPACT:
+        //todo COMPACT
         LOG.info("Scheduling compaction at instant time :" + instantTime);
         Option<HoodieCompactionPlan> compactionPlan = createTable(config, hadoopConf)
             .scheduleCompaction(context, instantTime, extraMetadata);

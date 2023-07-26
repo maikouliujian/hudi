@@ -62,6 +62,7 @@ public class CompactionUtil {
       boolean deltaTimeCompaction,
       boolean committed) {
     if (committed) {
+      //todo 执行compaction
       writeClient.scheduleCompaction(Option.empty());
     } else if (deltaTimeCompaction) {
       // if there are no new commits and the compaction trigger strategy is based on elapsed delta time,

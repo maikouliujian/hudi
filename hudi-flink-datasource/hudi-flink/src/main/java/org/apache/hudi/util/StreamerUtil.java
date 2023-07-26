@@ -329,6 +329,7 @@ public class StreamerUtil {
    *
    * @param conf The flink configuration.
    */
+  //todo mor表才需要compaction
   public static boolean needsScheduleCompaction(Configuration conf) {
     return OptionsResolver.isMorTable(conf)
         && conf.getBoolean(FlinkOptions.COMPACTION_SCHEDULE_ENABLED);

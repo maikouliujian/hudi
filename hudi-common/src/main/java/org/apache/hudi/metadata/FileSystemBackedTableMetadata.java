@@ -65,7 +65,7 @@ public class FileSystemBackedTableMetadata implements HoodieTableMetadata {
     FileSystem fs = partitionPath.getFileSystem(hadoopConf.get());
     return FSUtils.getAllDataFilesInPartition(fs, partitionPath);
   }
-
+  //todo 获取所有PartitionPaths
   @Override
   public List<String> getAllPartitionPaths() throws IOException {
     FileSystem fs = new Path(datasetBasePath).getFileSystem(hadoopConf.get());

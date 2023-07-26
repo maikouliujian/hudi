@@ -590,6 +590,7 @@ public class HoodieTableMetaClient implements Serializable {
    * @return List of Hoodie Instants generated
    * @throws IOException in case of failure
    */
+  //todo 获取timeline上的instants
   public List<HoodieInstant> scanHoodieInstantsFromFileSystem(Path timelinePath, Set<String> includedExtensions,
       boolean applyLayoutVersionFilters) throws IOException {
     Stream<HoodieInstant> instantStream = Arrays.stream(

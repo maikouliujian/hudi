@@ -110,6 +110,7 @@ public class FileSystemViewManager {
    * @param metaClient HoodieTableMetaClient
    * @return
    */
+  //todo 为每一个表维护一个SyncableFileSystemView
   public SyncableFileSystemView getFileSystemView(HoodieTableMetaClient metaClient) {
     return globalViewMap.computeIfAbsent(metaClient.getBasePath(),
         (path) -> viewCreator.apply(metaClient, viewStorageConfig));
@@ -238,6 +239,7 @@ public class FileSystemViewManager {
    * Main Factory method for building file-system views.
    *
    */
+  //todo file-system views
   public static FileSystemViewManager createViewManager(final HoodieEngineContext context,
                                                         final HoodieMetadataConfig metadataConfig,
                                                         final FileSystemViewStorageConfig config,
