@@ -66,6 +66,7 @@ public class HoodieInstantTimeGenerator {
    *
    * @param milliseconds Milliseconds to add to current time while generating the new instant time
    */
+  //todo 生成新的instant
   public static String createNewInstantTime(long milliseconds) {
     return lastInstantTime.updateAndGet((oldVal) -> {
       String newCommitTime;

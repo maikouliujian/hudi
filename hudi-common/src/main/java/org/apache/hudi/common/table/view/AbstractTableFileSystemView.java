@@ -399,6 +399,7 @@ public abstract class AbstractTableFileSystemView implements SyncableFileSystemV
    *
    * @param fileSlice File Slice
    */
+  //todo 判断fileSlice需要被Compaction
   protected boolean isFileSliceAfterPendingCompaction(FileSlice fileSlice) {
     Option<Pair<String, CompactionOperation>> compactionWithInstantTime =
         getPendingCompactionOperationWithInstant(fileSlice.getFileGroupId());
@@ -413,6 +414,7 @@ public abstract class AbstractTableFileSystemView implements SyncableFileSystemV
    * @param fileSlice File Slice
    */
   protected FileSlice filterBaseFileAfterPendingCompaction(FileSlice fileSlice) {
+    //todo
     if (isFileSliceAfterPendingCompaction(fileSlice)) {
       LOG.debug("File Slice (" + fileSlice + ") is in pending compaction");
       // Base file is filtered out of the file-slice as the corresponding compaction
@@ -420,6 +422,7 @@ public abstract class AbstractTableFileSystemView implements SyncableFileSystemV
       FileSlice transformed =
           new FileSlice(fileSlice.getPartitionPath(), fileSlice.getBaseInstantTime(), fileSlice.getFileId());
       fileSlice.getLogFiles().forEach(transformed::addLogFile);
+      //todo 返回新建的FileSlice
       return transformed;
     }
     return fileSlice;
@@ -590,7 +593,9 @@ public abstract class AbstractTableFileSystemView implements SyncableFileSystemV
       readLock.lock();
       String partitionPath = formatPartitionKey(partitionStr);
       ensurePartitionLoadedCorrectly(partitionPath);
+      //todo 寻找partitionPath下每一个filegroupid的最近的fileslice
       return fetchLatestFileSlices(partitionPath)
+              //todo 过滤出没有被replacecommitd的
           .filter(slice -> !isFileGroupReplaced(slice.getFileGroupId()))
           .map(this::filterBaseFileAfterPendingCompaction)
           .map(this::addBootstrapBaseFileIfPresent);

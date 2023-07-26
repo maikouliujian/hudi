@@ -37,7 +37,7 @@ import java.util.List;
  */
 
 public class HoodieLogFormatReader implements HoodieLogFormat.Reader {
-
+  //todo 维护多个logfile
   private final List<HoodieLogFile> logFiles;
   // Readers for previously scanned log-files that are still open
   private final List<HoodieLogFileReader> prevReadersInOpenState;
@@ -108,6 +108,7 @@ public class HoodieLogFormatReader implements HoodieLogFormat.Reader {
         } else {
           this.prevReadersInOpenState.add(currentReader);
         }
+        //todo 读取下一个logfiles
         this.currentReader = new HoodieLogFileReader(fs, nextLogFile, readerSchema, bufferSize, readBlocksLazily, false,
             enableInlineReading, recordKeyField, internalSchema);
       } catch (IOException io) {

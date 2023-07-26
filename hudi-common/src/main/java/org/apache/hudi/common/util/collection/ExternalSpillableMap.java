@@ -113,10 +113,12 @@ public class ExternalSpillableMap<T extends Serializable, R extends Serializable
           try {
             switch (diskMapType) {
               case ROCKS_DB:
+                //todo rocksdb
                 diskBasedMap = new RocksDbDiskMap<>(baseFilePath);
                 break;
               case BITCASK:
               default:
+                //todo BITCASK
                 diskBasedMap =  new BitCaskDiskMap<>(baseFilePath, isCompressionEnabled);
             }
           } catch (IOException e) {

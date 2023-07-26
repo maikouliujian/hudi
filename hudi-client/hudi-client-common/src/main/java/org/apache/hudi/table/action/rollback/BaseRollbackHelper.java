@@ -78,7 +78,9 @@ public class BaseRollbackHelper implements Serializable {
     // is failing with com.esotericsoftware.kryo.KryoException
     // stack trace: https://gist.github.com/nsivabalan/b6359e7d5038484f8043506c8bc9e1c8
     // related stack overflow post: https://issues.apache.org/jira/browse/SPARK-3601. Avro deserializes list as GenericData.Array.
+    //todo rollbackRequests要回滚的信息
     List<SerializableHoodieRollbackRequest> serializableRequests = rollbackRequests.stream().map(SerializableHoodieRollbackRequest::new).collect(Collectors.toList());
+    //todo maybeDeleteAndCollectStats执行 rollback
     return context.reduceByKey(maybeDeleteAndCollectStats(context, instantToRollback, serializableRequests, true, parallelism),
         RollbackUtils::mergeRollbackStat, parallelism);
   }
@@ -108,13 +110,16 @@ public class BaseRollbackHelper implements Serializable {
    * @param doDelete          {@code true} if deletion has to be done. {@code false} if only stats are to be collected w/o performing any deletes.
    * @return stats collected with or w/o actual deletions.
    */
+  //todo 处理删除逻辑
   List<Pair<String, HoodieRollbackStat>> maybeDeleteAndCollectStats(HoodieEngineContext context,
                                                                     HoodieInstant instantToRollback,
                                                                     List<SerializableHoodieRollbackRequest> rollbackRequests,
                                                                     boolean doDelete, int numPartitions) {
     return context.flatMap(rollbackRequests, (SerializableFunction<SerializableHoodieRollbackRequest, Stream<Pair<String, HoodieRollbackStat>>>) rollbackRequest -> {
+      //todo filesToBeDeleted 要被删除的文件
       List<String> filesToBeDeleted = rollbackRequest.getFilesToBeDeleted();
       if (!filesToBeDeleted.isEmpty()) {
+        //todo 删除！！！！！！
         List<HoodieRollbackStat> rollbackStats = deleteFiles(metaClient, filesToBeDeleted, doDelete);
         List<Pair<String, HoodieRollbackStat>> partitionToRollbackStats = new ArrayList<>();
         rollbackStats.forEach(entry -> partitionToRollbackStats.add(Pair.of(entry.getPartitionPath(), entry)));
@@ -188,6 +193,7 @@ public class BaseRollbackHelper implements Serializable {
         boolean isDeleted = true;
         if (doDelete) {
           try {
+            //todo 删除
             isDeleted = metaClient.getFs().delete(fullDeletePath);
           } catch (FileNotFoundException e) {
             // if first rollback attempt failed and retried again, chances that some files are already deleted.

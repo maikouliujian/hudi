@@ -548,7 +548,9 @@ public abstract class HoodieTable<T extends HoodieRecordPayload, I, K, O> implem
   public void rollbackInflightCompaction(HoodieInstant inflightInstant, Function<String, Option<HoodiePendingRollbackInfo>> getPendingRollbackInstantFunc) {
     final String commitTime = getPendingRollbackInstantFunc.apply(inflightInstant.getTimestamp()).map(entry
         -> entry.getRollbackInstant().getTimestamp()).orElse(HoodieActiveTimeline.createNewInstantTime());
+    //todo 生成rollback计划
     scheduleRollback(context, commitTime, inflightInstant, false, config.shouldRollbackUsingMarkers());
+    //todo 执行rollback
     rollback(context, commitTime, inflightInstant, false, false);
     getActiveTimeline().revertCompactionInflightToRequested(inflightInstant);
   }

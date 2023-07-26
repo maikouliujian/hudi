@@ -106,6 +106,7 @@ public class RocksDBDAO {
       final List<ColumnFamilyDescriptor> managedColumnFamilies = loadManagedColumnFamilies(dbOptions);
       final List<ColumnFamilyHandle> managedHandles = new ArrayList<>();
       FileIOUtils.mkdir(new File(rocksDBBasePath));
+      //todo 初始化rocksDB
       rocksDB = RocksDB.open(dbOptions, rocksDBBasePath, managedColumnFamilies, managedHandles);
 
       ValidationUtils.checkArgument(managedHandles.size() == managedColumnFamilies.size(),

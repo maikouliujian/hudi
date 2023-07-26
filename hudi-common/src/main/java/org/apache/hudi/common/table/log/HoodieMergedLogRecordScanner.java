@@ -92,6 +92,7 @@ public class HoodieMergedLogRecordScanner extends AbstractHoodieLogRecordReader
         forceFullScan, partitionName, internalSchema);
     try {
       // Store merged records for all versions for this log file, set the in-memory footprint to maxInMemoryMapSize
+      //todo 存放records的map
       this.records = new ExternalSpillableMap<>(maxMemorySizeInBytes, spillableMapBasePath, new DefaultSizeEstimator(),
           new HoodieRecordSizeEstimator(readerSchema), diskMapType, isBitCaskDiskMapCompressionEnabled);
       this.maxMemorySizeInBytes = maxMemorySizeInBytes;
@@ -100,6 +101,7 @@ public class HoodieMergedLogRecordScanner extends AbstractHoodieLogRecordReader
     }
 
     if (forceFullScan) {
+      //todo 将logfile中的所有记录加入到records中
       performScan();
     }
   }

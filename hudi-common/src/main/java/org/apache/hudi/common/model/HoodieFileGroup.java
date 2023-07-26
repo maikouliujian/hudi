@@ -144,6 +144,7 @@ public class HoodieFileGroup implements Serializable {
   /**
    * Provides a stream of committed file slices, sorted reverse base commit time.
    */
+  //todo 获取filegroupid下所有的fileslices
   public Stream<FileSlice> getAllFileSlices() {
     if (!timeline.empty()) {
       return fileSlices.values().stream().filter(this::isFileSliceCommitted);

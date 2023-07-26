@@ -45,7 +45,9 @@ public class HoodieFlinkMergeOnReadTableCompactor<T extends HoodieRecordPayload>
   public void preCompact(
       HoodieTable table, HoodieTimeline pendingCompactionTimeline, String compactionInstantTime) {
     HoodieInstant inflightInstant = HoodieTimeline.getCompactionInflightInstant(compactionInstantTime);
+    //todo 如果将要compaction的instant包含正在compaction的instant，则先回滚正在compaction的instant
     if (pendingCompactionTimeline.containsInstant(inflightInstant)) {
+      //todo rollbackInflightCompaction
       table.rollbackInflightCompaction(inflightInstant);
       table.getMetaClient().reloadActiveTimeline();
     }

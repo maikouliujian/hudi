@@ -99,6 +99,7 @@ public abstract class HoodieCompactor<T extends HoodieRecordPayload, I, K, O> im
   /**
    * Execute compaction operations and report back status.
    */
+  //todo 执行compact
   public HoodieData<WriteStatus> compact(
       HoodieEngineContext context, HoodieCompactionPlan compactionPlan,
       HoodieTable table, HoodieWriteConfig config, String compactionInstantTime,
@@ -110,6 +111,7 @@ public abstract class HoodieCompactor<T extends HoodieRecordPayload, I, K, O> im
     HoodieActiveTimeline timeline = table.getActiveTimeline();
     HoodieInstant instant = HoodieTimeline.getCompactionRequestedInstant(compactionInstantTime);
     // Mark instant as compaction inflight
+    //todo transitionCompactionRequestedToInflight
     timeline.transitionCompactionRequestedToInflight(instant);
     table.getMetaClient().reloadActiveTimeline();
 
@@ -135,6 +137,7 @@ public abstract class HoodieCompactor<T extends HoodieRecordPayload, I, K, O> im
 
     context.setJobStatus(this.getClass().getSimpleName(), "Compacting file slices: " + config.getTableName());
     TaskContextSupplier taskContextSupplier = table.getTaskContextSupplier();
+    //todo 执行compact
     return context.parallelize(operations).map(operation -> compact(
         compactionHandler, metaClient, config, operation, compactionInstantTime, taskContextSupplier))
         .flatMap(List::iterator);
@@ -143,7 +146,7 @@ public abstract class HoodieCompactor<T extends HoodieRecordPayload, I, K, O> im
   /**
    * Execute a single compaction operation and report back status.
    */
-
+  //todo 执行compact
   public List<WriteStatus> compact(HoodieCompactionHandler compactionHandler,
                                    HoodieTableMetaClient metaClient,
                                    HoodieWriteConfig config,
@@ -176,10 +179,11 @@ public abstract class HoodieCompactor<T extends HoodieRecordPayload, I, K, O> im
         .filterCompletedInstants().lastInstant().get().getTimestamp();
     long maxMemoryPerCompaction = IOUtils.getMaxMemoryPerCompaction(taskContextSupplier, config);
     LOG.info("MaxMemoryPerCompaction => " + maxMemoryPerCompaction);
-
+    //todo 获取logfile
     List<String> logFiles = operation.getDeltaFileNames().stream().map(
         p -> new Path(FSUtils.getPartitionPath(metaClient.getBasePath(), operation.getPartitionPath()), p).toString())
         .collect(toList());
+    //todo 构建scanner
     HoodieMergedLogRecordScanner scanner = HoodieMergedLogRecordScanner.newBuilder()
         .withFileSystem(fs)
         .withBasePath(metaClient.getBasePath())
@@ -197,7 +201,7 @@ public abstract class HoodieCompactor<T extends HoodieRecordPayload, I, K, O> im
         .withOperationField(config.allowOperationMetadataField())
         .withPartition(operation.getPartitionPath())
         .build();
-
+    //todo 老 basefile
     Option<HoodieBaseFile> oldDataFileOpt =
         operation.getBaseFile(metaClient.getBasePath(), operation.getPartitionPath());
 
@@ -225,6 +229,7 @@ public abstract class HoodieCompactor<T extends HoodieRecordPayload, I, K, O> im
     Iterator<List<WriteStatus>> result;
     // If the dataFile is present, perform updates else perform inserts into a new base file.
     if (oldDataFileOpt.isPresent()) {
+      //todo 处理compact！！！！！！
       result = compactionHandler.handleUpdate(instantTime, operation.getPartitionPath(),
           operation.getFileId(), scanner.getRecords(),
           oldDataFileOpt.get());
@@ -288,12 +293,13 @@ public abstract class HoodieCompactor<T extends HoodieRecordPayload, I, K, O> im
       // In case no partitions could be picked, return no compaction plan
       return null;
     }
-
+    //todo 获取fileSystemView
     SliceView fileSystemView = hoodieTable.getSliceView();
     LOG.info("Compaction looking for files to compact in " + partitionPaths + " partitions");
     context.setJobStatus(this.getClass().getSimpleName(), "Looking for files to compact: " + config.getTableName());
 
     List<HoodieCompactionOperation> operations = context.flatMap(partitionPaths, partitionPath -> fileSystemView
+            //todo 获取partitionPath下每一个filegroupid下最近需要被compact的FileSlice
         .getLatestFileSlices(partitionPath)
         .filter(slice -> !fgIdsInPendingCompactionAndClustering.contains(slice.getFileGroupId()))
         .map(s -> {
@@ -309,6 +315,7 @@ public abstract class HoodieCompactor<T extends HoodieRecordPayload, I, K, O> im
               config.getCompactionStrategy().captureMetrics(config, s));
         })
         .filter(c -> !c.getDeltaFileNames().isEmpty()), partitionPaths.size()).stream()
+            //todo buildHoodieCompactionOperation
         .map(CompactionUtils::buildHoodieCompactionOperation).collect(toList());
 
     LOG.info("Total of " + operations.size() + " compactions are retrieved");
@@ -317,6 +324,7 @@ public abstract class HoodieCompactor<T extends HoodieRecordPayload, I, K, O> im
     LOG.info("Total number of file slices " + totalFileSlices.value());
     // Filter the compactions with the passed in filter. This lets us choose most effective
     // compactions only
+    //todo 生成compactionPlan
     HoodieCompactionPlan compactionPlan = config.getCompactionStrategy().generateCompactionPlan(config, operations,
         CompactionUtils.getAllPendingCompactionPlans(metaClient).stream().map(Pair::getValue).collect(toList()));
     ValidationUtils.checkArgument(

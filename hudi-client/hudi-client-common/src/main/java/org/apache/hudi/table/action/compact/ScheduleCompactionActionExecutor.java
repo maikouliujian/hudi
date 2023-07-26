@@ -97,6 +97,7 @@ public class ScheduleCompactionActionExecutor<T extends HoodieRecordPayload, I, 
       HoodieInstant compactionInstant =
           new HoodieInstant(HoodieInstant.State.REQUESTED, HoodieTimeline.COMPACTION_ACTION, instantTime);
       try {
+        //todo 将compaction plan写入timeline
         table.getActiveTimeline().saveToCompactionRequested(compactionInstant,
             TimelineMetadataUtils.serializeCompactionPlan(plan));
       } catch (IOException ioe) {
@@ -124,7 +125,7 @@ public class ScheduleCompactionActionExecutor<T extends HoodieRecordPayload, I, 
         // exclude files in pending clustering from compaction.
         fgInPendingCompactionAndClustering.addAll(fileSystemView.getFileGroupsInPendingClustering().map(Pair::getLeft).collect(Collectors.toSet()));
         context.setJobStatus(this.getClass().getSimpleName(), "Compaction: generating compaction plan: " + config.getTableName());
-        //todo
+        //todo 生成compaction plan
         return compactor.generateCompactionPlan(context, table, config, instantTime, fgInPendingCompactionAndClustering);
       } catch (IOException e) {
         throw new HoodieCompactionException("Could not schedule compaction " + config.getBasePath(), e);

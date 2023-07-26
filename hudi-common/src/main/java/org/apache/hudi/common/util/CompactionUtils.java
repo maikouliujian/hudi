@@ -107,6 +107,7 @@ public class CompactionUtils {
   /**
    * Build Avro generated Compaction operation payload from compaction operation POJO for serialization.
    */
+  //todo
   public static HoodieCompactionOperation buildHoodieCompactionOperation(CompactionOperation op) {
     return HoodieCompactionOperation.newBuilder().setFileId(op.getFileId()).setBaseInstantTime(op.getBaseInstantTime())
         .setPartitionPath(op.getPartitionPath())
@@ -135,6 +136,7 @@ public class CompactionUtils {
         metaClient.getActiveTimeline().filterPendingCompactionTimeline().getInstants().collect(Collectors.toList());
     return pendingCompactionInstants.stream().map(instant -> {
       try {
+        //todo HoodieCompactionPlan
         return Pair.of(instant, getCompactionPlan(metaClient, instant.getTimestamp()));
       } catch (IOException e) {
         throw new HoodieException(e);
@@ -147,6 +149,7 @@ public class CompactionUtils {
     CompactionPlanMigrator migrator = new CompactionPlanMigrator(metaClient);
     HoodieCompactionPlan compactionPlan = TimelineMetadataUtils.deserializeCompactionPlan(
         metaClient.getActiveTimeline().readCompactionPlanAsBytes(
+                //todo compaction.requested
             HoodieTimeline.getCompactionRequestedInstant(compactionInstant)).get());
     return migrator.upgradeToLatest(compactionPlan, compactionPlan.getVersion());
   }

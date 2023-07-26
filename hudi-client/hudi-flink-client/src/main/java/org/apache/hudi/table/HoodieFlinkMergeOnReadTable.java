@@ -110,23 +110,24 @@ public class HoodieFlinkMergeOnReadTable<T extends HoodieRecordPayload>
     //todo
     return scheduleCompactionExecutor.execute();
   }
-
+  //todo 执行compact
   @Override
   public HoodieWriteMetadata<List<WriteStatus>> compact(
       HoodieEngineContext context, String compactionInstantTime) {
+    //todo 执行compact
     RunCompactionActionExecutor compactionExecutor = new RunCompactionActionExecutor(
         context, config, this, compactionInstantTime, new HoodieFlinkMergeOnReadTableCompactor(),
         new HoodieFlinkCopyOnWriteTable(config, context, getMetaClient()));
     return convertMetadata(compactionExecutor.execute());
   }
-
+  //todo 生成rollback plan
   @Override
   public Option<HoodieRollbackPlan> scheduleRollback(HoodieEngineContext context, String instantTime, HoodieInstant instantToRollback,
                                                      boolean skipTimelinePublish, boolean shouldRollbackUsingMarkers) {
     return new BaseRollbackPlanActionExecutor(context, config, this, instantTime, instantToRollback, skipTimelinePublish,
         shouldRollbackUsingMarkers).execute();
   }
-
+  //todo 执行rollback
   @Override
   public HoodieRollbackMetadata rollback(HoodieEngineContext context, String rollbackInstantTime, HoodieInstant commitInstant,
                                          boolean deleteInstants, boolean skipLocking) {

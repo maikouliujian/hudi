@@ -105,23 +105,26 @@ public abstract class BaseRollbackActionExecutor<T extends HoodieRecordPayload, 
    * @throws IOException
    */
   protected abstract List<HoodieRollbackStat> executeRollback(HoodieRollbackPlan hoodieRollbackPlan) throws IOException;
-
+  //todo 执行rollback
   private HoodieRollbackMetadata runRollback(HoodieTable<T, I, K, O> table, HoodieInstant rollbackInstant, HoodieRollbackPlan rollbackPlan) {
     ValidationUtils.checkArgument(rollbackInstant.getState().equals(HoodieInstant.State.REQUESTED)
         || rollbackInstant.getState().equals(HoodieInstant.State.INFLIGHT));
     final HoodieTimer timer = new HoodieTimer();
     timer.startTimer();
+    //todo 修改状态
     final HoodieInstant inflightInstant = rollbackInstant.isRequested()
         ? table.getActiveTimeline().transitionRollbackRequestedToInflight(rollbackInstant)
         : rollbackInstant;
 
     HoodieTimer rollbackTimer = new HoodieTimer().startTimer();
+    //todo 执行rollback！！！！！！
     List<HoodieRollbackStat> stats = doRollbackAndGetStats(rollbackPlan);
     HoodieRollbackMetadata rollbackMetadata = TimelineMetadataUtils.convertRollbackMetadata(
         instantTime,
         Option.of(rollbackTimer.endTimer()),
         Collections.singletonList(instantToRollback),
         stats);
+    //todo 完成rollback
     finishRollback(inflightInstant, rollbackMetadata);
 
     // Finally, remove the markers post rollback.
@@ -130,10 +133,11 @@ public abstract class BaseRollbackActionExecutor<T extends HoodieRecordPayload, 
 
     return rollbackMetadata;
   }
-
+  //todo 执行rollback
   @Override
   public HoodieRollbackMetadata execute() {
     table.getMetaClient().reloadActiveTimeline();
+    //todo rollbackInstant
     Option<HoodieInstant> rollbackInstant = table.getRollbackTimeline()
         .filterInflightsAndRequested()
         .filter(instant -> instant.getTimestamp().equals(instantTime))
@@ -142,7 +146,9 @@ public abstract class BaseRollbackActionExecutor<T extends HoodieRecordPayload, 
       throw new HoodieRollbackException("No pending rollback instants found to execute rollback");
     }
     try {
+      //todo 获取rollbackPlan
       HoodieRollbackPlan rollbackPlan = RollbackUtils.getRollbackPlan(table.getMetaClient(), rollbackInstant.get());
+      //todo 执行rollbackPlan
       return runRollback(table, rollbackInstant.get(), rollbackPlan);
     } catch (IOException e) {
       throw new HoodieIOException("Failed to fetch rollback plan for commit " + instantTime, e);
@@ -223,6 +229,7 @@ public abstract class BaseRollbackActionExecutor<T extends HoodieRecordPayload, 
     }
 
     try {
+      //todo executeRollback
       List<HoodieRollbackStat> stats = executeRollback(hoodieRollbackPlan);
       LOG.info("Rolled back inflight instant " + instantTimeToRollback);
       if (!isPendingCompaction) {
@@ -241,6 +248,7 @@ public abstract class BaseRollbackActionExecutor<T extends HoodieRecordPayload, 
    * @return list of {@link HoodieRollbackStat}s.
    */
   protected List<HoodieRollbackStat> executeRollback(HoodieInstant instantToRollback, HoodieRollbackPlan rollbackPlan) {
+    //todo 执行rollback
     return new BaseRollbackHelper(table.getMetaClient(), config).performRollback(context, instantToRollback, rollbackPlan.getRollbackRequests());
   }
 
@@ -263,6 +271,7 @@ public abstract class BaseRollbackActionExecutor<T extends HoodieRecordPayload, 
       // If publish the rollback to the timeline, we finally transition the inflight rollback
       // to complete in the data table timeline
       if (!skipTimelinePublish) {
+        //todo 记录rollback complete
         table.getActiveTimeline().transitionRollbackInflightToComplete(inflightInstant,
             TimelineMetadataUtils.serializeRollbackMetadata(rollbackMetadata));
         LOG.info("Rollback of Commits " + rollbackMetadata.getCommitsRollback() + " is complete");

@@ -36,11 +36,14 @@ import java.util.stream.Collectors;
  * Encapsulates all the needed information about a compaction and make a decision whether this compaction is effective
  * or not.
  */
+//todo 同一compaction下dataFileName和deltaFileNames的fileid和committime是一样的
 public class CompactionOperation implements Serializable {
 
   private String baseInstantTime;
   private Option<String> dataFileCommitTime;
+  //todo logfiles
   private List<String> deltaFileNames;
+  //todo basefile
   private Option<String> dataFileName;
   private HoodieFileGroupId id;
   private Map<String, Double> metrics;
@@ -65,6 +68,7 @@ public class CompactionOperation implements Serializable {
   public CompactionOperation(Option<HoodieBaseFile> dataFile, String partitionPath, List<HoodieLogFile> logFiles,
       Map<String, Double> metrics) {
     if (dataFile.isPresent()) {
+      //todo
       this.baseInstantTime = dataFile.get().getCommitTime();
       this.dataFileName = Option.of(dataFile.get().getFileName());
       this.id = new HoodieFileGroupId(partitionPath, dataFile.get().getFileId());

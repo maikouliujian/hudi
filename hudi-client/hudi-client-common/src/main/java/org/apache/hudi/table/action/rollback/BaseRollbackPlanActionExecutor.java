@@ -108,12 +108,14 @@ public class BaseRollbackPlanActionExecutor<T extends HoodieRecordPayload, I, K,
       if (!instantToRollback.isRequested()) {
         rollbackRequests.addAll(getRollbackStrategy().getRollbackRequests(instantToRollback));
       }
+      //todo rollbackPlan
       HoodieRollbackPlan rollbackPlan = new HoodieRollbackPlan(new HoodieInstantInfo(instantToRollback.getTimestamp(),
           instantToRollback.getAction()), rollbackRequests, LATEST_ROLLBACK_PLAN_VERSION);
       if (!skipTimelinePublish) {
         if (table.getRollbackTimeline().filterInflightsAndRequested().containsInstant(rollbackInstant.getTimestamp())) {
           LOG.warn("Request Rollback found with instant time " + rollbackInstant + ", hence skipping scheduling rollback");
         } else {
+          //todo 生成rollbackPlan
           table.getActiveTimeline().saveToRollbackRequested(rollbackInstant, TimelineMetadataUtils.serializeRollbackPlan(rollbackPlan));
           table.getMetaClient().reloadActiveTimeline();
           LOG.info("Requesting Rollback with instant time " + rollbackInstant);
@@ -129,6 +131,7 @@ public class BaseRollbackPlanActionExecutor<T extends HoodieRecordPayload, I, K,
   @Override
   public Option<HoodieRollbackPlan> execute() {
     // Plan a new rollback action
+    //todo 生成rollback plan
     return requestRollback(instantTime);
   }
 }

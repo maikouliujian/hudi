@@ -87,6 +87,7 @@ public class MergeOnReadRollbackActionExecutor<T extends HoodieRecordPayload, I,
     // deleting the timeline file
     if (!resolvedInstant.isRequested()) {
       LOG.info("Unpublished " + resolvedInstant);
+      //todo 执行rollback
       allRollbackStats = executeRollback(instantToRollback, hoodieRollbackPlan);
     }
 

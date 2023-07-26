@@ -98,6 +98,7 @@ public abstract class AbstractHoodieLogRecordReader {
   // simple key gen fields
   private Option<Pair<String, String>> simpleKeyGenFields = Option.empty();
   // Log File Paths
+  //todo logfiles
   protected final List<String> logFilePaths;
   // Read Lazily flag
   private final boolean readBlocksLazily;

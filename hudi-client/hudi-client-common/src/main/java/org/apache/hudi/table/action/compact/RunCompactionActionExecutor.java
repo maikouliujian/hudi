@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.util.List;
 
 @SuppressWarnings("checkstyle:LineLength")
+//todo 【执行compaction的核心类】
 public class RunCompactionActionExecutor<T extends HoodieRecordPayload> extends
     BaseActionExecutor<T, HoodieData<HoodieRecord<T>>, HoodieData<HoodieKey>, HoodieData<WriteStatus>, HoodieWriteMetadata<HoodieData<WriteStatus>>> {
 
@@ -61,16 +62,18 @@ public class RunCompactionActionExecutor<T extends HoodieRecordPayload> extends
     this.compactor = compactor;
     this.compactionHandler = compactionHandler;
   }
-
+  //todo 执行compaction
   @Override
   public HoodieWriteMetadata<HoodieData<WriteStatus>> execute() {
     HoodieTimeline pendingCompactionTimeline = table.getActiveTimeline().filterPendingCompactionTimeline();
+    //todo 先将inflight compaction进行rollback
     compactor.preCompact(table, pendingCompactionTimeline, instantTime);
 
     HoodieWriteMetadata<HoodieData<WriteStatus>> compactionMetadata = new HoodieWriteMetadata<>();
     try {
       // generate compaction plan
       // should support configurable commit metadata
+      //todo 从timeline上读取compactionPlan
       HoodieCompactionPlan compactionPlan =
           CompactionUtils.getCompactionPlan(table.getMetaClient(), instantTime);
 
@@ -84,7 +87,7 @@ public class RunCompactionActionExecutor<T extends HoodieRecordPayload> extends
         configCopy.setInternalSchemaString(schemaPair.getLeft().get());
         configCopy.setSchema(schemaPair.getRight().get());
       }
-
+      //todo 执行compact
       HoodieData<WriteStatus> statuses = compactor.compact(
           context, compactionPlan, table, configCopy, instantTime, compactionHandler);
 

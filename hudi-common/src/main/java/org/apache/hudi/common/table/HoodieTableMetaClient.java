@@ -113,6 +113,7 @@ public class HoodieTableMetaClient implements Serializable {
   private HoodieTableType tableType;
   private TimelineLayoutVersion timelineLayoutVersion;
   protected HoodieTableConfig tableConfig;
+  //todo activetimeline
   protected HoodieActiveTimeline activeTimeline;
   private HoodieArchivedTimeline archivedTimeline;
   private ConsistencyGuardConfig consistencyGuardConfig = ConsistencyGuardConfig.newBuilder().build();

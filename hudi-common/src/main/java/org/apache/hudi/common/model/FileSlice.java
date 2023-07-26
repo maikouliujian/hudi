@@ -34,6 +34,7 @@ public class FileSlice implements Serializable {
   /**
    * File Group Id of the Slice.
    */
+  //todo fileGroupId
   private final HoodieFileGroupId fileGroupId;
 
   /**

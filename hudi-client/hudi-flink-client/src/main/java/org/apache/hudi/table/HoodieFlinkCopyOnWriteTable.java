@@ -365,12 +365,14 @@ public class HoodieFlinkCopyOnWriteTable<T extends HoodieRecordPayload>
   // -------------------------------------------------------------------------
   //  Used for compaction
   // -------------------------------------------------------------------------
+  //todo 处理compact update
   @Override
   public Iterator<List<WriteStatus>> handleUpdate(
       String instantTime, String partitionPath, String fileId,
       Map<String, HoodieRecord<T>> keyToNewRecords, HoodieBaseFile oldDataFile) throws IOException {
     // these are updates
     HoodieMergeHandle upsertHandle = getUpdateHandle(instantTime, partitionPath, fileId, keyToNewRecords, oldDataFile);
+    //todo 处理update
     return handleUpdateInternal(upsertHandle, instantTime, fileId);
   }
 
@@ -407,6 +409,7 @@ public class HoodieFlinkCopyOnWriteTable<T extends HoodieRecordPayload>
       return new HoodieSortedMergeHandle<>(config, instantTime, this, keyToNewRecords, partitionPath, fileId,
           dataFileToBeMerged, taskContextSupplier, keyGeneratorOpt);
     } else {
+      //todo HoodieMergeHandle
       return new HoodieMergeHandle<>(config, instantTime, this, keyToNewRecords, partitionPath, fileId,
           dataFileToBeMerged, taskContextSupplier, keyGeneratorOpt);
     }

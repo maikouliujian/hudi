@@ -149,6 +149,7 @@ public class TimelineMetadataUtils {
 
   public static <T extends SpecificRecordBase> Option<byte[]> serializeAvroMetadata(T metadata, Class<T> clazz)
       throws IOException {
+    //todo 采用avro写出
     DatumWriter<T> datumWriter = new SpecificDatumWriter<>(clazz);
     DataFileWriter<T> fileWriter = new DataFileWriter<>(datumWriter);
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
