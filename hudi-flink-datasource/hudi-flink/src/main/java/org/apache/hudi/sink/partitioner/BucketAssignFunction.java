@@ -189,23 +189,27 @@ public class BucketAssignFunction<K, I, O extends HoodieRecord<?>>
     //todo 如果操作类型为UPSERT，DELETE或者UPSERT_PREPPED，isChangingRecords为true
     if (isChangingRecords && oldLoc != null) {
       // Set up the instant time as "U" to mark the bucket as an update bucket.
+      //todo 如果是不同的partitionpath
       if (!Objects.equals(oldLoc.getPartitionPath(), partitionPath)) {
         if (globalIndex) {
           // if partition path changes, emit a delete record for old partition path,
           // then update the index state using location with new partition path.
+          //todo 如果是globalIndex，且分区partionpath不同，则会删除原先partionpath的数据！！！
           HoodieRecord<?> deleteRecord = new HoodieAvroRecord<>(new HoodieKey(recordKey, oldLoc.getPartitionPath()),
               payloadCreation.createDeletePayload((BaseAvroPayload) record.getData()));
           deleteRecord.setCurrentLocation(oldLoc.toLocal("U"));
           deleteRecord.seal();
           out.collect((O) deleteRecord);
         }
+        //todo 寻找要写入的文件路径【优化小文件写入】
         location = getNewRecordLocation(partitionPath);
       } else {
+        //todo 如果partitionpath相同，则走update逻辑
         location = oldLoc.toLocal("U");
         this.bucketAssigner.addUpdate(partitionPath, location.getFileId());
       }
     } else {
-      //todo 寻找要写入的文件路径
+      //todo 寻找要写入的文件路径【优化小文件写入】
       location = getNewRecordLocation(partitionPath);
     }
     // always refresh the index

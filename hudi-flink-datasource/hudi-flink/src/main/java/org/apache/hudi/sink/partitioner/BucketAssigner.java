@@ -126,6 +126,7 @@ public class BucketAssigner implements AutoCloseable {
   public BucketInfo addUpdate(String partitionPath, String fileIdHint) {
     final String key = StreamerUtil.generateBucketKey(partitionPath, fileIdHint);
     if (!bucketInfoMap.containsKey(key)) {
+      //todo 根据partitionPath + fileid，新建bucketInfo
       BucketInfo bucketInfo = new BucketInfo(BucketType.UPDATE, fileIdHint, partitionPath);
       bucketInfoMap.put(key, bucketInfo);
     }
@@ -141,6 +142,7 @@ public class BucketAssigner implements AutoCloseable {
 
     // first try packing this into one of the smallFiles
     if (smallFileAssign != null && smallFileAssign.assign()) {
+      //todo 如果找到小文件，BucketType为UPDATE
       return new BucketInfo(BucketType.UPDATE, smallFileAssign.getFileId(), partitionPath);
     }
 

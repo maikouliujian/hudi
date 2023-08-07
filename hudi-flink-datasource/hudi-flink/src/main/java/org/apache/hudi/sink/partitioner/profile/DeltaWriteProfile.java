@@ -43,7 +43,7 @@ public class DeltaWriteProfile extends WriteProfile {
   public DeltaWriteProfile(HoodieWriteConfig config, HoodieFlinkEngineContext context) {
     super(config, context);
   }
-
+  //todo 针对mor表
   @Override
   protected List<SmallFile> smallFilesProfile(String partitionPath) {
     // smallFiles only for partitionPath
@@ -69,6 +69,7 @@ public class DeltaWriteProfile extends WriteProfile {
       // Create SmallFiles from the eligible file slices
       for (FileSlice smallFileSlice : allSmallFileSlices) {
         SmallFile sf = new SmallFile();
+        //todo 判断basefile是否存在，如果存在就写basefile
         if (smallFileSlice.getBaseFile().isPresent()) {
           // TODO : Move logic of file name, file id, base commit time handling inside file slice
           String filename = smallFileSlice.getBaseFile().get().getFileName();
@@ -76,6 +77,7 @@ public class DeltaWriteProfile extends WriteProfile {
           sf.sizeBytes = getTotalFileSize(smallFileSlice);
           smallFileLocations.add(sf);
         } else {
+          //todo 如果basefile不存在，就写最近的logfile
           smallFileSlice.getLogFiles().findFirst().ifPresent(logFile -> {
             // in case there is something error, and the file slice has no log file
             sf.location = new HoodieRecordLocation(FSUtils.getBaseCommitTimeFromLogPath(logFile.getPath()),

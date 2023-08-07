@@ -187,7 +187,7 @@ public class WriteProfile {
       this.smallFilesMap.put(partitionPath, smallFiles);
       return smallFiles;
     }
-
+    //todo 不同的profile
     smallFiles = smallFilesProfile(partitionPath);
     this.smallFilesMap.put(partitionPath, smallFiles);
     return smallFiles;
